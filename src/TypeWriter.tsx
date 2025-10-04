@@ -47,9 +47,9 @@ export default function TypeWriter({ text, speed = 10, onComplete }: TypeWriterP
             
             const cover_size = coverRef.current.getBoundingClientRect().width;
 
-            if (cover_size === 0) {
-               // clearInterval(interval);
+            if (cover_size <= charWidth) {
                clear_interval(interval);
+               coverRef.current.style.width = "0px";
                console.log("came here");
                onComplete?.();
                return;
@@ -62,30 +62,8 @@ export default function TypeWriter({ text, speed = 10, onComplete }: TypeWriterP
       return () => clear_interval(interval);
    }, [measured]);
 
-
-
-   // useEffect(() => {
-   //    if (!measured) return;
-   //
-   //    let i = 0;
-   //    const interval = setInterval(() => {
-   //       i++;
-   //       if (coverRef.current) {
-   //          coverRef.current.style.width = `${textWidth - i * charWidth}px`;
-   //       }
-   //
-   //       if (i >= text.length) {
-   //          clearInterval(interval);
-   //          onComplete?.();
-   //       }
-   //    }, speed);
-   //
-   //    return () => clearInterval(interval);
-   // }, [measured]);
-
-
    return (
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block", background: "black" }}>
 
          <div style={{ fontFamily: "monospace", fontSize: "20px", position: "absolute", top: 0, left: 0, visibility: "hidden", pointerEvents: "none" }} ref={charRef}>
             a
