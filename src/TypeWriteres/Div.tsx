@@ -1,28 +1,37 @@
-import './App.css'
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import { type TyperProps, clear_interval, createReffedDefferedPromise } from './utils';
 
-interface TypeWriterProps {
-   children: String;
-   speed?: number;
-   promises?: React.RefObject<Promise<void>[]>;
-   signal: React.RefObject<{ promise: Promise<void>, resolve: (value: void | PromiseLike<void>) => void }>;
-   onComplete?: () => void;
+
+function get_resolver(promises: React.RefObject<Promise<void>[]> | undefined) {
+   if (promises) {
+      const { promise, resolver } = createReffedDefferedPromise<void>();
+      promises.current.push(promise);
+      return resolver;
+   };
+
+   return undefined;
 }
 
-export default function TitleTyper({ children, speed = 30, signal }: TypeWriterProps) {
+
+export default function Div({ children, speed = 30, signal, promises }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    let new_char = true;
    let index = 0;
 
    useEffect(() => {
+      const maybe_resolver = get_resolver(promises);
 
-      var interval: number;
-
+      let interval: number;
       const animate = async () => {
-         await signal.current.promise;
+         if (signal) await signal.current;
+
          interval = setInterval(() => {
             if (textRef.current === null) return;
-            if (index === children.length) return clear_interval(interval);
+
+            if (index === children.length) {
+               maybe_resolver?.();
+               return clear_interval(interval)
+            };
 
             if (new_char) {
                const code = Math.floor(Math.random() * (126 - 32 + 1)) + 32;
@@ -46,16 +55,12 @@ export default function TitleTyper({ children, speed = 30, signal }: TypeWriterP
       return () => clear_interval(interval);
    }, []);
 
-   const clear_interval = (interval: number) => {
-      console.log("clearing internval");
-      clearInterval(interval);
-   };
 
 
    return (
-      <h2 style={{ fontFamily: "monospace", fontSize: "20px", whiteSpace: "pre" }} ref={textRef}>
+      <div style={{ fontFamily: "monospace", fontSize: "20px", whiteSpace: "pre" }} ref={textRef}>
          {" ".repeat(children.length)}
-      </h2>
+      </div>
    )
 }
 
