@@ -9,7 +9,7 @@ interface TypeWriterProps {
    onComplete?: () => void;
 }
 
-export default function Typer({ children, speed = 30, signal }: TypeWriterProps) {
+export default function TitleTyper({ children, speed = 30, signal }: TypeWriterProps) {
    const textRef = useRef<HTMLDivElement>(null);
    let new_char = true;
    let index = 0;
@@ -19,9 +19,7 @@ export default function Typer({ children, speed = 30, signal }: TypeWriterProps)
       var interval: number;
 
       const animate = async () => {
-         console.log("awainting...");
          await signal.current.promise;
-         console.log("promise resolved");
          interval = setInterval(() => {
             if (textRef.current === null) return;
             if (index === children.length) return clear_interval(interval);
@@ -55,9 +53,9 @@ export default function Typer({ children, speed = 30, signal }: TypeWriterProps)
 
 
    return (
-      <div style={{ fontFamily: "monospace", fontSize: "20px", whiteSpace: "pre" }} ref={textRef}>
+      <h2 style={{ fontFamily: "monospace", fontSize: "20px", whiteSpace: "pre" }} ref={textRef}>
          {" ".repeat(children.length)}
-      </div>
+      </h2>
    )
 }
 

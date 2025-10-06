@@ -4,6 +4,7 @@ import { motion, rgba } from "framer-motion";
 import React from "react";
 import TypeWriter from './TypeWriter';
 import Typer from './Typer';
+import TitleTyper from './TitleTyper';
 
 
 import { useRef } from 'react';
@@ -43,6 +44,9 @@ function App() {
             <button onClick={() => {signal.current.resolve(); console.log("printing")} }>
                press me
             </button>
+
+            <TitleTyper signal={signal}> this is the title </TitleTyper>
+
          </div>
 
 
