@@ -10,7 +10,6 @@ interface TypeWriterProps {
    onComplete?: () => void;
 }
 
-
 export default function TypeWriter({ text, speed = 10, onComplete }: TypeWriterProps) {
    const coverRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +63,6 @@ export default function TypeWriter({ text, speed = 10, onComplete }: TypeWriterP
 
    return (
       <div style={{ position: "relative", display: "inline-block", background: "black" }}>
-
          <div style={{ fontFamily: "monospace", fontSize: "20px", position: "absolute", top: 0, left: 0, visibility: "hidden", pointerEvents: "none" }} ref={charRef}>
             a
          </div>
