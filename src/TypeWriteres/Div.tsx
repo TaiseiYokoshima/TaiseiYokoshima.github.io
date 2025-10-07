@@ -1,3 +1,6 @@
+import "../App.css";
+
+
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval, createReffedDefferedPromise } from './utils';
 

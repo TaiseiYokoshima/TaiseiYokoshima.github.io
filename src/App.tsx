@@ -47,7 +47,7 @@ function App() {
       <>
          <div id='terminal-window'>
 
-            <Title signal={titleSignalRef} resolver={titleResolverRef}> this is the title </Title>
+            <Title signal={titleSignalRef} resolver={titleResolverRef}> this is the title</Title>
 
             <Div signal={divsSignalRef} promises={divsPromisesRef} speed={100}> this is the first text I want </Div>
             <Div signal={divsSignalRef} promises={divsPromisesRef}> this is the second text I want </Div>
