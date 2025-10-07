@@ -9,18 +9,20 @@ export default function Title({ children, speed = 100, signal, resolver }: Typer
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
-
-   let new_char = true;
-   let index = 0;
+   const has_run = useRef<boolean>(false);
 
    useEffect(() => {
+      if (has_run.current) return console.log("use effect already ran");
+      has_run.current = true;
+
+      console.log("use effect ran");
       if (to_set.current && measured.current) {
          const { width, height } = measured.current.getBoundingClientRect();
          to_set.current.style.minHeight = `${height}px`;
          to_set.current.style.minWidth = `${width}px`;
       };
 
-
+      let index = 0;
       var interval: number;
 
       const animate = async () => {
@@ -37,29 +39,17 @@ export default function Title({ children, speed = 100, signal, resolver }: Typer
                return clear_interval(interval);
             };
 
-            if (new_char) {
-               const code = Math.floor(Math.random() * (126 - 32 + 1)) + 32;
-               const char = String.fromCharCode(code);
-               const old_text = textRef.current.textContent;
-               const new_text = old_text + char;
-               textRef.current.textContent = new_text;
-               new_char = false;
-            } else {
-               const char = children[index];
-               const old_text = textRef.current.textContent;
-               const new_text = old_text.substring(0, index) + char;
-               textRef.current.textContent = new_text;
-               index++;
-               new_char = true;
-            };
+            const char = children[index];
+            const old_text = textRef.current.textContent;
+            const new_text = old_text + char;
+            textRef.current.textContent = new_text;
+            index++;
          }, speed);
       };
 
       animate();
       return () => clear_interval(interval);
    }, []);
-
-
 
    return (
       <div>
