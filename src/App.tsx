@@ -1,15 +1,8 @@
 import './App.css'
-import { Title, Div  } from "./TypeWriteres";
+import { Title, Div, Header  } from "./TypeWriteres";
 import { useRef } from 'react';
 
 import { Controller, Registry } from './TypeWriteres';
-
-// function useSignal<T>() {
-//    const { promise, resolver } = createReffedDefferedPromise<T>();
-//    const signal = useRef(promise);
-//    const signaler = useRef(resolver);
-//    return { signal, signaler };
-// }
 
 function App() {
    const title_controller = useRef(new Controller());
@@ -42,9 +35,12 @@ function App() {
       <>
          <div id='terminal-window'>
 
+            {/* <Header controller={title_controller} speed={10}> this is the title</Header> */}
             <Title controller={title_controller} speed={10}> this is the title</Title>
-            <Div registry={divs_registry} speed={10}>this is the first text I want. I am trying out</Div>
-            <Div registry={divs_registry} speed={10}>this is the second text I want.</Div>
+            {/* <Div registry={divs_registry} speed={10}>this is the first text I want. I am trying out</Div> */}
+            {/* <Div registry={divs_registry} speed={10}>this is the second text I want.</Div> */}
+            {/* <Header registry={divs_registry} speed={10}>this is the second text I want.</Header> */}
+
 
             <button onClick={open}> open </button>
             <button onClick={close}> close </button>

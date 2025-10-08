@@ -7,13 +7,19 @@
    display: inline-block;
    width: 1.3em;
    height: 0.2em;
-   backgroundColor:  #0f0;
-   verticalAlign: bottom;
-   marginLeft: 2em;
+   margin-left: 0.3em;
    animation: blink 2s step-start infinite;
 }
 
 .cursor.paused {
    animation: none;
+   background-color: #0f0;
+}
+
+.header-cursor { 
+   display: inline-block;
+   width: 0.5em;
+   height: 1.4em;
+   margin-left: 0.3em;
    background-color: #0f0;
 }

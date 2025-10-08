@@ -3,7 +3,7 @@ import "./Cursor.css";
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
 
-export default function Title({ children, speed = 100, controller }: TyperProps) {
+export default function Header({ children, speed = 100, controller }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
          <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{children}</div>
          <div ref={to_set} style={{ display: "inline-block" }}>
             <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef} />
-            <span ref={cursorRef} className="cursor" />
+            <span ref={cursorRef} className="header-cursor" />
          </div>
       </div>
    )
