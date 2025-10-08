@@ -9,7 +9,7 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
    const useEffectHasRan = useRef(false);
    const controller = useRef(new Controller());
 
-   const open = () => {
+   const open = () => new Promise<void>((resolve, _) => {
       let new_char = true;
       let index = 0;
       const interval = setInterval(() => {
@@ -18,7 +18,7 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          if (index === children.length) {
             controller.current.animation_completed();
             clear_interval(interval);
-            return;
+            return resolve();
          };
 
          if (new_char) {
@@ -35,10 +35,10 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
             new_char = true;
          }
       }, speed);
-   };
+   });
 
 
-   const close = () => {
+   const close = () => new Promise<void>((resolve, _) => {
       console.log("close ran");
       if (!textRef.current) return;
 
@@ -48,7 +48,10 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
       const interval = setInterval(() => {
          if (textRef.current === null) return;
 
-         if (start >= end) return clear_interval(interval);
+         if (start >= end) {
+            clear_interval(interval);
+            return resolve();
+         };
 
 
          const chars = textRef.current.textContent.split("");
@@ -59,7 +62,7 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          start++;
          end--;
       }, speed);
-   };
+   });
 
 
    useEffect(() => {
@@ -87,8 +90,8 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
             };
 
             isOpen = newState;
-            if (isOpen) open();
-            else close();
+            if (isOpen) await open();
+            else await close();
             controller.current.animation_completed();
          };
       };
