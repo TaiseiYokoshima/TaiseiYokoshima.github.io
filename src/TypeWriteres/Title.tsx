@@ -41,7 +41,8 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
             textRef.current.textContent = "";
             controller?.current.animation_completed();
             clear_interval(interval);
-            return resolve();
+            resolve();
+            return;
          };
 
 
@@ -73,7 +74,7 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
          if (!controller) return;
 
          while (true) {
-            const newState = await controller.current.await_signal();
+            const newState = await controller.current.receive();
 
             if (newState === isOpen) {
                controller.current.animation_completed();
@@ -84,8 +85,8 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
             cursorRef.current?.classList.add("paused");
             if (isOpen) await open()
             else await close();
-            controller.current.animation_completed();
             cursorRef.current?.classList.remove("paused");
+            controller.current.animation_completed();
          };
       };
       animate();

@@ -48,7 +48,7 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
       const interval = setInterval(() => {
          if (textRef.current === null) return;
 
-         if (start >= end) {
+         if (start > end) {
             clear_interval(interval);
             return resolve();
          };
@@ -82,7 +82,7 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
 
       const animate = async () => {
          while (true) {
-            const newState = await controller.current.await_signal();
+            const newState = await controller.current.receive();
 
             if (newState === isOpen) {
                controller.current.animation_completed();
