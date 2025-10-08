@@ -11,12 +11,14 @@ export default class Registry {
    async open() {
       const promises: Promise<void>[] = [];
       this.controllers.forEach((contorller, _) => promises.push(contorller.current.open()));
-      return await Promise.all(promises);
+      const results = await Promise.allSettled(promises);
+      // console.log(results);
    }
 
    async close() {
       const promises: Promise<void>[] = [];
       this.controllers.forEach((contorller, _) => promises.push(contorller.current.close()));
-      return await Promise.all(promises);
+      const results = await Promise.allSettled(promises);
+      // console.log(results);
    }
 }

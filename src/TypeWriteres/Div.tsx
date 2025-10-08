@@ -8,6 +8,7 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
    const to_measure = useRef<HTMLDivElement>(null);
    const useEffectHasRan = useRef(false);
    const controller = useRef(new Controller());
+   const isOpen = useRef(false);
 
    const open = () => new Promise<void>((resolve, _) => {
       let new_char = true;
@@ -16,9 +17,10 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          if (textRef.current === null) return;
 
          if (index === children.length) {
-            controller.current.animation_completed();
             clear_interval(interval);
-            return resolve();
+            resolve();
+            console.log("finished open animation");
+            return 
          };
 
          if (new_char) {
@@ -39,7 +41,6 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
 
 
    const close = () => new Promise<void>((resolve, _) => {
-      console.log("close ran");
       if (!textRef.current) return;
 
       let start = 0;
@@ -49,8 +50,11 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          if (textRef.current === null) return;
 
          if (start > end) {
+            textRef.current.textContent = "";
             clear_interval(interval);
-            return resolve();
+            resolve();
+            console.log("finished close animation");
+            return 
          };
 
 
@@ -63,6 +67,13 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          end--;
       }, speed);
    });
+
+   const animator = async (opened: boolean): Promise<void> => {
+      if (isOpen.current === opened) return;
+      if (opened) await open();
+      else await close();
+      isOpen.current = opened;
+   };
 
 
    useEffect(() => {
@@ -78,22 +89,8 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
       }
 
 
-      let isOpen = false;
-
       const animate = async () => {
-         while (true) {
-            const newState = await controller.current.receive();
-
-            if (newState === isOpen) {
-               controller.current.animation_completed();
-               continue;
-            };
-
-            isOpen = newState;
-            if (isOpen) await open();
-            else await close();
-            controller.current.animation_completed();
-         };
+         while (true) await controller.current.animateOnSignal(animator);
       };
 
       animate();

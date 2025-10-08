@@ -10,6 +10,7 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
    const cursorRef = useRef<HTMLSpanElement>(null);
    const has_run = useRef<boolean>(false);
 
+   const isOpen = useRef(false);
 
 
    const open = () => new Promise<void>((resolve, _) => {
@@ -18,7 +19,6 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
          if (textRef.current === null) return;
 
          if (index === children.length) {
-            controller?.current.animation_completed();
             clear_interval(interval);
             return resolve();
          };
@@ -39,7 +39,6 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
 
          if (index === 0) {
             textRef.current.textContent = "";
-            controller?.current.animation_completed();
             clear_interval(interval);
             resolve();
             return;
@@ -54,7 +53,15 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
    });
 
 
+   const animator = async (opened: boolean): Promise<void> => {
+      if (isOpen.current === opened) return;
 
+      cursorRef.current?.classList.add("paused");
+      if (opened) await open();
+      else await close();
+      isOpen.current = opened;
+      cursorRef.current?.classList.remove("paused");
+   };
 
 
    useEffect(() => {
@@ -68,26 +75,9 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
       };
 
 
-      let isOpen = false;
-
       const animate = async () => {
          if (!controller) return;
-
-         while (true) {
-            const newState = await controller.current.receive();
-
-            if (newState === isOpen) {
-               controller.current.animation_completed();
-               continue;
-            };
-
-            isOpen = newState;
-            cursorRef.current?.classList.add("paused");
-            if (isOpen) await open()
-            else await close();
-            cursorRef.current?.classList.remove("paused");
-            controller.current.animation_completed();
-         };
+         while (true) await controller.current.animateOnSignal(animator);
       };
       animate();
    }, []);

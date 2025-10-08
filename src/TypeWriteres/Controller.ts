@@ -69,17 +69,15 @@ export default class Controller {
       await this.send(false);
    }
 
-   async receive(): Promise<boolean> {
+   async animateOnSignal(animator: (_: boolean) => Promise<void>) {
       this.registerSignal();
       const { promise, number } = this.signalReceiver;
       console.log(`awaiting signal ${number}`);
       const opened = await promise;
 
-      
-      return opened;
-   }
 
-   animation_completed() {
+      const animation = animator(opened);
+      await animation;
       this.animationCompletor.resolver()
    }
 }
