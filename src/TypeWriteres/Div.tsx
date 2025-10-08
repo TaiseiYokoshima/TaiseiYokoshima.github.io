@@ -1,16 +1,6 @@
 import { useRef, useEffect } from "react";
-import { type TyperProps, clear_interval, createReffedDefferedPromise } from './utils';
+import { type TyperProps, clear_interval } from './utils';
 import Controller from "./Controller";
-
-function get_resolver(promises: React.RefObject<Promise<void>[]> | undefined) {
-   if (promises) {
-      const { promise, resolver } = createReffedDefferedPromise<void>();
-      promises.current.push(promise);
-      return resolver;
-   };
-
-   return undefined;
-}
 
 export default function Div({ children, speed = 30, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
@@ -18,7 +8,60 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
    const to_measure = useRef<HTMLDivElement>(null);
    const useEffectHasRan = useRef(false);
    const controller = useRef(new Controller());
-   
+
+   const open = () => {
+      let new_char = true;
+      let index = 0;
+      const interval = setInterval(() => {
+         if (textRef.current === null) return;
+
+         if (index === children.length) {
+            controller.current.animation_completed();
+            clear_interval(interval);
+            return;
+         };
+
+         if (new_char) {
+            const code = Math.floor(Math.random() * (126 - 32 + 1)) + 32;
+            const char = String.fromCharCode(code);
+            textRef.current.textContent += char;
+            new_char = false;
+         } else {
+            const char = children[index];
+            const old_text = textRef.current.textContent;
+            const new_text = old_text.substring(0, index) + char;
+            textRef.current.textContent = new_text;
+            index++;
+            new_char = true;
+         }
+      }, speed);
+   };
+
+
+   const close = () => {
+      console.log("close ran");
+      if (!textRef.current) return;
+
+      let start = 0;
+      let end = textRef.current.textContent.length - 1;
+
+      const interval = setInterval(() => {
+         if (textRef.current === null) return;
+
+         if (start >= end) return clear_interval(interval);
+
+
+         const chars = textRef.current.textContent.split("");
+         chars[start] = " ";
+         chars[end] = " ";
+         const newText = chars.join("");
+         textRef.current.textContent = newText;
+         start++;
+         end--;
+      }, speed);
+   };
+
+
    useEffect(() => {
       if (useEffectHasRan.current) return;
       useEffectHasRan.current = true;
@@ -26,53 +69,39 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
       if (registry) registry.current.register(controller);
 
       if (to_measure.current && to_set.current) {
-         const {width, height} = to_measure.current.getBoundingClientRect();
+         const { width, height } = to_measure.current.getBoundingClientRect();
          to_set.current.style.minWidth = `${width}px`;
          to_set.current.style.minHeight = `${height}px`;
       }
 
-      let new_char = true;
-      let index = 0;
 
-      let interval: number;
+      let isOpen = false;
+
       const animate = async () => {
-         await controller.current.await_signal();
+         while (true) {
+            const newState = await controller.current.await_signal();
 
-         interval = setInterval(() => {
-            if (textRef.current === null) return;
-
-            if (index === children.length) {
+            if (newState === isOpen) {
                controller.current.animation_completed();
-               return clear_interval(interval)
+               continue;
             };
 
-            if (new_char) {
-               const code = Math.floor(Math.random() * (126 - 32 + 1)) + 32;
-               const char = String.fromCharCode(code);
-               textRef.current.textContent += char;
-               new_char = false;
-            } else {
-               const char = children[index];
-               const old_text = textRef.current.textContent;
-               const new_text = old_text.substring(0, index) + char;
-               textRef.current.textContent = new_text;
-               index++;
-               new_char = true;
-            }
-         }, speed);
+            isOpen = newState;
+            if (isOpen) open();
+            else close();
+            controller.current.animation_completed();
+         };
       };
 
       animate();
-      return () => clear_interval(interval);
    }, []);
 
    return (
       <div>
          <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={to_measure}>{children}</div>
          <div ref={to_set} style={{ display: "inline-block", verticalAlign: "bottom" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef}/>
+            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline", whiteSpace: "pre" }} ref={textRef} />
          </div>
       </div>
    )
-
 }

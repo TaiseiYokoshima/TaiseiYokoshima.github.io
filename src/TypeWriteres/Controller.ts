@@ -1,62 +1,53 @@
 import { type Resolver, createReffedDefferedPromise } from "./utils";
 
-export default  class Controller {
+export default class Controller {
    private signal_receiver: Promise<boolean>;
    private signal_sender: Resolver<boolean>;
 
-   private animation_waiter: Promise<void>;
-   private animation_completor: Resolver<void>;
+   private animationWaiter: Promise<void>;
+   private animationCompletor: Resolver<void>;
 
    constructor() {
       {
-         const {promise, resolver} = createReffedDefferedPromise<boolean>();
+         const { promise, resolver } = createReffedDefferedPromise<boolean>();
          this.signal_receiver = promise;
          this.signal_sender = resolver;
       };
-
-
       {
          const { promise, resolver } = createReffedDefferedPromise<void>();
-         this.animation_waiter = promise;
-         this.animation_completor = resolver;
+         this.animationWaiter = promise;
+         this.animationCompletor = resolver;
       };
    }
 
-
-   private restore_synchronization() {
-      {
-         const {promise, resolver} = createReffedDefferedPromise<boolean>();
-         this.signal_receiver = promise;
-         this.signal_sender = resolver;
-      };
-
-
-      {
-         const { promise, resolver } = createReffedDefferedPromise<void>();
-         this.animation_waiter = promise;
-         this.animation_completor = resolver;
-      };
+   private resetAnimation() {
+      const {promise, resolver} = createReffedDefferedPromise<void>();
+      this.animationWaiter = promise;
+      this.animationCompletor = resolver;
    }
 
    async open() {
       this.signal_sender(true);
-      await this.animation_waiter;
-      this.restore_synchronization();
+      await this.animationWaiter;
+      this.resetAnimation();
    }
 
    async close() {
       this.signal_sender(false);
-      await this.animation_waiter;
-      this.restore_synchronization();
+      await this.animationWaiter;
+      this.resetAnimation();
    }
 
 
    async await_signal(): Promise<boolean> {
       const opened = await this.signal_receiver;
+      const { promise, resolver } = createReffedDefferedPromise<boolean>();
+      this.signal_receiver = promise;
+      this.signal_sender = resolver;
       return opened;
    }
 
    animation_completed() {
-      this.animation_completor()
+      this.animationCompletor()
    }
 }
