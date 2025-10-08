@@ -2,6 +2,8 @@ import './App.css'
 import { Title, Div, createReffedDefferedPromise } from "./TypeWriteres";
 import { useRef } from 'react';
 
+import { Controller, Registry } from './TypeWriteres';
+
 function useSignal<T>() {
    const { promise, resolver } = createReffedDefferedPromise<T>();
    const signal = useRef(promise);
@@ -10,36 +12,17 @@ function useSignal<T>() {
 }
 
 function App() {
-   const { signal: divsSignalRef, signaler: divsSignalerRef } = useSignal<void>();
-
-   const divsPromises = new Array<Promise<void>>();
-   const divsPromisesRef = useRef(divsPromises);
-
-
-   // titile
-   const { promise: titleSignal, resolver: titleSignaler } = createReffedDefferedPromise<void>();
-   const titleSignalRef = useRef(titleSignal);
-   const titleSignalerRef = useRef(titleSignaler);
-
-   const { promise: titlePromise, resolver: titleResolver } = createReffedDefferedPromise<void>();
-   const titlePromiseRef = useRef(titlePromise);
-   const titleResolverRef = useRef(titleResolver);
-
+   const title_controller = useRef(new Controller());
+   const divs_registry = useRef(new Registry());
 
    const onClick = async () => {
-      console.log("signaling title to start animation");
-      titleSignalerRef.current();
+      console.log("open title");
+      await title_controller.current.open();
+      console.log("title opened")
 
-      // console.log("awaiting title animation to finish...")
-      // await titlePromiseRef.current;
-      // console.log("title animation finished");
-
-      console.log("signaling divs to start animation");
-      divsSignalerRef.current();
-
-      // console.log("awaiting divs animation to finish...")
-      // await Promise.all(divsPromisesRef.current);
-      // console.log("divs animation finished");
+      console.log("open divs");
+      await divs_registry.current.open();
+      console.log("divs opened")
    };
 
 
@@ -47,10 +30,9 @@ function App() {
       <>
          <div id='terminal-window'>
 
-            {/* <Title signal={titleSignalRef} resolver={titleResolverRef}> this is the title</Title> */}
-
-            <Div signal={divsSignalRef} promises={divsPromisesRef} speed={35}> this is the first text I want. I am trying out</Div>
-            <Div signal={divsSignalRef} promises={divsPromisesRef}> this is the second text I want </Div>
+            <Title controller={title_controller}> this is the title</Title>
+            <Div registry={divs_registry} speed={35}> this is the first text I want. I am trying out</Div>
+            <Div registry={divs_registry}> this is the second text I want </Div>
 
             <button onClick={onClick}> press me </button>
 

@@ -1,10 +1,9 @@
-import "../App.css";
 import "./Cursor.css";
 
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
 
-export default function Title({ children, speed = 100, signal, resolver }: TyperProps) {
+export default function Title({ children, speed = 100, controller }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
@@ -12,10 +11,9 @@ export default function Title({ children, speed = 100, signal, resolver }: Typer
    const has_run = useRef<boolean>(false);
 
    useEffect(() => {
-      if (has_run.current) return console.log("use effect already ran");
+      if (has_run.current) return;
       has_run.current = true;
 
-      console.log("use effect ran");
       if (to_set.current && measured.current) {
          const { width, height } = measured.current.getBoundingClientRect();
          to_set.current.style.minHeight = `${height}px`;
@@ -26,7 +24,7 @@ export default function Title({ children, speed = 100, signal, resolver }: Typer
       var interval: number;
 
       const animate = async () => {
-         if (signal) await signal.current;
+         await controller?.current.await_signal();
          
          cursorRef.current?.classList.add("paused");
 
@@ -34,8 +32,8 @@ export default function Title({ children, speed = 100, signal, resolver }: Typer
             if (textRef.current === null) return;
 
             if (index === children.length) {
-               resolver?.current();
                cursorRef.current?.classList.remove("paused");
+               controller?.current.animation_completed();
                return clear_interval(interval);
             };
 

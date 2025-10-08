@@ -1,5 +1,8 @@
 import React from "react";
 
+import Controller from "./Controller";
+import Registry from "./Registry";
+
 function clear_interval(interval: number) {
    console.log(`clearing internval: ${interval}`);
    clearInterval(interval);
@@ -8,10 +11,8 @@ function clear_interval(interval: number) {
 interface TyperProps {
    children: String;
    speed?: number;
-   promises?: React.RefObject<Promise<void>[]>;
-   resolver?: React.RefObject<Resolver<void>>;
-   signal?: React.RefObject<Promise<void>>;
-   onComplete?: () => void;
+   controller?: React.RefObject<Controller>;
+   registry?: React.RefObject<Registry>;
 }
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void;

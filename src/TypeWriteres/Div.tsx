@@ -1,6 +1,6 @@
-import "../App.css";
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval, createReffedDefferedPromise } from './utils';
+import Controller from "./Controller";
 
 function get_resolver(promises: React.RefObject<Promise<void>[]> | undefined) {
    if (promises) {
@@ -12,17 +12,19 @@ function get_resolver(promises: React.RefObject<Promise<void>[]> | undefined) {
    return undefined;
 }
 
-export default function Div({ children, speed = 30, signal, promises }: TyperProps) {
+export default function Div({ children, speed = 30, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const to_measure = useRef<HTMLDivElement>(null);
-   const has_run = useRef(false);
-
+   const useEffectHasRan = useRef(false);
+   const controller = useRef(new Controller());
+   
    useEffect(() => {
-      if (has_run.current) return console.log("use effect has already ran for div");
-      has_run.current = true;
+      if (useEffectHasRan.current) return;
+      useEffectHasRan.current = true;
 
-      console.log("use effect ran");
+      if (registry) registry.current.register(controller);
+
       if (to_measure.current && to_set.current) {
          const {width, height} = to_measure.current.getBoundingClientRect();
          to_set.current.style.minWidth = `${width}px`;
@@ -32,16 +34,15 @@ export default function Div({ children, speed = 30, signal, promises }: TyperPro
       let new_char = true;
       let index = 0;
 
-      const maybe_resolver = get_resolver(promises);
       let interval: number;
       const animate = async () => {
-         if (signal) await signal.current;
+         await controller.current.await_signal();
 
          interval = setInterval(() => {
             if (textRef.current === null) return;
 
             if (index === children.length) {
-               maybe_resolver?.();
+               controller.current.animation_completed();
                return clear_interval(interval)
             };
 
@@ -73,5 +74,5 @@ export default function Div({ children, speed = 30, signal, promises }: TyperPro
          </div>
       </div>
    )
-}
 
+}
