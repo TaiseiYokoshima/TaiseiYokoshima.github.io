@@ -1,0 +1,31 @@
+.container {
+   min-width: 100vw;
+   min-height: 5vh;
+   display: flex;
+   align-items: center;
+   justify-content: space-around;
+}
+
+.page-item {
+   font-size: 10px;
+   /* color: white; */
+   height: 100%;
+   padding: 0.5rem;
+   font-size: 1.5rem;
+   cursor: pointer;
+}
+
+.terminal-white {
+   background-color: #f2f0f0;
+   background: linear-gradient(#d4d2d2 50%, #f2f0f0 50%);
+   background-size: 100% 6px;
+   background-repeat: repeat-y;
+   color: black;
+   /* width: 100%; */
+}
+
+.page-item.selected {
+   background: white;
+   color: black;
+   cursor: none;
+}

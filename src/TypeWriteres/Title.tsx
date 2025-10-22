@@ -1,17 +1,17 @@
 import "./Cursor.css";
-
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
 
 export default function Title({ children, speed = 100, controller }: TyperProps) {
+   controller?.register();
+
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
-   const has_run = useRef<boolean>(false);
+   const hasRan = useRef<boolean>(false);
 
    const isOpen = useRef(false);
-
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
@@ -55,7 +55,6 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
 
    const animator = async (opened: boolean): Promise<void> => {
       if (isOpen.current === opened) return;
-
       cursorRef.current?.classList.add("paused");
       if (opened) await open();
       else await close();
@@ -65,8 +64,8 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
 
 
    useEffect(() => {
-      if (has_run.current) return;
-      has_run.current = true;
+      if (hasRan.current) return;
+      hasRan.current = true;
 
       if (to_set.current && measured.current) {
          const { width, height } = measured.current.getBoundingClientRect();
@@ -74,14 +73,19 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
          to_set.current.style.minWidth = `${width}px`;
       };
 
+   });
 
+   useEffect(() => {
+      let run = true;
       const animate = async () => {
          if (!controller) return;
-         while (true) await controller.current.animateOnSignal(animator);
+         while (run) await controller.animateOnSignal(animator);
       };
-      animate();
-   }, []);
 
+      animate();
+      return () => { run = false };
+   }, [children])
+   
    return (
       <div>
          <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{children}</div>

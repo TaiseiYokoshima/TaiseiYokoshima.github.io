@@ -1,17 +1,20 @@
 import "./Cursor.css";
-
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
+import Controller from "./Controller";
 
-export default function Header({ children, speed = 100, controller }: TyperProps) {
+import { type RefObject } from "react";
+
+export default function Header({ children, speed = 100, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
-   const has_run = useRef<boolean>(false);
+   const hasRan = useRef<boolean>(false);
 
    const isOpen = useRef(false);
 
+   const controller: RefObject<Controller | null> = useRef(null);
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
@@ -44,7 +47,6 @@ export default function Header({ children, speed = 100, controller }: TyperProps
             return;
          };
 
-
          const oldText = textRef.current.textContent;
          const newText = oldText.substring(0, index);
          textRef.current.textContent = newText;
@@ -65,8 +67,8 @@ export default function Header({ children, speed = 100, controller }: TyperProps
 
 
    useEffect(() => {
-      if (has_run.current) return;
-      has_run.current = true;
+      if (hasRan.current) return;
+      hasRan.current = true;
 
       if (to_set.current && measured.current) {
          const { width, height } = measured.current.getBoundingClientRect();
@@ -74,13 +76,22 @@ export default function Header({ children, speed = 100, controller }: TyperProps
          to_set.current.style.minWidth = `${width}px`;
       };
 
+      controller.current = new Controller("header");
+      controller.current.register();
+      registry?.register(controller.current);
+   });
 
+
+   useEffect(() => {
+      let run = true;
       const animate = async () => {
          if (!controller) return;
-         while (true) await controller.current.animateOnSignal(animator);
+         while (run) await controller.current?.animateOnSignal(animator);
       };
+
       animate();
-   }, []);
+      return () => { run = false };
+   });
 
    return (
       <div>

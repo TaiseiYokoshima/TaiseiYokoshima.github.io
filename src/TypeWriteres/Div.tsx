@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, type RefObject } from "react";
 import { type TyperProps, clear_interval } from './utils';
 import Controller from "./Controller";
 
@@ -6,11 +6,20 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const to_measure = useRef<HTMLDivElement>(null);
+
+
+
    const useEffectHasRan = useRef(false);
-   const controller = useRef(new Controller());
+
+
+
    const isOpen = useRef(false);
 
+
+   const controller: RefObject<Controller | null> = useRef(null);
+
    const open = () => new Promise<void>((resolve, _) => {
+      console.log("div open called");
       let new_char = true;
       let index = 0;
       const interval = setInterval(() => {
@@ -80,21 +89,27 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
       if (useEffectHasRan.current) return;
       useEffectHasRan.current = true;
 
-      if (registry) registry.current.register(controller);
-
       if (to_measure.current && to_set.current) {
          const { width, height } = to_measure.current.getBoundingClientRect();
          to_set.current.style.minWidth = `${width}px`;
          to_set.current.style.minHeight = `${height}px`;
-      }
+      };
+      
+      controller.current = new Controller("div");
+      controller.current.register();
+      registry?.register(controller.current);
+   });
 
 
+   useEffect(() => {
+      let run = true;
       const animate = async () => {
-         while (true) await controller.current.animateOnSignal(animator);
+         while (run) await controller.current?.animateOnSignal(animator);
       };
 
       animate();
-   }, []);
+      return () => { run = false };
+   });
 
    return (
       <div>

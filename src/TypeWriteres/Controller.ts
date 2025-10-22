@@ -1,5 +1,9 @@
 import { type Resolver, createReffedDefferedPromise } from "./utils";
 
+
+let id = 1;
+
+
 export default class Controller {
    private signalNumber = 0;
    private animationNumber = 0;
@@ -10,7 +14,12 @@ export default class Controller {
    private animationWaiter: { promise: Promise<void>, number: number };
    private animationCompletor: { resolver: Resolver<void>, number: number };
 
-   constructor() {
+   public registered = false;
+   public type: "title" | "header" | "div";
+   public id: number;
+
+
+   constructor(type: "title" | "header" | "div") {
       {
          const { promise, resolver } = createReffedDefferedPromise<boolean>();
          const number = this.signalNumber;
@@ -23,6 +32,17 @@ export default class Controller {
          this.animationWaiter = { promise, number };
          this.animationCompletor = { resolver, number };
       };
+
+      this.type = type;
+      this.id = id;
+
+      console.log(`controller ${id} (${this.type}) created`);
+      id++;
+
+   }
+
+   register() {
+      this.registered = true;
    }
 
    private registerAnimation() {
@@ -31,7 +51,7 @@ export default class Controller {
       const { promise, resolver } = createReffedDefferedPromise<void>();
       this.animationWaiter = { promise, number };
       this.animationCompletor = { resolver, number };
-      console.log(`registering animation ${number}`);
+      // console.log(`registering animation ${number}`);
    }
 
    private registerSignal() {
@@ -40,7 +60,7 @@ export default class Controller {
       const { promise, resolver } = createReffedDefferedPromise<boolean>();
       this.signalReceiver = { promise, number };
       this.signalSender = { resolver, number };
-      console.log(`registering signal ${number}`);
+      // console.log(`registering signal ${number}`);
    }
 
 
@@ -49,35 +69,41 @@ export default class Controller {
 
       {
          const { resolver, number } = this.signalSender;
-         console.log(`signaling ${number}`);
+         // console.log(`signaling ${number}`);
          resolver(value);
       };
 
       {
          const { promise, number } = this.animationWaiter;
-         console.log(`awaiting animation ${number}`);
+         // console.log(`awaiting animation ${number}`);
          await promise;
       };
    }
 
 
    async open() {
+      if (!this.registered) return;
       await this.send(true);
    }
 
    async close() {
+      if (!this.registered) return;
       await this.send(false);
    }
 
    async animateOnSignal(animator: (_: boolean) => Promise<void>) {
       this.registerSignal();
       const { promise, number } = this.signalReceiver;
-      console.log(`awaiting signal ${number}`);
+      // console.log(`awaiting signal ${number}`);
       const opened = await promise;
-
 
       const animation = animator(opened);
       await animation;
       this.animationCompletor.resolver()
+   }
+
+
+   getInfo() {
+      console.log(`id: ${this.id}, type: ${this.type}, registered: ${this.registered}`);
    }
 }

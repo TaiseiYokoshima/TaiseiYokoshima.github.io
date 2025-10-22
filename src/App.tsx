@@ -1,54 +1,89 @@
 import './App.css'
-import { Title, Div, Header  } from "./TypeWriteres";
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { Controller, Registry } from './TypeWriteres';
+import NavBar from './NavBar/NavBar';
+
+import PageController from './PageController';
+
+
+import { Title } from './TypeWriteres';
+
+
+import { type Page } from './NavBar/utils';
+
+import { About, Projects } from './Pages';
 
 function App() {
-   const title_controller = useRef(new Controller());
-   const divs_registry = useRef(new Registry());
+   const [page, setPage] = useState<Page>("about");
 
-   const open = async () => {
-      console.log("open divs");
-      await divs_registry.current.open();
-      console.log("divs opened")
+   const title = new Controller("title");
+   const headers = new Registry("headers");
+   const contents = new Registry("contents");
 
-      console.log("open title");
-      await title_controller.current.open();
-      console.log("title opened")
+   const pageController = new PageController(title, headers, contents);
 
+   const coverer = useRef<HTMLDivElement>(null);
+
+   const isRunning = useRef(false);
+
+   useEffect(() => {
+      const initialization = async () => {
+         if (isRunning.current) return;
+         isRunning.current = true;
+
+         await pageController.open();
+         console.log("opened");
+
+         if (coverer.current) {
+            console.log("remove coverer");
+            coverer.current.style.visibility = "hidden";
+         };
+
+         isRunning.current = false;
+      };
+
+      initialization();
+   }, [page]);
+
+
+   const covererOnClick = () => console.warn("mouse disabled while animation is running");
+   const bringUp = () => {
+      if (coverer.current) coverer.current.style.visibility = "visible";
    };
 
-   const close = async () => {
-      console.log("close divs");
-      await divs_registry.current.close();
-      console.log("divs closed")
 
 
-      console.log("close title");
-      await title_controller.current.close();
-      console.log("title closed")
+   let pageContent;
+   switch (page) {
+      case "about":
+         pageContent = <About contents={contents} headers={headers}/>;
+         break;
+      case "projects":
+         pageContent = <Projects contents={contents} headers={headers}/>;
+         break;
+      default:
+         pageContent = <Projects contents={contents} headers={headers}/>;
    };
+
 
 
    return (
       <>
-         <div id='terminal-window'>
+         <div className='terminal'>
+            <div ref={coverer} onClick={covererOnClick} style={{
+               position: "absolute", 
+               left: 0, top: 0, 
+               minHeight: "100vh", minWidth: "100vw", 
+               backgroundColor: "transparent"
+            }}/>
 
-            {/* <Header controller={title_controller} speed={10}> this is the title</Header> */}
-            <Title controller={title_controller} speed={10}> this is the title</Title>
-            {/* <Div registry={divs_registry} speed={10}>this is the first text I want. I am trying out</Div> */}
-            {/* <Div registry={divs_registry} speed={10}>this is the second text I want.</Div> */}
-            {/* <Header registry={divs_registry} speed={10}>this is the second text I want.</Header> */}
-
-
-            <button onClick={open}> open </button>
-            <button onClick={close}> close </button>
-
+            <NavBar setPage={setPage} page={page} pageController={pageController} bringUp={bringUp}/>
+            <Title controller={title} speed={30}>{ page }</Title>
+            { pageContent }
          </div>
       </>
-
-   )
+   );
 }
 
-export default App
+export default App;
