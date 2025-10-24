@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, } from 'react';
 
 import { Controller, Registry } from './TypeWriteres';
 import NavBar from './NavBar/NavBar';
@@ -20,11 +20,9 @@ function App() {
    const title = new Controller("title");
    const headers = new Registry("headers");
    const contents = new Registry("contents");
-
    const pageController = new PageController(title, headers, contents);
 
    const coverer = useRef<HTMLDivElement>(null);
-
    const isRunning = useRef(false);
 
    useEffect(() => {
@@ -65,8 +63,6 @@ function App() {
       default:
          pageContent = <Projects contents={contents} headers={headers}/>;
    };
-
-
 
    return (
       <>

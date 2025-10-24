@@ -7,19 +7,13 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
    const to_set = useRef<HTMLDivElement>(null);
    const to_measure = useRef<HTMLDivElement>(null);
 
-
-
-   const useEffectHasRan = useRef(false);
-
-
+   const hasRan = useRef(false);
 
    const isOpen = useRef(false);
-
 
    const controller: RefObject<Controller | null> = useRef(null);
 
    const open = () => new Promise<void>((resolve, _) => {
-      console.log("div open called");
       let new_char = true;
       let index = 0;
       const interval = setInterval(() => {
@@ -28,7 +22,6 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          if (index === children.length) {
             clear_interval(interval);
             resolve();
-            console.log("finished open animation");
             return 
          };
 
@@ -86,8 +79,8 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
 
 
    useEffect(() => {
-      if (useEffectHasRan.current) return;
-      useEffectHasRan.current = true;
+      if (hasRan.current) return;
+      hasRan.current = true;
 
       if (to_measure.current && to_set.current) {
          const { width, height } = to_measure.current.getBoundingClientRect();
