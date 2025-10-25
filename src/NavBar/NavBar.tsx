@@ -11,7 +11,7 @@ export default function NavBar({ pageController, page: currentPage, setPage, bri
    const contact = useRef<HTMLDivElement>(null);
    const about = useRef<HTMLDivElement>(null);
 
-   const page: RefObject<RefObject<HTMLDivElement | null> | null> = useRef(null);
+   const page: RefObject<HTMLDivElement | null> = useRef(null);
 
    useEffect(() => {
       [projects, experience, education, contact, about].forEach(element => {
@@ -23,49 +23,60 @@ export default function NavBar({ pageController, page: currentPage, setPage, bri
 
       switch (currentPage) {
          case "projects":
-            page.current = projects;
+            page.current = projects.current;
             break;
          case "experience":
-            page.current = experience;
+            page.current = experience.current;
             break;
          case "education":
-            page.current = education;
+            page.current = education.current;
             break;
          case "contact":
-            page.current = contact;
+            page.current = contact.current;
             break;
          case "about":
-            page.current = about;
+            page.current = about.current;
             break;
       };
 
-      if (page.current && page.current.current) {
-         page.current.current.classList.add("terminal-white");
-         page.current.current.style.cursor = "text";
+      if (page.current && page.current) {
+         page.current.classList.add("terminal-white");
+         page.current.style.cursor = "text";
       };
    }, [currentPage]);
 
+   const noop = async (_: React.MouseEvent<HTMLDivElement>) => {};
+
    const onClick = async (event: React.MouseEvent<HTMLDivElement>) => {
       bringUp();
+
+      const pageClicked = event.target as HTMLDivElement;
+
+      pageClicked.classList.add("terminal-white");
+      pageClicked.style.cursor = "text";
+      pageClicked.onclick = () => {};
+
+
+
       console.log("navbar calling close");
       await pageController.close();
       console.log("navbar closed");
-      const page = event.target as HTMLDivElement;
-      const pageString = page.textContent;
+      const pageString = pageClicked.textContent;
 
       const firstChar = pageString.substring(0, 1).toLowerCase();
       const rest = pageString.substring(1);
       const newPage: Page = (firstChar + rest) as Page ;
+
       setPage(newPage);
    };
 
    return (
       <div className="container">
-         <PageItem onClick={onClick} ref={about}>About</PageItem>
-         <PageItem onClick={onClick} ref={projects}>Projects</PageItem>
-         <PageItem onClick={onClick} ref={experience}>Experience</PageItem>
-         <PageItem onClick={onClick} ref={education}>Education</PageItem>
-         <PageItem onClick={onClick} ref={contact}>Contact</PageItem>
+         <PageItem onClick={currentPage === "about" ? noop : onClick} ref={about}>About</PageItem>
+         <PageItem onClick={currentPage === "projects" ? noop : onClick} ref={projects}>Projects</PageItem>
+         <PageItem onClick={currentPage === "experience" ? noop : onClick} ref={experience}>Experience</PageItem>
+         <PageItem onClick={currentPage === "education" ? noop : onClick} ref={education}>Education</PageItem>
+         <PageItem onClick={currentPage === "contact" ? noop : onClick} ref={contact}>Contact</PageItem>
       </div>
    );
 }

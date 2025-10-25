@@ -1,6 +1,9 @@
 import { type Resolver, createReffedDefferedPromise } from "./utils";
 
 
+
+const debug = false;
+
 let id = 1;
 
 
@@ -36,7 +39,7 @@ export default class Controller {
       this.type = type;
       this.id = id;
 
-      console.log(`controller ${id} (${this.type}) created`);
+      if (debug) console.log(`controller ${id} (${this.type}) created`);
       id++;
 
    }
@@ -51,7 +54,7 @@ export default class Controller {
       const { promise, resolver } = createReffedDefferedPromise<void>();
       this.animationWaiter = { promise, number };
       this.animationCompletor = { resolver, number };
-      // console.log(`registering animation ${number}`);
+      // if (debug) console.log(`registering animation ${number}`);
    }
 
    private registerSignal() {
@@ -60,7 +63,7 @@ export default class Controller {
       const { promise, resolver } = createReffedDefferedPromise<boolean>();
       this.signalReceiver = { promise, number };
       this.signalSender = { resolver, number };
-      // console.log(`registering signal ${number}`);
+      // if (debug) console.log(`registering signal ${number}`);
    }
 
 
@@ -69,13 +72,13 @@ export default class Controller {
 
       {
          const { resolver, number } = this.signalSender;
-         // console.log(`signaling ${number}`);
+         if (debug) console.log(`signaling ${number}`);
          resolver(value);
       };
 
       {
          const { promise, number } = this.animationWaiter;
-         // console.log(`awaiting animation ${number}`);
+         if (debug) console.log(`awaiting animation ${number}`);
          await promise;
       };
    }
@@ -94,7 +97,7 @@ export default class Controller {
    async animateOnSignal(animator: (_: boolean) => Promise<void>) {
       this.registerSignal();
       const { promise, number } = this.signalReceiver;
-      // console.log(`awaiting signal ${number}`);
+      if (debug) console.log(`awaiting signal ${number}`);
       const opened = await promise;
 
       const animation = animator(opened);
@@ -104,6 +107,6 @@ export default class Controller {
 
 
    getInfo() {
-      console.log(`id: ${this.id}, type: ${this.type}, registered: ${this.registered}`);
+      if (debug) console.log(`id: ${this.id}, type: ${this.type}, registered: ${this.registered}`);
    }
 }

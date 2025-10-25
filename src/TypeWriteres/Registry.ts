@@ -1,6 +1,9 @@
 import Controller from "./Controller"
 // import { type RefObject } from "react";
 
+
+const debug = false;
+
 export default class Registry {
    private controllers: Controller[] = new Array();
    private type: "contents" | "headers";
@@ -14,7 +17,7 @@ export default class Registry {
    }
 
    async open() {
-      console.log(`${this.type} registry open was called, count: ${this.controllers.length}`);
+      if (debug) console.log(`${this.type} registry open was called, count: ${this.controllers.length}`);
       this.list();
 
 
@@ -22,12 +25,12 @@ export default class Registry {
       const promises: Promise<void>[] = [];
       this.controllers.forEach((contorller, _) => promises.push(contorller.open()));
       
-      if (promises.length === 1) console.log(`${this.type} registry is empty`);
+      if (promises.length === 1) if (debug) console.log(`${this.type} registry is empty`);
 
 
       await Promise.allSettled(promises);
-      // const results = await Promise.allSettled(promises);
-      // console.log(results);
+      const results = await Promise.allSettled(promises);
+      if (debug) console.log(results);
    }
 
 
@@ -38,14 +41,14 @@ export default class Registry {
    }
 
    async close() {
-      console.log(`${this.type} registry close was called`);
+      if (debug) console.log(`${this.type} registry close was called`);
       const promises: Promise<void>[] = [];
       this.controllers.forEach((contorller, _) =>  promises.push(contorller.close()));
 
-      if (promises.length === 1) console.log(`${this.type} registry is empty`);
+      if (promises.length === 1) if (debug) console.log(`${this.type} registry is empty`);
 
       await Promise.allSettled(promises);
-      // const results = await Promise.allSettled(promises);
-      // console.log(results);
+      const results = await Promise.allSettled(promises);
+      if (debug) console.log(results);
    }
 }

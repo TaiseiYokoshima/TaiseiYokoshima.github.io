@@ -1,5 +1,8 @@
 import { Controller, Registry } from "./TypeWriteres";
 
+
+const debug = false;
+
 export default class PageController {
    private title: Controller;
    private headers: Registry;
@@ -21,10 +24,10 @@ export default class PageController {
 
    async open() {
       await this.title.open();
-      console.log("title opened");
+      if (debug) console.log("title opened");
       await this.headers.open();
-      console.log("headers opened");
+      if (debug) console.log("headers opened");
       await this.contents.open();
-      console.log("contents opened");
+      if (debug) console.log("contents opened");
    }
 }
