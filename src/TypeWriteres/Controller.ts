@@ -1,4 +1,4 @@
-import { type Resolver, createReffedDefferedPromise } from "./utils";
+import { type Resolver, createDeferredPromise } from "./utils";
 
 
 
@@ -24,13 +24,13 @@ export default class Controller {
 
    constructor(type: "title" | "header" | "div") {
       {
-         const { promise, resolver } = createReffedDefferedPromise<boolean>();
+         const { promise, resolver } = createDeferredPromise<boolean>();
          const number = this.signalNumber;
          this.signalReceiver = { promise, number };
          this.signalSender = { resolver, number };
       };
       {
-         const { promise, resolver } = createReffedDefferedPromise<void>();
+         const { promise, resolver } = createDeferredPromise<void>();
          const number = this.animationNumber;
          this.animationWaiter = { promise, number };
          this.animationCompletor = { resolver, number };
@@ -51,7 +51,7 @@ export default class Controller {
    private registerAnimation() {
       this.animationNumber++;
       const number = this.animationNumber;
-      const { promise, resolver } = createReffedDefferedPromise<void>();
+      const { promise, resolver } = createDeferredPromise<void>();
       this.animationWaiter = { promise, number };
       this.animationCompletor = { resolver, number };
       // if (debug) console.log(`registering animation ${number}`);
@@ -60,7 +60,7 @@ export default class Controller {
    private registerSignal() {
       this.signalNumber++;
       const number = this.signalNumber;
-      const { promise, resolver } = createReffedDefferedPromise<boolean>();
+      const { promise, resolver } = createDeferredPromise<boolean>();
       this.signalReceiver = { promise, number };
       this.signalSender = { resolver, number };
       // if (debug) console.log(`registering signal ${number}`);

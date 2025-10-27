@@ -16,7 +16,8 @@ export default function NavBar({ pageController, page: currentPage, setPage, bri
    useEffect(() => {
       [projects, experience, education, contact, about].forEach(element => {
          if (element.current) {
-            element.current.classList.remove("terminal-white");
+            element.current.classList.remove("selected");
+            element.current.classList.remove("clicked");
             element.current.style.cursor = "pointer";
          }
       });
@@ -40,7 +41,7 @@ export default function NavBar({ pageController, page: currentPage, setPage, bri
       };
 
       if (page.current && page.current) {
-         page.current.classList.add("terminal-white");
+         page.current.classList.add("selected");
          page.current.style.cursor = "text";
       };
    }, [currentPage]);
@@ -52,11 +53,9 @@ export default function NavBar({ pageController, page: currentPage, setPage, bri
 
       const pageClicked = event.target as HTMLDivElement;
 
-      pageClicked.classList.add("terminal-white");
+      pageClicked.classList.add("clicked");
       pageClicked.style.cursor = "text";
       pageClicked.onclick = () => {};
-
-
 
       console.log("navbar calling close");
       await pageController.close();

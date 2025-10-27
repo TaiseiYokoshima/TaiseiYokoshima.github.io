@@ -3,18 +3,15 @@ import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
 import Controller from "./Controller";
 
-import { type RefObject } from "react";
+import { createDeferredPromise } from "./utils";
 
 export default function Header({ children, speed = 100, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
-   const hasRan = useRef<boolean>(false);
 
    const isOpen = useRef(false);
-
-   const controller: RefObject<Controller | null> = useRef(null);
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
@@ -67,30 +64,37 @@ export default function Header({ children, speed = 100, registry }: TyperProps) 
 
 
    useEffect(() => {
-      if (hasRan.current) return;
-      hasRan.current = true;
-
       if (to_set.current && measured.current) {
          const { width, height } = measured.current.getBoundingClientRect();
          to_set.current.style.minHeight = `${height}px`;
          to_set.current.style.minWidth = `${width}px`;
       };
-
-      controller.current = new Controller("header");
-      controller.current.register();
-      registry?.register(controller.current);
-   });
+   }, []);
 
 
    useEffect(() => {
-      let run = true;
+      const controller = new Controller("header");
+      controller.register();
+      registry?.register(controller);
+
+      const { promise, resolver: kill } = createDeferredPromise<void>();
+      const cleanup = promise.then(() => true);
+
       const animate = async () => {
          if (!controller) return;
-         while (run) await controller.current?.animateOnSignal(animator);
+
+         while (true)  {
+            const animationComplete = controller.animateOnSignal(animator).then(() => false);
+            const killed = await Promise.race([cleanup, animationComplete]);
+            if (killed) return;
+         };
       };
 
       animate();
-      return () => { run = false };
+      return () => { 
+         kill();
+         registry?.deRegister(controller);
+      };
    });
 
    return (

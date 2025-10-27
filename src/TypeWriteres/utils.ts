@@ -15,10 +15,10 @@ interface TyperProps {
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void;
 
-function createReffedDefferedPromise<T>() : { promise: Promise<T>, resolver: Resolver<T> } {
+function createDeferredPromise<T>() : { promise: Promise<T>, resolver: Resolver<T> } {
    let resolver!: Resolver<T>;
    const promise = new Promise<T>((res) => { resolver = res });
    return { promise, resolver };
 }
 
-export { type TyperProps, clear_interval, type Resolver, createReffedDefferedPromise };
+export { type TyperProps, clear_interval, type Resolver, createDeferredPromise };

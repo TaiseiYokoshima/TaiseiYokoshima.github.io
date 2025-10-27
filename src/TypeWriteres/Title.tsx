@@ -2,14 +2,13 @@ import "./Cursor.css";
 import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
 
-export default function Title({ children, speed = 100, controller }: TyperProps) {
-   controller?.register();
+import { createDeferredPromise } from "./utils";
 
+export default function Title({ children, speed = 100, controller }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
-   const hasRan = useRef<boolean>(false);
 
    const isOpen = useRef(false);
 
@@ -44,7 +43,6 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
             return;
          };
 
-
          const oldText = textRef.current.textContent;
          const newText = oldText.substring(0, index);
          textRef.current.textContent = newText;
@@ -64,26 +62,32 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
 
 
    useEffect(() => {
-      if (hasRan.current) return;
-      hasRan.current = true;
-
       if (to_set.current && measured.current) {
          const { width, height } = measured.current.getBoundingClientRect();
          to_set.current.style.minHeight = `${height}px`;
          to_set.current.style.minWidth = `${width}px`;
       };
+      
+      controller?.register();
 
-   });
+   }, []);
 
    useEffect(() => {
-      let run = true;
+      const { promise, resolver: kill } = createDeferredPromise<void>();
+      const killed = promise.then(() => true);
+
       const animate = async () => {
          if (!controller) return;
-         while (run) await controller.animateOnSignal(animator);
+
+         while (true) {
+            const animationCompleted = controller.animateOnSignal(animator).then(() => false);
+            const result = await Promise.race([killed, animationCompleted]);
+            if (result) return;
+         };
       };
 
       animate();
-      return () => { run = false };
+      return () => kill();
    }, [children])
    
    return (

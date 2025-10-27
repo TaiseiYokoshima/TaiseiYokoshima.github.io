@@ -2,24 +2,41 @@ import Controller from "./Controller"
 // import { type RefObject } from "react";
 
 
-const debug = false;
+const debug = true;
+let id = 1;
 
 export default class Registry {
    private controllers: Controller[] = new Array();
    private type: "contents" | "headers";
+   private id: number;
 
    constructor(type: "contents" | "headers") {
       this.type = type;
+      this.id = id;
+      id++;
+      if (debug) console.log(`registry ${this.type}:${this.id} created`);
    }
 
    register(controller: Controller) {
+      if (debug) console.log(`registry ${this.id}:${this.type} - registering ${controller.type}:${controller.id}`);
       this.controllers.push(controller);
    }
 
-   async open() {
-      if (debug) console.log(`${this.type} registry open was called, count: ${this.controllers.length}`);
-      this.list();
+   deRegister(controller: Controller) {
+      const index = this.controllers.findIndex(c => c === controller);
+      if (index !== -1) {
+         if (debug) console.log(`registry ${this.id}:${this.type} - deregistering ${controller.type}:${controller.id}`);
+         this.controllers.splice(index, 1)
+      } else {
+         if (debug) console.log(`registry ${this.id}:${this.type} - deregistering called on ${controller.type}:${controller.id} but not found`);
+      };
+   }
 
+   async open() {
+      if (debug) {
+         console.log(`${this.type} registry open was called, count: ${this.controllers.length}`);
+         this.list();
+      };
 
 
       const promises: Promise<void>[] = [];
@@ -42,6 +59,7 @@ export default class Registry {
 
    async close() {
       if (debug) console.log(`${this.type} registry close was called`);
+
       const promises: Promise<void>[] = [];
       this.controllers.forEach((contorller, _) =>  promises.push(contorller.close()));
 

@@ -1,17 +1,15 @@
-import { useRef, useEffect, type RefObject } from "react";
+import { useRef, useEffect } from "react";
 import { type TyperProps, clear_interval } from './utils';
 import Controller from "./Controller";
 
+import { createDeferredPromise } from "./utils";
+
 export default function Div({ children, speed = 30, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
-   const to_set = useRef<HTMLDivElement>(null);
-   const to_measure = useRef<HTMLDivElement>(null);
-
-   const hasRan = useRef(false);
+   const toSet = useRef<HTMLDivElement>(null);
+   const toMeasure = useRef<HTMLDivElement>(null);
 
    const isOpen = useRef(false);
-
-   const controller: RefObject<Controller | null> = useRef(null);
 
    const open = () => new Promise<void>((resolve, _) => {
       let new_char = true;
@@ -79,35 +77,40 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
 
 
    useEffect(() => {
-      if (hasRan.current) return;
-      hasRan.current = true;
-
-      if (to_measure.current && to_set.current) {
-         const { width, height } = to_measure.current.getBoundingClientRect();
-         to_set.current.style.minWidth = `${width}px`;
-         to_set.current.style.minHeight = `${height}px`;
+      if (toMeasure.current && toSet.current) {
+         const { width, height } = toMeasure.current.getBoundingClientRect();
+         toSet.current.style.minWidth = `${width}px`;
+         toSet.current.style.minHeight = `${height}px`;
       };
-      
-      controller.current = new Controller("div");
-      controller.current.register();
-      registry?.register(controller.current);
-   });
-
+   }, []);
 
    useEffect(() => {
-      let run = true;
+      const controller = new Controller("div");
+      controller.register();
+      registry?.register(controller);
+
+      const { promise, resolver: kill } = createDeferredPromise<void>();
+      const killed = promise.then(() => true);
+
       const animate = async () => {
-         while (run) await controller.current?.animateOnSignal(animator);
+         while (true) {
+            const animationCompleted = controller.animateOnSignal(animator).then(() => false);
+            const result = await Promise.race([killed, animationCompleted]);
+            if (result) return;
+         }
       };
 
       animate();
-      return () => { run = false };
-   });
+      return () => { 
+         kill();
+         registry?.deRegister(controller);
+      };
+   }, [children]);
 
    return (
       <div>
-         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={to_measure}>{children}</div>
-         <div ref={to_set} style={{ display: "inline-block", verticalAlign: "bottom" }}>
+         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={toMeasure}>{children}</div>
+         <div ref={toSet} style={{ display: "inline-block", verticalAlign: "bottom" }}>
             <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline", whiteSpace: "pre" }} ref={textRef} />
          </div>
       </div>
