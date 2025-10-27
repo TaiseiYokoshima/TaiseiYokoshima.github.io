@@ -1,8 +1,8 @@
 import "./Cursor.css";
 import { useRef, useEffect } from "react";
-import { type TyperProps, clear_interval } from './utils';
 
-import { createDeferredPromise } from "./utils";
+import type TyperProps from "./Props";
+import { createDeferredPromise, clear_interval } from "../Utils";
 
 export default function Title({ children, speed = 100, controller }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);

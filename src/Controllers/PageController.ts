@@ -1,5 +1,5 @@
-import { Controller, Registry } from "./TypeWriteres";
-
+import Controller from "./Controller";
+import Registry from "./Registry";
 
 const debug = false;
 

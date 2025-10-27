@@ -1,5 +1,5 @@
 import { type Dispatch, type SetStateAction} from "react";
-import PageController from "../PageController";
+import { PageController } from "../Controllers";
 
 type Page = "experience" | "projects" | "education" | "contact" | "about";
 

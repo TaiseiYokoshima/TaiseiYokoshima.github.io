@@ -1,17 +1,11 @@
 import './App.css'
 import { useState, useEffect, useRef, } from 'react';
 
-import { Controller, Registry } from './TypeWriteres';
-import NavBar from './NavBar/NavBar';
+import { Controller, Registry, PageController } from './Controllers';
 
-import PageController from './PageController';
-
+import { NavBar, type Page } from './NavBar';
 
 import { Title } from './TypeWriteres';
-
-
-import { type Page } from './NavBar/utils';
-
 import { About, Projects } from './Pages';
 
 function App() {

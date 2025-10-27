@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react";
-import { type TyperProps, clear_interval } from './utils';
-import Controller from "./Controller";
 
-import { createDeferredPromise } from "./utils";
+import type TyperProps from "./Props";
+import { Controller } from "../Controllers";
+import { createDeferredPromise, clear_interval } from "../Utils";
 
 export default function Div({ children, speed = 30, registry }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);

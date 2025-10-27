@@ -1,5 +1,5 @@
 import { Header, Div } from "../../TypeWriteres";
-import { Registry } from "../../TypeWriteres";
+import { Registry } from "../../Controllers";
 
 export default function About({headers, contents}: { headers: Registry, contents: Registry }) {
    return <>

@@ -1,17 +1,8 @@
-import Controller from "./Controller";
-import Registry from "./Registry";
-
 function clear_interval(interval: number) {
    console.log(`clearing internval: ${interval}`);
    clearInterval(interval);
 };
 
-interface TyperProps {
-   children: String;
-   speed?: number;
-   controller?: Controller;
-   registry?: Registry;
-}
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void;
 
@@ -21,4 +12,4 @@ function createDeferredPromise<T>() : { promise: Promise<T>, resolver: Resolver<
    return { promise, resolver };
 }
 
-export { type TyperProps, clear_interval, type Resolver, createDeferredPromise };
+export {  clear_interval, type Resolver, createDeferredPromise };
