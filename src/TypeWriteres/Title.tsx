@@ -1,28 +1,35 @@
 import "./Cursor.css";
 import { useRef, useEffect } from "react";
 
-import type TyperProps from "./Props";
-import { createDeferredPromise, clear_interval } from "../Utils";
+import {  clear_interval } from "../Utils";
 
-export default function Title({ children, speed = 100, controller }: TyperProps) {
+import { useDispatch, useSelector } from "react-redux";
+import { type Animation, createMarker, register, deRegister, animationComplete, type RootState } from "../store";
+
+export default function Title({ speed = 100 }: {speed?: number }) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
 
-   const isOpen = useRef(false);
+   const dispatch = useDispatch();
+   const marker = useRef(createMarker('title'));
+
+   const currentPage = useSelector((state: RootState) => state.app.currentPage);
+   const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
+   const animationStage = useSelector((state: RootState) => state.app.animationStage);
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
       const interval = setInterval(() => {
          if (textRef.current === null) return;
 
-         if (index === children.length) {
+         if (index === currentPage.length) {
             clear_interval(interval);
             return resolve();
          };
 
-         const char = children[index];
+         const char = currentPage[index];
          const old_text = textRef.current.textContent;
          const new_text = old_text + char;
          textRef.current.textContent = new_text;
@@ -51,15 +58,19 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
    });
 
 
-   const animator = async (opened: boolean): Promise<void> => {
-      if (isOpen.current === opened) return;
+   const animator = async (animation: Animation): Promise<void> => {
       cursorRef.current?.classList.add("paused");
-      if (opened) await open();
-      else await close();
-      isOpen.current = opened;
+      switch(animation) {
+         case "open":
+            await open();
+            break;
+         case "close":
+            await close();
+            break;
+      };
       cursorRef.current?.classList.remove("paused");
+      dispatch(animationComplete(marker.current));
    };
-
 
    useEffect(() => {
       if (to_set.current && measured.current) {
@@ -67,32 +78,20 @@ export default function Title({ children, speed = 100, controller }: TyperProps)
          to_set.current.style.minHeight = `${height}px`;
          to_set.current.style.minWidth = `${width}px`;
       };
-      
-      controller?.register();
 
+      dispatch(register(marker.current));
+      return () => { dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {
-      const { promise, resolver: kill } = createDeferredPromise<void>();
-      const killed = promise.then(() => true);
+      if (currentAnimation === null) return;
+      if (animationStage !== 'title') return;
+      animator(currentAnimation);
+   }, [currentAnimation, animationStage])
 
-      const animate = async () => {
-         if (!controller) return;
-
-         while (true) {
-            const animationCompleted = controller.animateOnSignal(animator).then(() => false);
-            const result = await Promise.race([killed, animationCompleted]);
-            if (result) return;
-         };
-      };
-
-      animate();
-      return () => kill();
-   }, [children])
-   
    return (
       <div>
-         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{children}</div>
+         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{currentPage}</div>
          <div ref={to_set} style={{ display: "inline-block" }}>
             <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef} />
             <span ref={cursorRef} className="cursor" />

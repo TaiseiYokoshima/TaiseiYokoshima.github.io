@@ -22,6 +22,7 @@
    background-size: 100% 6px;
    background-repeat: repeat-y;
    color: black;
+   cursor: text;
 }
 
 .clicked {
@@ -30,5 +31,6 @@
    background-size: 100% 6px;
    background-repeat: repeat-y;
    color: black;
+   cursor: text;
 }
 

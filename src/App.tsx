@@ -1,76 +1,52 @@
 import './App.css'
-import { useState, useEffect, useRef, } from 'react';
 
-import { Controller, Registry, PageController } from './Controllers';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { NavBar, type Page } from './NavBar';
-
+import { NavBar } from './NavBar';
 import { Title } from './TypeWriteres';
-import { About, Projects } from './Pages';
+import PageContent from './Pages';
+
+import type { RootState } from './store';
+import { open } from './store';
+
+function Cover() {
+   const target = useSelector((state: RootState) => state.app.TargetPage);
+   const active = target !== null;
+
+   const onClick = () => console.warn("mouse disabled while animation is running");
+
+   return <div  onClick={onClick} style={{
+      position: "absolute", 
+      left: 0, 
+      top: 0, 
+      minHeight: "100vh", 
+      minWidth: "100vw", 
+      backgroundColor: "transparent",
+      visibility: `${ active ? "visible" : "hidden" }`,
+   }}/>;
+}
+
 
 function App() {
-   const [page, setPage] = useState<Page>("about");
 
-   const title = new Controller("title");
-   const headers = new Registry("headers");
-   const contents = new Registry("contents");
-   const pageController = new PageController(title, headers, contents);
-
-   const coverer = useRef<HTMLDivElement>(null);
-   const isRunning = useRef(false);
+   const target = useSelector((state: RootState) => state.app.TargetPage);
+   const currentPage = useSelector((state: RootState) => state.app.currentPage);
+   const dispatch = useDispatch();
 
    useEffect(() => {
-      const initialization = async () => {
-         if (isRunning.current) return;
-         isRunning.current = true;
+      if (target === null) return;
+      dispatch(open());
+   }, [currentPage]);
 
-         await pageController.open();
-         console.log("opened");
-
-         if (coverer.current) {
-            console.log("remove coverer");
-            coverer.current.style.visibility = "hidden";
-         };
-
-         isRunning.current = false;
-      };
-
-      initialization();
-   }, [page]);
-
-
-   const covererOnClick = () => console.warn("mouse disabled while animation is running");
-   const bringUp = () => {
-      if (coverer.current) coverer.current.style.visibility = "visible";
-   };
-
-
-
-   let pageContent;
-   switch (page) {
-      case "about":
-         pageContent = <About contents={contents} headers={headers}/>;
-         break;
-      case "projects":
-         pageContent = <Projects contents={contents} headers={headers}/>;
-         break;
-      default:
-         pageContent = <Projects contents={contents} headers={headers}/>;
-   };
 
    return (
       <>
          <div className='terminal'>
-            <div ref={coverer} onClick={covererOnClick} style={{
-               position: "absolute", 
-               left: 0, top: 0, 
-               minHeight: "100vh", minWidth: "100vw", 
-               backgroundColor: "transparent"
-            }}/>
-
-            <NavBar setPage={setPage} page={page} pageController={pageController} bringUp={bringUp}/>
-            <Title controller={title} speed={30}>{ page }</Title>
-            { pageContent }
+            <Cover/>
+            <NavBar/>
+            <Title speed={30}/>
+            <PageContent/>
          </div>
       </>
    );

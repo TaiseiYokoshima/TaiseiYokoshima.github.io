@@ -1,15 +1,22 @@
 import { useRef, useEffect } from "react";
 
 import type TyperProps from "./Props";
-import { Controller } from "../Controllers";
-import { createDeferredPromise, clear_interval } from "../Utils";
+import {  clear_interval } from "../Utils";
 
-export default function Div({ children, speed = 30, registry }: TyperProps) {
+import { useDispatch, useSelector } from "react-redux";
+import { type Animation, type RootState } from "../store";
+import { register, deRegister, animationComplete, createMarker } from "../store";
+
+
+export default function Div({ children, speed = 30 }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const toSet = useRef<HTMLDivElement>(null);
    const toMeasure = useRef<HTMLDivElement>(null);
 
-   const isOpen = useRef(false);
+   const marker = useRef(createMarker('content'));
+   const dispatch = useDispatch();
+   const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
+   const animationStage = useSelector((state: RootState) => state.app.animationStage);
 
    const open = () => new Promise<void>((resolve, _) => {
       let new_char = true;
@@ -68,11 +75,16 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
       }, speed);
    });
 
-   const animator = async (opened: boolean): Promise<void> => {
-      if (isOpen.current === opened) return;
-      if (opened) await open();
-      else await close();
-      isOpen.current = opened;
+   const animator = async (animation: Animation): Promise<void> => {
+      switch(animation) {
+         case "open":
+            await open();
+            break;
+         case "close":
+            await close();
+            break;
+      };
+      dispatch(animationComplete(marker.current));
    };
 
 
@@ -82,30 +94,16 @@ export default function Div({ children, speed = 30, registry }: TyperProps) {
          toSet.current.style.minWidth = `${width}px`;
          toSet.current.style.minHeight = `${height}px`;
       };
+      dispatch(register(marker.current));
+      return () => { dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {
-      const controller = new Controller("div");
-      controller.register();
-      registry?.register(controller);
+      if (currentAnimation === null) return;
+      if (animationStage !== 'contents') return;
+      animator(currentAnimation);
+   }, [currentAnimation, animationStage])
 
-      const { promise, resolver: kill } = createDeferredPromise<void>();
-      const killed = promise.then(() => true);
-
-      const animate = async () => {
-         while (true) {
-            const animationCompleted = controller.animateOnSignal(animator).then(() => false);
-            const result = await Promise.race([killed, animationCompleted]);
-            if (result) return;
-         }
-      };
-
-      animate();
-      return () => { 
-         kill();
-         registry?.deRegister(controller);
-      };
-   }, [children]);
 
    return (
       <div>

@@ -1,12 +1,11 @@
 import { Header, Div } from "../../TypeWriteres";
-import { Registry } from "../../Controllers";
 
-export default function Projects({headers, contents}: { headers: Registry, contents: Registry }) {
+export default function Projects() {
    return <>
-         <Header registry={headers}>Header test</Header>
-         <Div registry={contents}>this is a test</Div>
-         <Header registry={headers}>Header test 2</Header>
-         <Div registry={contents}>this is a test 2</Div>
+         <Header>Header test</Header>
+         <Div>this is a test</Div>
+         <Header>Header test 2</Header>
+         <Div>this is a test 2</Div>
    </>;
 }
 

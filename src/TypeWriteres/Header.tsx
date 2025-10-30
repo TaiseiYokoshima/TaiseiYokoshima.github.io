@@ -2,16 +2,25 @@ import "./Cursor.css";
 import { useRef, useEffect } from "react";
 
 import type TyperProps from "./Props";
-import { Controller } from "../Controllers";
-import { createDeferredPromise, clear_interval } from "../Utils";
+import {  clear_interval } from "../Utils";
 
-export default function Header({ children, speed = 100, registry }: TyperProps) {
+import { useDispatch, useSelector } from "react-redux";
+import { type Animation, type RootState } from "../store";
+import { createMarker, register, deRegister, animationComplete } from "../store";
+
+
+export default function Header({ children, speed = 100 }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const measured = useRef<HTMLDivElement>(null);
    const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
 
-   const isOpen = useRef(false);
+   const dispatch = useDispatch();
+   const marker = useRef(createMarker('header'));
+
+   const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
+   const animationStage = useSelector((state: RootState) => state.app.animationStage);
+
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
@@ -52,14 +61,16 @@ export default function Header({ children, speed = 100, registry }: TyperProps) 
    });
 
 
-   const animator = async (opened: boolean): Promise<void> => {
-      if (isOpen.current === opened) return;
-
-      cursorRef.current?.classList.add("paused");
-      if (opened) await open();
-      else await close();
-      isOpen.current = opened;
-      cursorRef.current?.classList.remove("paused");
+   const animator = async (animation: Animation): Promise<void> => {
+      switch(animation) {
+         case "open":
+            await open();
+            break;
+         case "close":
+            await close();
+            break;
+      };
+      dispatch(animationComplete(marker.current));
    };
 
 
@@ -69,33 +80,17 @@ export default function Header({ children, speed = 100, registry }: TyperProps) 
          to_set.current.style.minHeight = `${height}px`;
          to_set.current.style.minWidth = `${width}px`;
       };
+
+      dispatch(register(marker.current));
+
+      return () => { dispatch(deRegister(marker.current)) };
    }, []);
 
-
    useEffect(() => {
-      const controller = new Controller("header");
-      controller.register();
-      registry?.register(controller);
-
-      const { promise, resolver: kill } = createDeferredPromise<void>();
-      const cleanup = promise.then(() => true);
-
-      const animate = async () => {
-         if (!controller) return;
-
-         while (true)  {
-            const animationComplete = controller.animateOnSignal(animator).then(() => false);
-            const killed = await Promise.race([cleanup, animationComplete]);
-            if (killed) return;
-         };
-      };
-
-      animate();
-      return () => { 
-         kill();
-         registry?.deRegister(controller);
-      };
-   });
+      if (currentAnimation === null) return;
+      if (animationStage !== 'headers') return;
+      animator(currentAnimation);
+   }, [currentAnimation, animationStage])
 
    return (
       <div>
