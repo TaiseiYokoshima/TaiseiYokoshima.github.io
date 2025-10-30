@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import {  clear_interval } from "../Utils";
 
 import { useDispatch, useSelector } from "react-redux";
-import { type Animation, createMarker, register, deRegister, animationComplete, type RootState } from "../store";
+import { type Marker, type Animation, createMarker, register, deRegister, animationComplete, type RootState } from "../store";
 
 export default function Title({ speed = 100 }: {speed?: number }) {
    const textRef = useRef<HTMLDivElement>(null);
@@ -13,7 +13,7 @@ export default function Title({ speed = 100 }: {speed?: number }) {
    const cursorRef = useRef<HTMLSpanElement>(null);
 
    const dispatch = useDispatch();
-   const marker = useRef(createMarker('title'));
+   const marker = useRef<Marker>(null);
 
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
@@ -69,7 +69,7 @@ export default function Title({ speed = 100 }: {speed?: number }) {
             break;
       };
       cursorRef.current?.classList.remove("paused");
-      dispatch(animationComplete(marker.current));
+      if (marker.current) dispatch(animationComplete(marker.current));
    };
 
    useEffect(() => {
@@ -79,8 +79,10 @@ export default function Title({ speed = 100 }: {speed?: number }) {
          to_set.current.style.minWidth = `${width}px`;
       };
 
+      marker.current = createMarker('title');
+
       dispatch(register(marker.current));
-      return () => { dispatch(deRegister(marker.current)) };
+      return () => { if (marker.current) dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {

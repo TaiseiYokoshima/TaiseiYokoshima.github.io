@@ -15,11 +15,7 @@ let contentID = 1;
 
 export interface Marker { type: 'title' | 'header' | 'content', id: number };
 export function createMarker(type: 'title' | 'header' | 'content'): Marker {
-   console.log(`create marker called with ${type} when ${titleID}:${headerID}:${contentID}`);
-
-   // if (type === 'title') {
-   //    console.trace();
-   // };
+   if (DEBUG) console.log(`create marker called with ${type} when ${titleID}:${headerID}:${contentID}`);
 
    let id: number;
    switch(type) {

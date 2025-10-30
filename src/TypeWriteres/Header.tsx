@@ -5,7 +5,7 @@ import type TyperProps from "./Props";
 import {  clear_interval } from "../Utils";
 
 import { useDispatch, useSelector } from "react-redux";
-import { type Animation, type RootState } from "../store";
+import { type Marker, type Animation, type RootState } from "../store";
 import { createMarker, register, deRegister, animationComplete } from "../store";
 
 
@@ -16,7 +16,7 @@ export default function Header({ children, speed = 100 }: TyperProps) {
    const cursorRef = useRef<HTMLSpanElement>(null);
 
    const dispatch = useDispatch();
-   const marker = useRef(createMarker('header'));
+   const marker = useRef<Marker>(null);
 
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
@@ -70,7 +70,7 @@ export default function Header({ children, speed = 100 }: TyperProps) {
             await close();
             break;
       };
-      dispatch(animationComplete(marker.current));
+      if (marker.current) dispatch(animationComplete(marker.current));
    };
 
 
@@ -81,9 +81,11 @@ export default function Header({ children, speed = 100 }: TyperProps) {
          to_set.current.style.minWidth = `${width}px`;
       };
 
+
+      marker.current = createMarker('header');
       dispatch(register(marker.current));
 
-      return () => { dispatch(deRegister(marker.current)) };
+      return () => { if (marker.current) dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {

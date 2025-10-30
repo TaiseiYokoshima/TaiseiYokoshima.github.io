@@ -4,7 +4,7 @@ import type TyperProps from "./Props";
 import {  clear_interval } from "../Utils";
 
 import { useDispatch, useSelector } from "react-redux";
-import { type Animation, type RootState } from "../store";
+import { type Marker, type Animation, type RootState } from "../store";
 import { register, deRegister, animationComplete, createMarker } from "../store";
 
 
@@ -13,7 +13,7 @@ export default function Div({ children, speed = 30 }: TyperProps) {
    const toSet = useRef<HTMLDivElement>(null);
    const toMeasure = useRef<HTMLDivElement>(null);
 
-   const marker = useRef(createMarker('content'));
+   const marker = useRef<Marker>(null);
    const dispatch = useDispatch();
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
@@ -84,7 +84,7 @@ export default function Div({ children, speed = 30 }: TyperProps) {
             await close();
             break;
       };
-      dispatch(animationComplete(marker.current));
+      if (marker.current) dispatch(animationComplete(marker.current));
    };
 
 
@@ -94,8 +94,11 @@ export default function Div({ children, speed = 30 }: TyperProps) {
          toSet.current.style.minWidth = `${width}px`;
          toSet.current.style.minHeight = `${height}px`;
       };
+
+      marker.current = createMarker('content');
+
       dispatch(register(marker.current));
-      return () => { dispatch(deRegister(marker.current)) };
+      return () => { if (marker.current) dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {
