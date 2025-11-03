@@ -11,7 +11,7 @@ import type { RootState } from './store';
 import { open } from './store';
 
 function Cover() {
-   const target = useSelector((state: RootState) => state.app.TargetPage);
+   const target = useSelector((state: RootState) => state.app.targetPage);
    const active = target !== null;
 
    const onClick = () => console.warn("mouse disabled while animation is running");
@@ -28,9 +28,8 @@ function Cover() {
 }
 
 
-function App() {
-
-   const target = useSelector((state: RootState) => state.app.TargetPage);
+function Opener() {
+   const target = useSelector((state: RootState) => state.app.targetPage);
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const dispatch = useDispatch();
 
@@ -39,14 +38,18 @@ function App() {
       dispatch(open());
    }, [currentPage]);
 
+   return <></>;
+}
 
+function App() {
    return (
       <>
-         <div className='terminal'>
+         <div className='terminal top-container'>
             <Cover/>
             <NavBar/>
             <Title speed={30}/>
             <PageContent/>
+            <Opener/>
          </div>
       </>
    );

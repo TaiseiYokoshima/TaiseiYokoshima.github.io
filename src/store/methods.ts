@@ -92,7 +92,7 @@ export function nextStage(state: AppState) {
       return;
    };
 
-   if (state.TargetPage === null) {
+   if (state.targetPage === null) {
       if (DEBUG) console.error(`tried to move onto next stage from ${state.animationStage} stage but the target page was null`);
       return;
    };
@@ -118,10 +118,10 @@ export function nextStage(state: AppState) {
 
          switch (state.currentAnimation) {
             case "open": 
-               state.TargetPage = null;
+               state.targetPage = null;
                break;
             case "close": 
-               state.currentPage = state.TargetPage;
+               state.currentPage = state.targetPage;
                break;
          };
 

@@ -16,7 +16,9 @@ export default function Div({ children, speed = 30 }: TyperProps) {
    const marker = useRef<Marker>(null);
    const dispatch = useDispatch();
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
+   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
+   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
    const open = () => new Promise<void>((resolve, _) => {
       let new_char = true;
@@ -76,6 +78,11 @@ export default function Div({ children, speed = 30 }: TyperProps) {
    });
 
    const animator = async (animation: Animation): Promise<void> => {
+      if (!animationEnabled) {
+         if (marker.current) dispatch(animationComplete(marker.current));
+         return;
+      };
+
       switch(animation) {
          case "open":
             await open();
@@ -108,11 +115,20 @@ export default function Div({ children, speed = 30 }: TyperProps) {
    }, [currentAnimation, animationStage])
 
 
+
+   let textContent: string;
+   if (!animationEnabled || lastAnimation === 'open') {
+      textContent = children;
+   } else {
+      textContent = '';
+   };
+
+
    return (
       <div>
          <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={toMeasure}>{children}</div>
          <div ref={toSet} style={{ display: "inline-block", verticalAlign: "bottom" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline", whiteSpace: "pre" }} ref={textRef} />
+            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline", whiteSpace: "pre" }} ref={textRef}>{textContent}</div>
          </div>
       </div>
    )

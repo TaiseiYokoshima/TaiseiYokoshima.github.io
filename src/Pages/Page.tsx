@@ -1,9 +1,13 @@
+import "./Pages.css";
+import "../App.css";
+
 import About from "./About/About";
 import Projects from "./Projects/Projects";
 
 import { useSelector } from "react-redux";
 import type { RootState } from "../store";
 
+import Settings from "./Settings";
 
 export default function PageContent() {
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
@@ -18,7 +22,13 @@ export default function PageContent() {
          break;
       default:
          pageContent = <Projects/>;
+         break;
    };
 
-   return pageContent;
+   return <>
+      <div className="page-content">
+         { pageContent }
+         <Settings/>
+      </div>
+   </>;
 }

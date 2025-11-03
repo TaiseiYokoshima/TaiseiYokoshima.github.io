@@ -17,7 +17,9 @@ export default function Title({ speed = 100 }: {speed?: number }) {
 
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
+   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
+   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
@@ -59,6 +61,11 @@ export default function Title({ speed = 100 }: {speed?: number }) {
 
 
    const animator = async (animation: Animation): Promise<void> => {
+      if (!animationEnabled) {
+         if (marker.current)  dispatch(animationComplete(marker.current));
+         return;
+      };
+
       cursorRef.current?.classList.add("paused");
       switch(animation) {
          case "open":
@@ -91,11 +98,20 @@ export default function Title({ speed = 100 }: {speed?: number }) {
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
+
+   let textContent: string;
+   if (!animationEnabled || lastAnimation === 'open') {
+      textContent = currentPage;
+   } else {
+      textContent = '';
+   };
+
+
    return (
       <div>
          <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{currentPage}</div>
          <div ref={to_set} style={{ display: "inline-block" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef} />
+            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef}>{textContent}</div>
             <span ref={cursorRef} className="cursor" />
          </div>
       </div>

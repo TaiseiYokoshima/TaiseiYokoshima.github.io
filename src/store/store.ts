@@ -4,7 +4,6 @@ import { remove, nextStage, exists, removeRunning } from "./methods";
 import { DEBUG } from "./config";
 
 type Page = 'about' | 'projects' | 'experience' | 'education' | 'contact';
-type Mode = 'dark' | 'light';
 
 export type Animation = 'close' | 'open';
 type AnimationStage = 'title' | 'headers' | 'contents';
@@ -38,10 +37,11 @@ export function createMarker(type: 'title' | 'header' | 'content'): Marker {
 
 export interface AppState {
    animationEnabled: boolean,
-   mode: Mode,
+   darkModeEnabled: boolean,
+   settingsOpened: boolean,
 
    currentPage: Page,
-   TargetPage: Page | null,
+   targetPage: Page | null,
 
    lastAnimation: Animation,
    currentAnimation: Animation | null,
@@ -58,10 +58,11 @@ export interface AppState {
 
 const initialState: AppState = {
    animationEnabled: true,
-   mode: 'dark',
+   darkModeEnabled: true,
+   settingsOpened: false,
 
    currentPage: 'about',
-   TargetPage: 'about',
+   targetPage: 'about',
 
    lastAnimation: 'close',
    currentAnimation: null,
@@ -80,6 +81,19 @@ const appStateSlice = createSlice({
    name: 'app',
    initialState,
    reducers: {
+
+      toggleSettings: (state)  => {
+         state.settingsOpened = !state.settingsOpened;
+      },
+
+      toggleAnimation: (state) => {
+         state.animationEnabled = !state.animationEnabled;
+      },
+
+      toggleDarkMode: (state) => {
+         state.darkModeEnabled = !state.darkModeEnabled;
+      },
+
       changePage: (state, action: PayloadAction<Page>) => {
          if (state.lastAnimation === 'close') {
             if (DEBUG) console.error(`tried to close on change page but the last animation was also close`);
@@ -87,7 +101,7 @@ const appStateSlice = createSlice({
          };
 
          const page = action.payload;
-         state.TargetPage = page;
+         state.targetPage = page;
          state.currentAnimation = "close";
       },
 
@@ -199,5 +213,5 @@ const appStateSlice = createSlice({
    },
 });
 
-export const { open, changePage, register, deRegister, animationComplete } = appStateSlice.actions;
+export const { toggleSettings, toggleDarkMode, toggleAnimation, open, changePage, register, deRegister, animationComplete } = appStateSlice.actions;
 export default appStateSlice.reducer;
