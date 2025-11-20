@@ -108,11 +108,11 @@ export default function Title({ speed = 100 }: {speed?: number }) {
 
 
    return (
-      <div>
-         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{currentPage}</div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '5vh', marginTop: '5vh', }}>
+         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "30px", textAlign: 'center', display: 'inline-block'}} ref={measured}>{currentPage}</div>
          <div ref={to_set} style={{ display: "inline-block" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef}>{textContent}</div>
-            <span ref={cursorRef} className="cursor" />
+            <div style={{ fontFamily: "monospace", fontSize: "30px", display: "inline-block", textAlign: 'center' }} ref={textRef}>{textContent}</div>
+            <span ref={cursorRef} className="cursor"/>
          </div>
       </div>
    )

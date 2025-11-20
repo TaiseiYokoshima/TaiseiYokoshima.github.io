@@ -6,7 +6,7 @@ import type { RootState } from "../store";
 import { toggleSettings, toggleAnimation, toggleDarkMode } from "../store";
 
 function Switch({ enabled, callback }: { enabled: boolean, callback: () => void }) {
-   return <div style={{ flex: '0 0 50%', font: '10px', textAlign: 'left', paddingLeft: '1%', cursor: 'pointer' }}>
+   return <div style={{ flex: '0 0 55%', font: '10px', textAlign: 'left', paddingLeft: '1%', cursor: 'pointer' }}>
 
       <div onClick={(enabled) ? undefined : callback} style={{
          background: `${(enabled) ? 'green' : 'black'}`,
@@ -34,7 +34,7 @@ function Switch({ enabled, callback }: { enabled: boolean, callback: () => void 
 
 function Setting({ callback, children, enabled }: { callback: () => void, children: string, enabled: boolean }) {
    return <div style={{ display: 'flex', width: "100%", justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ flex: "0 0 50%", textAlign: 'right', fontSize: '20px', }}>{`${children}`}</div>
+      <div style={{ flex: "0 0 45%", textAlign: 'right', fontSize: '20px', }}>{`${children}`}</div>
       <Switch enabled={enabled} callback={callback} />
    </div>;
 }
@@ -53,7 +53,7 @@ export default function Settings() {
       {settingsOpen ?
          <>
             <div className="settings-page terminal">
-               <div style={{ fontSize: '45px', textAlign: 'center', marginBottom: '2vh' }}>Settings</div>
+               <div style={{ fontSize: '45px', textAlign: 'center', marginBottom: '2vh' }}>Preferences</div>
                <div className="container">
                   <div onClick={closer}
                      style={{ position: 'absolute', right: 0, top: 0, cursor: 'pointer', background: 'white', color: 'black', width: '1.8em', height: '1.8em', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}

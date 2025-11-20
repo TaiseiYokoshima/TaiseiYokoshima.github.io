@@ -27,7 +27,7 @@ export default function PageItem({children}: {children: string}) {
          ref={ref} 
          onClick={isThisPage ? undefined : onClick}
       >
-         {children}
+         {children.toUpperCase()}
       </div>
    );
 }

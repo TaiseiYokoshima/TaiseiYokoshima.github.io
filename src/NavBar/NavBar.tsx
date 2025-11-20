@@ -6,12 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSettings } from "../store";
 import { type RootState } from "../store";
 
-
-
 export default function NavBar() {
    const dispatch = useDispatch();
    const settingsOpen = useSelector((state: RootState) => state.app.settingsOpened);
-
 
    const onClick = () => {
       console.log("settings opened");
@@ -28,7 +25,7 @@ export default function NavBar() {
          <div 
             className={`page-item${(settingsOpen) ? ' selected' : ''}`} 
             onClick={(!settingsOpen)? onClick : undefined}
-         >Settings</div>
+         >SETTINGS</div>
       </div>
    );
 }
