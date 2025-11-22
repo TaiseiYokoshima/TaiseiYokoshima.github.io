@@ -12,6 +12,11 @@
    justify-content: space-around;
 }
 
+
+.navbar.closed {
+   display: none;
+}
+
 .page-item {
    flex: 1;
    text-align: center;
@@ -49,3 +54,21 @@
    cursor: text;
 }
 
+.settings-page {
+   box-shadow: inset 0 0 0 0.2rem white;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   width: 50vw;
+   height: 50vh;
+   z-index: 10;
+}
+
+
+.container {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}

@@ -1,4 +1,4 @@
-import "./Pages.css";
+import "./NavBar.css";
 import "../App.css";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -40,33 +40,47 @@ function Setting({ callback, children, enabled }: { callback: () => void, childr
 }
 
 
-export default function Settings() {
+export default function Settings({ cancelClose, scheduleClose, }: { cancelClose: () => void, scheduleClose: () => void }) {
    const settingsOpen = useSelector((state: RootState) => state.app.settingsOpened);
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const darkModeEnabled = useSelector((state: RootState) => state.app.darkModeEnabled);
    const dispatch = useDispatch();
-   const closer = () => dispatch(toggleSettings());
    const flipAnimation = () => dispatch(toggleAnimation());
    const flipDarkMoode = () => dispatch(toggleDarkMode());
 
+
+   const openSettings = () => {
+      cancelClose();
+      dispatch(toggleSettings());
+   };
+
+   const closeSettings = () => {
+      dispatch(toggleSettings());
+      scheduleClose();
+   };
+
    return <>
+      <div 
+         className={`page-item${(settingsOpen) ? ' selected' : ''}`} 
+         onClick={(!settingsOpen)? openSettings : undefined}
+      >SETTINGS</div>
+
+
+
       {settingsOpen ?
          <>
             <div className="settings-page terminal">
                <div style={{ fontSize: '45px', textAlign: 'center', marginBottom: '2vh' }}>Preferences</div>
                <div className="container">
-                  <div onClick={closer}
+                  <div onClick={closeSettings}
                      style={{ position: 'absolute', right: 0, top: 0, cursor: 'pointer', background: 'white', color: 'black', width: '1.8em', height: '1.8em', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}
                   >X</div>
                   <Setting callback={flipAnimation} enabled={animationEnabled}>Animation | </Setting>
                   <Setting callback={flipDarkMoode} enabled={darkModeEnabled}>Dark Mode | </Setting>
                </div>
             </div>
-            <div onClick={closer} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 2 }} />
+            <div onClick={closeSettings} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 2 }} />
          </>
          : null}
    </>;
 }
-
-
-

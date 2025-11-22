@@ -2,30 +2,66 @@ import "./NavBar.css";
 import "../App.css";
 import PageItem from "./PageItem";
 
-import { useDispatch, useSelector } from "react-redux";
-import { toggleSettings } from "../store";
+import { useSelector } from "react-redux";
 import { type RootState } from "../store";
 
-export default function NavBar() {
-   const dispatch = useDispatch();
-   const settingsOpen = useSelector((state: RootState) => state.app.settingsOpened);
+import { useEffect, useRef, useState } from "react";
+import Settings from "./Settings";
 
-   const onClick = () => {
-      console.log("settings opened");
-      dispatch(toggleSettings()) 
+function MenuOpener({callback}: { callback: () => void}) {
+   return <div onClick={callback}> Menu » </div>;
+}
+
+export default function NavBar() {
+   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
+
+
+   const timeoutRef = useRef<number | null>(null);
+
+   useEffect(() => {
+      if (lastAnimation === 'open') {
+         scheduleClose();
+      };
+   }, [lastAnimation]);
+
+
+
+   const [ menuOpened, openMenu, closeMenu ] = (() => { 
+      const [menuOpened, setter] = useState(false);
+      const openMenu = () => setter(true);
+      const closeMenu = () => setter(false);
+      return [menuOpened, openMenu, closeMenu ];
+   })();
+
+   const cancelClose = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
    };
 
-   return (
-      <div className="navbar">
-         <PageItem>About</PageItem>
-         <PageItem>Projects</PageItem>
-         <PageItem>Experience</PageItem>
-         <PageItem>Education</PageItem>
-         <PageItem>Contact</PageItem>
-         <div 
-            className={`page-item${(settingsOpen) ? ' selected' : ''}`} 
-            onClick={(!settingsOpen)? onClick : undefined}
-         >SETTINGS</div>
+   const scheduleClose: () => void = () => {
+      cancelClose();
+      const id = setTimeout(closeMenu, 5000);
+      timeoutRef.current = id;
+   };
+
+
+   var style = "navbar";
+   if (!menuOpened) style += " closed";
+
+   const callback = () => { 
+      openMenu();
+      scheduleClose();
+   };
+
+   return <>
+      { (menuOpened) ? undefined : <MenuOpener callback={callback}/> }
+      <div className={style}>
+         <PageItem cancelClose={cancelClose}>About</PageItem>
+         <PageItem cancelClose={cancelClose}>Projects</PageItem>
+         <PageItem cancelClose={cancelClose}>Experience</PageItem>
+         <PageItem cancelClose={cancelClose}>Education</PageItem>
+         <PageItem cancelClose={cancelClose}>Contact</PageItem>
+         <Settings cancelClose={cancelClose} scheduleClose={scheduleClose}/>
       </div>
-   );
+   </>;
 }

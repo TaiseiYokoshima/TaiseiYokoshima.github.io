@@ -8,7 +8,7 @@ import { type Marker, type Animation, type RootState } from "../store";
 import { register, deRegister, animationComplete, createMarker } from "../store";
 
 
-export default function Div({ children, speed = 30 }: TyperProps) {
+export default function Div({ children, speed = 1 }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const toSet = useRef<HTMLDivElement>(null);
    const toMeasure = useRef<HTMLDivElement>(null);
@@ -128,7 +128,7 @@ export default function Div({ children, speed = 30 }: TyperProps) {
       <div>
          <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={toMeasure}>{children}</div>
          <div ref={toSet} style={{ display: "inline-block", verticalAlign: "bottom" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline", whiteSpace: "pre" }} ref={textRef}>{textContent}</div>
+            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline", whiteSpace: "pre-wrap" }} ref={textRef}>{textContent}</div>
          </div>
       </div>
    )

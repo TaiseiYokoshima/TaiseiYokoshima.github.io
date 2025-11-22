@@ -7,7 +7,7 @@ import { changePage } from "../store";
 
 import { type Page } from "./utils";
 
-export default function PageItem({children}: {children: string}) {
+export default function PageItem({ children, cancelClose  }: { children: string, cancelClose: () => void }) {
    const currentPage = useSelector((state: RootState) => state.app.currentPage); 
    const dispatch = useDispatch();
 
@@ -16,6 +16,7 @@ export default function PageItem({children}: {children: string}) {
    const isThisPage = currentPage === thisPage;
 
    const onClick = () => {
+      cancelClose();
       if (ref.current === null) return;
       ref.current.classList.add("clicked");
       dispatch(changePage(thisPage));
