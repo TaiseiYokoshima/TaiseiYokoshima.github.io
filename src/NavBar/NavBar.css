@@ -1,20 +1,25 @@
 .navbar {
    min-width: 100vw;
-   /* max-height: 5vh; */
-   /* height: 5vh; */
-   /* flex: 0 0 5vh; */
-
-   /* box-sizing: border-box; */
-   /* overflow: hidden; */
-
    display: flex;
-   align-items: center;
-   justify-content: space-around;
+}
+
+.side-components {
+   cursor: pointer;
+   padding-left: 1vw;
+   padding-right: 1vw;
+   font-size: 25px;
+}
+
+.side-components:hover {
+   color: blue;
 }
 
 
-.navbar.closed {
-   display: none;
+.pages-section {
+   display: flex;
+   flex: 1;
+   padding-left:  20vw;
+   padding-right: 20vw;
 }
 
 .page-item {
@@ -37,14 +42,6 @@
    cursor: text;
 }
 
-/* .selected { */
-/*    background-color: #f2f0f0; */
-/*    background: linear-gradient(#d4d2d2 50%, #f2f0f0 50%); */
-/*    background-size: 100% 6px; */
-/*    background-repeat: repeat-y; */
-/*    color: black; */
-/*    cursor: text; */
-/* } */
 
 .clicked {
    background-color: #808080;
@@ -64,7 +61,6 @@
    height: 50vh;
    z-index: 10;
 }
-
 
 .container {
    display: flex;

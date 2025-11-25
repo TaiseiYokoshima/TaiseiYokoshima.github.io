@@ -2,20 +2,29 @@ import "./NavBar.css";
 import "../App.css";
 import PageItem from "./PageItem";
 
-import { useSelector } from "react-redux";
-import { type RootState } from "../store";
-
+import { useDispatch, useSelector } from "react-redux";
+import { type RootState, toggleSettings } from "../store";
 import { useEffect, useRef, useState } from "react";
+
 import Settings from "./Settings";
 
 function MenuOpener({callback}: { callback: () => void}) {
-   return <div onClick={callback}> Menu » </div>;
+   return <div onClick={callback} style={{ position: "absolute", left: 0, top: 0, marginTop: '1vh', marginLeft: '1vh', fontSize: '20px', cursor: 'pointer'}}> Menu » </div>;
+}
+
+function MenuCloser({ callback }: {callback: () => void}) {
+   return <div onClick={callback} className="side-components" >«</div>;
+}
+
+
+function SettingsOpener({ callback }: { callback: () => void }) {
+   return <div  onClick={callback} className="side-components" >⚙</div>;
 }
 
 export default function NavBar() {
    const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
-
-
+   const dispatch = useDispatch();
+   const openSettings = () => dispatch(toggleSettings());
    const timeoutRef = useRef<number | null>(null);
 
    useEffect(() => {
@@ -23,8 +32,6 @@ export default function NavBar() {
          scheduleClose();
       };
    }, [lastAnimation]);
-
-
 
    const [ menuOpened, openMenu, closeMenu ] = (() => { 
       const [menuOpened, setter] = useState(false);
@@ -45,23 +52,31 @@ export default function NavBar() {
    };
 
 
-   var style = "navbar";
-   if (!menuOpened) style += " closed";
+   const closeMenuNow = () => { 
+      cancelClose();
+      closeMenu();
+   };
 
-   const callback = () => { 
+   const openMenuNow = () => {
       openMenu();
       scheduleClose();
    };
 
    return <>
-      { (menuOpened) ? undefined : <MenuOpener callback={callback}/> }
-      <div className={style}>
-         <PageItem cancelClose={cancelClose}>About</PageItem>
-         <PageItem cancelClose={cancelClose}>Projects</PageItem>
-         <PageItem cancelClose={cancelClose}>Experience</PageItem>
-         <PageItem cancelClose={cancelClose}>Education</PageItem>
-         <PageItem cancelClose={cancelClose}>Contact</PageItem>
-         <Settings cancelClose={cancelClose} scheduleClose={scheduleClose}/>
-      </div>
+      { (menuOpened) ? 
+         <div className="navbar">
+            <MenuCloser callback={closeMenuNow}/>
+            <div className="pages-section">
+               <PageItem cancelClose={cancelClose}>About</PageItem>
+               <PageItem cancelClose={cancelClose}>Projects</PageItem>
+               <PageItem cancelClose={cancelClose}>Experience</PageItem>
+               <PageItem cancelClose={cancelClose}>Education</PageItem>
+               <PageItem cancelClose={cancelClose}>Contact</PageItem>
+            </div>
+            <SettingsOpener callback={openSettings}/>
+         </div>
+         : <MenuOpener callback={openMenuNow}/> 
+      }
+      <Settings/>
    </>;
 }

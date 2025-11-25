@@ -40,7 +40,7 @@ function Setting({ callback, children, enabled }: { callback: () => void, childr
 }
 
 
-export default function Settings({ cancelClose, scheduleClose, }: { cancelClose: () => void, scheduleClose: () => void }) {
+export default function Settings() {
    const settingsOpen = useSelector((state: RootState) => state.app.settingsOpened);
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const darkModeEnabled = useSelector((state: RootState) => state.app.darkModeEnabled);
@@ -48,25 +48,11 @@ export default function Settings({ cancelClose, scheduleClose, }: { cancelClose:
    const flipAnimation = () => dispatch(toggleAnimation());
    const flipDarkMoode = () => dispatch(toggleDarkMode());
 
-
-   const openSettings = () => {
-      cancelClose();
-      dispatch(toggleSettings());
-   };
-
    const closeSettings = () => {
       dispatch(toggleSettings());
-      scheduleClose();
    };
 
    return <>
-      <div 
-         className={`page-item${(settingsOpen) ? ' selected' : ''}`} 
-         onClick={(!settingsOpen)? openSettings : undefined}
-      >SETTINGS</div>
-
-
-
       {settingsOpen ?
          <>
             <div className="settings-page terminal">
