@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import Settings from "./Settings";
 
 function MenuOpener({ opener }: { opener: () => void }) {
-   return <div onClick={opener} className="opener"> Menu » </div>;
+   return <div style={{ width: '100vw'}}><div onClick={opener} className="opener"> Menu » </div></div>;
 }
 
 function MenuCloser({ closer }: { closer: () => void }) {
@@ -84,7 +84,4 @@ export default function Navbar() {
       { BarOrOpener }
       <Settings/>
    </>;
-
-
-
 }
