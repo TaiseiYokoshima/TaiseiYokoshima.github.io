@@ -3,13 +3,12 @@ import { type RootState } from "../store";
 import { useEffect, useRef, useState } from "react";
 
 
-
 function Cover() {
    const canceler = useRef<number>(null);
    const closer = useRef<number>(null);
 
    const textRef = useRef<HTMLDivElement>(null);
-   const textIndex = useRef(0);
+   const firstClick = useRef(true);
 
    const [event, signal] = (() => {
       const [event, signaler] = useState<boolean | null>(null);
@@ -28,17 +27,14 @@ function Cover() {
 
       canceler.current = null;
       closer.current = null;
-      textIndex.current = 0;
    };
    
    const close = () => {
       if (!textRef.current) return;
       const str = textRef.current.textContent;
-      const i = textIndex.current;
-      if (str.length === i) return cancel();
-      const new_str = str.slice(0, i) + ' ' + str.slice(i + 1);
+      if (str.length === 0) return cancel();
+      const new_str = str.slice(1);
       textRef.current.textContent = new_str;
-      textIndex.current++;
    };
 
 
@@ -56,7 +52,14 @@ function Cover() {
    useEffect(() => {
       if (event === null) return;
       cancel();
-      if (textRef.current) textRef.current.textContent = 'mouse events disabled during animation';
+      if (textRef.current) {
+         textRef.current.textContent = 'mouse events disabled during animation';
+
+         if (firstClick.current) {
+            textRef.current.style.width = textRef.current.offsetWidth + 'px';
+         };
+      };
+
       scheduleClose();
    }, [event]);
 
@@ -70,7 +73,7 @@ function Cover() {
          zIndex: 1000,
          backgroundColor: "transparent",
       }}/>
-      <div style={{ color: 'red', display: 'inline', paddingRight: '1vw' }} ref={textRef}></div>
+      <div style={{ color: 'red', display: 'inline', paddingRight: '1vw', flex: '0 0 auto' }} ref={textRef}></div>
    </>;
 }
 
