@@ -47,8 +47,10 @@ function App() {
          <div className='terminal top-container'>
             <Cover/>
             <NavBar/>
-            <Title speed={30}/>
-            <PageContent/>
+            <div style={{ overflowY: 'auto' }}>
+               <Title speed={30}/>
+               <PageContent/>
+            </div>
             <Opener/>
          </div>
       </>
