@@ -1,6 +1,6 @@
 import './App.css'
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { NavBar } from './NavBar';
@@ -14,6 +14,8 @@ import AnimationStatus from './AnimationStatus';
 function Opener() {
    const target = useSelector((state: RootState) => state.app.targetPage);
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
+   
+
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -24,12 +26,14 @@ function Opener() {
    return <></>;
 }
 
-function App() {
+export default function App() {
+   const contentRef = useRef<HTMLDivElement>(null);
+
    return (
       <>
          <div className='terminal top-container'>
-            <NavBar/>
-            <div style={{ overflowY: 'auto' }}>
+            <NavBar contentRef={contentRef}/>
+            <div style={{ overflowY: 'auto' }} ref={contentRef}>
                <Title speed={30}/>
                <PageContent/>
             </div>
@@ -39,5 +43,3 @@ function App() {
       </>
    );
 }
-
-export default App;

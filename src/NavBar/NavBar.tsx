@@ -4,7 +4,7 @@ import PageItem from "./PageItem";
 
 import { useDispatch, useSelector } from "react-redux";
 import { type RootState, toggleSettings } from "../store";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 
 import Settings from "./Settings";
 
@@ -22,24 +22,22 @@ function SettingsOpener() {
    return <div onClick={openSettings} className="side-components" >⚙</div>;
 }
 
-function NavBarCore({ closeMenuNow, cancelClose }: { closeMenuNow: () => void, cancelClose: () => void }) {
+
+function NavBarCore({ closeMenuNow, cancelClose, contentRef }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
    return <div className="navbar">
       <MenuCloser closer={closeMenuNow}/>
       <div className="pages-section">
-         <PageItem cancelClose={cancelClose}>About</PageItem>
-         <PageItem cancelClose={cancelClose}>Projects</PageItem>
-         <PageItem cancelClose={cancelClose}>Experience</PageItem>
-         <PageItem cancelClose={cancelClose}>Education</PageItem>
-         <PageItem cancelClose={cancelClose}>Contact</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef}>About</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Projects</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Experience</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Education</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Contact</PageItem>
       </div>
       <SettingsOpener/>
    </div>;
 }
 
-
-
-
-export default function Navbar() {
+export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivElement | null> }) {
    const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
    const timeoutRef = useRef<number | null>(null);
    const [menuOpened, openMenu, closeMenu] = (() => {
@@ -78,8 +76,7 @@ export default function Navbar() {
       scheduleClose();
    };
 
-
-   const BarOrOpener = (menuOpened) ? <NavBarCore cancelClose={cancelClose} closeMenuNow={closeMenuNow}/> : <MenuOpener opener={openMenuNow}/>;
+   const BarOrOpener = (menuOpened) ? <NavBarCore cancelClose={cancelClose} closeMenuNow={closeMenuNow} contentRef={contentRef}/> : <MenuOpener opener={openMenuNow}/>;
    return <>
       { BarOrOpener }
       <Settings/>

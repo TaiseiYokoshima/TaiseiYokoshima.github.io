@@ -2,8 +2,7 @@ import { useSelector } from "react-redux";
 import { type RootState } from "../store";
 import { useEffect, useRef, useState } from "react";
 
-
-function Cover() {
+function MouseClickWarningAndCover() {
    const canceler = useRef<number>(null);
    const closer = useRef<number>(null);
 
@@ -77,7 +76,6 @@ function Cover() {
    </>;
 }
 
-
 function AnimationLoader() {
    const loaderRef = useRef<HTMLDivElement>(null);
    useEffect(() => {
@@ -103,7 +101,6 @@ function AnimationLoader() {
    return <div style={{ display: 'inline'}} ref={loaderRef}>animation running ...</div>;
 }
 
-
 function AnimationCapturer() {
    return <>
       <div style={{ 
@@ -118,7 +115,7 @@ function AnimationCapturer() {
           paddingRight: '0.5vw'
       }}>
          <AnimationLoader/>
-         <Cover/>
+         <MouseClickWarningAndCover/>
       </div>
    </>;
 }

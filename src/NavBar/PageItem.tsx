@@ -2,12 +2,13 @@ import "./NavBar.css";
 
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../store";
-import { useRef } from "react";
+import { useRef, type RefObject } from "react";
 import { changePage } from "../store";
 
 import { type Page } from "./utils";
 
-export default function PageItem({ children, cancelClose  }: { children: string, cancelClose: () => void }) {
+
+export default function PageItem({ children, cancelClose, contentRef }: { children: string, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
    const currentPage = useSelector((state: RootState) => state.app.currentPage); 
    const dispatch = useDispatch();
 
@@ -16,6 +17,7 @@ export default function PageItem({ children, cancelClose  }: { children: string,
    const isThisPage = currentPage === thisPage;
 
    const onClick = () => {
+      if (contentRef.current) contentRef.current.scrollTop = 0;
       cancelClose();
       if (ref.current === null) return;
       ref.current.classList.add("clicked");
