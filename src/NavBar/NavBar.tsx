@@ -16,9 +16,13 @@ function MenuCloser({ closer }: { closer: () => void }) {
    return <div onClick={closer} className="side-components" >«</div>;
 }
 
-function SettingsOpener() {
+function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
    const dispatch = useDispatch();
-   const openSettings = () => dispatch(toggleSettings());
+   const openSettings = () => { 
+      cancelClose();
+      dispatch(toggleSettings());
+   };
+
    return <div onClick={openSettings} className="side-components" >⚙</div>;
 }
 
@@ -33,7 +37,7 @@ function NavBarCore({ closeMenuNow, cancelClose, contentRef }: { closeMenuNow: (
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>Education</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>Contact</PageItem>
       </div>
-      <SettingsOpener/>
+      <SettingsOpener cancelClose={cancelClose}/>
    </div>;
 }
 
@@ -79,6 +83,6 @@ export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivEl
    const BarOrOpener = (menuOpened) ? <NavBarCore cancelClose={cancelClose} closeMenuNow={closeMenuNow} contentRef={contentRef}/> : <MenuOpener opener={openMenuNow}/>;
    return <>
       { BarOrOpener }
-      <Settings/>
+      <Settings scheduleClose={scheduleClose}/>
    </>;
 }

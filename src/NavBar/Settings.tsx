@@ -4,6 +4,7 @@ import "../App.css";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
 import { toggleSettings, toggleAnimation, toggleDarkMode } from "../store";
+import { useEffect } from "react";
 
 function Switch({ enabled, callback }: { enabled: boolean, callback: () => void }) {
    return <div style={{ flex: '0 0 55%', font: '10px', textAlign: 'left', paddingLeft: '1%', cursor: 'pointer' }}>
@@ -40,7 +41,7 @@ function Setting({ callback, children, enabled }: { callback: () => void, childr
 }
 
 
-export default function Settings() {
+export default function Settings({ scheduleClose }: { scheduleClose: () => void }) {
    const settingsOpen = useSelector((state: RootState) => state.app.settingsOpened);
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const darkModeEnabled = useSelector((state: RootState) => state.app.darkModeEnabled);
@@ -51,6 +52,11 @@ export default function Settings() {
    const closeSettings = () => {
       dispatch(toggleSettings());
    };
+
+   useEffect(() => {
+      if (!settingsOpen) return;
+      scheduleClose();
+   }, [settingsOpen]);
 
    return <>
       {settingsOpen ?
