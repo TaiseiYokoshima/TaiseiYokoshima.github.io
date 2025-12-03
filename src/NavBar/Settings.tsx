@@ -1,4 +1,4 @@
-import "./NavBar.css";
+import "./NavBar.module.css";
 import "../App.css";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -9,26 +9,19 @@ import { useEffect } from "react";
 function Switch({ enabled, callback }: { enabled: boolean, callback: () => void }) {
    return <div style={{ flex: '0 0 55%', font: '10px', textAlign: 'left', paddingLeft: '1%', cursor: 'pointer' }}>
 
-      <div onClick={(enabled) ? undefined : callback} style={{
-         background: `${(enabled) ? 'green' : 'black'}`,
-         borderStyle: 'solid',
-         borderWidth: '1px',
-         borderColor: `green`,
-         display: 'inline-block',
-         paddingLeft: '0.5vw',
-         paddingRight: '0.5vw'
-      }}>Enabled</div>
+      <div onClick={(enabled) ? undefined : callback } 
+         className={"border-solid border-green-500 border inline-block px-[0.5vw] "  + (
+            enabled ? "bg-green-500" : "bg-black"
+         )}
+      >Enabled</div>
 
-      <div onClick={(enabled) ? callback : undefined} style={{
-         background: `${(enabled) ? '' : 'white'}`,
-         color: `${(enabled) ? 'white' : 'black'}`,
-         borderStyle: 'solid',
-         borderWidth: '1px',
-         borderColor: 'white',
-         display: 'inline-block',
-         paddingLeft: '0.5vw',
-         paddingRight: '0.5vw'
-      }}>Disabled</div>
+      <div onClick={(enabled) ? callback : undefined} 
+         className={ 
+            "border border-white px-[0.5vw] inline-block border-solid " + 
+            ( enabled ? " " : "bg-white ") + 
+            ( enabled ? "text-white" : "text-black")
+         }
+      >Disabled</div>
    </div>;
 }
 

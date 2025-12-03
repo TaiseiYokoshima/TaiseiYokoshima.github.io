@@ -1,11 +1,10 @@
-import "./NavBar.css";
-
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../store";
 import { useRef, type RefObject } from "react";
 import { changePage } from "../store";
 
 import { type Page } from "./utils";
+import styles from "./NavBar.module.css";
 
 export default function PageItem({ children, cancelClose, contentRef }: { children: string, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
    const currentPage = useSelector((state: RootState) => state.app.currentPage); 
@@ -22,17 +21,23 @@ export default function PageItem({ children, cancelClose, contentRef }: { childr
       };
       cancelClose();
       if (ref.current === null) return;
-      ref.current.classList.add("clicked");
+      ref.current.classList.add(styles.clicked);
       dispatch(changePage(thisPage));
    };
 
    return (
       <div 
-         className={`page-item${isThisPage ? " selected" : ""}`} 
+         className={ 
+            "flex-1 text-center font-[1.2rem] cursor-pointer " + 
+            (isThisPage 
+               ? "text-green-500 underline underline-offset-[5px] cursor-text" 
+               : "hover:text-red-500" 
+            )
+         } 
          ref={ref} 
          onClick={isThisPage ? undefined : onClick}
       >
-         {children.toUpperCase()}
+      {children.toUpperCase()}
       </div>
    );
 }

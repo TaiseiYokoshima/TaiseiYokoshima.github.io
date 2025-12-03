@@ -1,0 +1,29 @@
+.side-components {
+   cursor: pointer;
+   padding-left: 1vw;
+   padding-right: 1vw;
+   font-size: 25px;
+}
+
+.side-components:hover {
+   color: blue;
+}
+
+.clicked {
+   background-color: #808080;
+   background-size: 100% 6px;
+   background-repeat: repeat-y;
+   color: black;
+   cursor: text;
+}
+
+.settings-page {
+   box-shadow: inset 0 0 0 0.2rem white;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   width: 50vw;
+   height: 50vh;
+   z-index: 10;
+}

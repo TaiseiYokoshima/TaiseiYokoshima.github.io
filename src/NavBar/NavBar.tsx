@@ -1,4 +1,4 @@
-import "./NavBar.css";
+import styles from "./NavBar.module.css";
 import "../App.css";
 import PageItem from "./PageItem";
 
@@ -9,11 +9,13 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import Settings from "./Settings";
 
 function MenuOpener({ opener }: { opener: () => void }) {
-   return <div style={{ width: '100vw'}}><div onClick={opener} className="opener"> Menu » </div></div>;
+   return <div className="w-screen pt-[1vh]">
+      <div onClick={opener} className="ml-[1vw] cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
+   </div>;
 }
 
 function MenuCloser({ closer }: { closer: () => void }) {
-   return <div onClick={closer} className="side-components" >«</div>;
+   return <div onClick={closer} className={styles["side-components"]}>«</div>;
 }
 
 function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
@@ -23,14 +25,14 @@ function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
       dispatch(toggleSettings());
    };
 
-   return <div onClick={openSettings} className="side-components" >⚙</div>;
+   return <div onClick={openSettings} className={styles["side-components"]}>⚙</div>;
 }
 
 
 function NavBarCore({ closeMenuNow, cancelClose, contentRef }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
-   return <div className="navbar">
+   return <div className="min-w-screen flex pt-[1vh]">
       <MenuCloser closer={closeMenuNow}/>
-      <div className="pages-section">
+      <div className="flex flex-1 px-[20vw]">
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>About</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>Projects</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>Experience</PageItem>
@@ -64,9 +66,9 @@ export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivEl
    };
 
    const scheduleClose: () => void = () => {
-      cancelClose();
-      const id = setTimeout(closeMenu, 5000);
-      timeoutRef.current = id;
+      // cancelClose();
+      // const id = setTimeout(closeMenu, 5000);
+      // timeoutRef.current = id;
    };
 
 

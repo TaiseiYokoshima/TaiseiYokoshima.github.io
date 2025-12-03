@@ -26,6 +26,9 @@ importers:
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.2.7)(react@19.2.0)(redux@5.0.1)
+      tailwind-compose:
+        specifier: ^1.1.1
+        version: 1.1.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(tailwindcss@4.1.17)
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.1
@@ -1782,6 +1785,13 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
+  tailwind-compose@1.1.1:
+    resolution: {integrity: sha512-Qjxy+8psUmgqoUcI6qSXoE9/jae/p9DXMgLzhK3RMeSNyOrtmPg69DJcdBq+oRU5xzYboxNEcsbGw8zDsyQXCg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      tailwindcss: '>=3.0.0'
+
   tailwindcss@4.1.17:
     resolution: {integrity: sha512-j9Ee2YjuQqYT9bbRTfTZht9W/ytp5H+jJpZKiYdP/bpnXARAuELt9ofP0lPnmHjbga7SNQIxdTAXCmtKVYjN+Q==}
 
@@ -3425,6 +3435,12 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
+
+  tailwind-compose@1.1.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(tailwindcss@4.1.17):
+    dependencies:
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      tailwindcss: 4.1.17
 
   tailwindcss@4.1.17: {}
 

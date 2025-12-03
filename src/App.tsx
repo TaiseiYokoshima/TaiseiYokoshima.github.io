@@ -1,4 +1,5 @@
 import './App.css'
+import "./index.css";
 
 import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,7 +15,6 @@ import AnimationStatus from './AnimationStatus';
 function Opener() {
    const target = useSelector((state: RootState) => state.app.targetPage);
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
-   
 
    const dispatch = useDispatch();
 
