@@ -54,7 +54,7 @@ export default function Settings({ scheduleClose }: { scheduleClose: () => void 
    return <>
       {settingsOpen ?
          <>
-            <div className="settings-page terminal">
+            <div className="shadow-[inset_0_0_0_0.2rem_white] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vh] z-10 terminal">
                <div style={{ fontSize: '45px', textAlign: 'center', marginBottom: '2vh' }}>Preferences</div>
                <div className="container">
                   <div onClick={closeSettings}
