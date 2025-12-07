@@ -27,8 +27,8 @@ function Switch({ enabled, callback }: { enabled: boolean, callback: () => void 
 
 
 function Setting({ callback, children, enabled }: { callback: () => void, children: string, enabled: boolean }) {
-   return <div style={{ display: 'flex', width: "100%", justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ flex: "0 0 45%", textAlign: 'right', fontSize: '20px', }}>{`${children}`}</div>
+   return <div className="flex w-full justify-center items-center">
+      <div className="flex-[0_0_45%] text-right text-[20px]">{`${children}`}</div>
       <Switch enabled={enabled} callback={callback} />
    </div>;
 }
@@ -55,16 +55,18 @@ export default function Settings({ scheduleClose }: { scheduleClose: () => void 
       {settingsOpen ?
          <>
             <div className="shadow-[inset_0_0_0_0.2rem_white] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vh] z-10 terminal">
-               <div style={{ fontSize: '45px', textAlign: 'center', marginBottom: '2vh' }}>Preferences</div>
-               <div className="container">
-                  <div onClick={closeSettings}
-                     style={{ position: 'absolute', right: 0, top: 0, cursor: 'pointer', background: 'white', color: 'black', width: '1.8em', height: '1.8em', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}
+               <div className="text-[45px] text-center mb-[2vh]" 
+               >Preferences</div>
+               <div>
+                  <div 
+                     onClick={closeSettings} 
+                     className="absolute right-0 top-0 cursor-pointer bg-white text-black w-[1.8em] h-[1.8em] flex justify-center items-center text-center"
                   >X</div>
                   <Setting callback={flipAnimation} enabled={animationEnabled}>Animation | </Setting>
                   <Setting callback={flipDarkMoode} enabled={darkModeEnabled}>Dark Mode | </Setting>
                </div>
             </div>
-            <div onClick={closeSettings} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 2 }} />
+            <div onClick={closeSettings} className="absolute top-0 left-0 w-full h-full z-2"/>
          </>
          : null}
    </>;
