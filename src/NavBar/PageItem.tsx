@@ -27,11 +27,12 @@ export default function PageItem({ children, cancelClose, contentRef }: { childr
 
    return (
       <div 
+
          className={ 
-            "flex-1 text-center font-[1.2rem] cursor-pointer " + 
+            "flex-1 text-center font-[1.2rem] cursor-pointer" + 
             (isThisPage 
-               ? "text-green-500 underline underline-offset-[5px] cursor-text" 
-               : "hover:text-red-500" 
+               ? " text-green-500 underline underline-offset-[5px] cursor-text" 
+               : " hover:text-red-500" 
             )
          } 
          ref={ref} 

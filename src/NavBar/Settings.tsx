@@ -7,7 +7,7 @@ import { toggleSettings, toggleAnimation, toggleDarkMode } from "../store";
 import { useEffect } from "react";
 
 function Switch({ enabled, callback }: { enabled: boolean, callback: () => void }) {
-   return <div style={{ flex: '0 0 55%', font: '10px', textAlign: 'left', paddingLeft: '1%', cursor: 'pointer' }}>
+   return <div className="flex-[0_0_55%] text-[10px] text-left pl-[1%!important] cursor-pointer">
 
       <div onClick={(enabled) ? undefined : callback } 
          className={"border-solid border-green-500 border inline-block px-[0.5vw] "  + (

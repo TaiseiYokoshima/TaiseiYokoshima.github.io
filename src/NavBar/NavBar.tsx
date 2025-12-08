@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import Settings from "./Settings";
 
 function MenuOpener({ opener }: { opener: () => void }) {
-   return <div className="w-screen pt-[1vh]">
+   return <div className="w-screen px-[1vh]!">
       <div onClick={opener} className="ml-[1vw] cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
    </div>;
 }
@@ -30,9 +30,9 @@ function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
 
 
 function NavBarCore({ closeMenuNow, cancelClose, contentRef }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
-   return <div className="min-w-screen flex pt-[1vh]">
+   return <div className="min-w-screen flex pt-[1vh]!">
       <MenuCloser closer={closeMenuNow}/>
-      <div className="flex flex-1 px-[20vw]">
+      <div className="flex flex-1 px-[20vw]!">
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>About</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>Projects</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef}>Experience</PageItem>
