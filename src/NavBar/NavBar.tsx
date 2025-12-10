@@ -9,8 +9,8 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import Settings from "./Settings";
 
 function MenuOpener({ opener }: { opener: () => void }) {
-   return <div className="w-screen px-[1vh]!">
-      <div onClick={opener} className="ml-[1vw] cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
+   return <div className="w-screen px-[1vw]! py-[1vh]!">
+      <div onClick={opener} className="cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
    </div>;
 }
 
