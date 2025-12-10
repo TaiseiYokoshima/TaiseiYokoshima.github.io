@@ -6,13 +6,16 @@ import type { RootState } from "../store";
 import { toggleSettings, toggleAnimation, toggleDarkMode } from "../store";
 import { useEffect } from "react";
 
-function Switch({ enabled, callback, h='20px', w='30px' }: { enabled: boolean, h?: string, w?: string, callback: () => void }) {
+
+function Switch({ enabled, callback, h='20px', w='30px', style={}, }: { enabled: boolean, callback: () => void, h?: string, w?: string, style?: React.CSSProperties }) {
    const button = (<div className="bg-white-500 bg-white flex-1" />);
    const bg = (<div className="bg-white-500 flex-1" />);
-
    const color = " " + (enabled ?  "bg-green-500" : "bg-gray-500");
 
-   return <div onClick={callback} className={"flex p-[0.2%]!" + color} style={{height: h, width: w}}>
+   style.height = h;
+   style.width = w;
+
+   return <div onClick={callback} className={"flex p-[0.4%]!" + color} style={style} >
       { enabled ? <>{button}{bg}</> : <>{bg}{button}</> }
    </div>;
 }
@@ -20,8 +23,9 @@ function Switch({ enabled, callback, h='20px', w='30px' }: { enabled: boolean, h
 function Setting({ callback, children, enabled }: { callback: () => void, children: string, enabled: boolean }) {
    return <div className="flex w-full justify-center items-center">
       <div className="flex-[0_0_45%] text-right text-[20px]">{`${children}`}</div>
-      {/* <Switch enabled={enabled} callback={callback} /> */}
-      <Switch enabled={enabled} callback={callback} />
+      <div className="flex-[0_0_45%]">
+         <Switch enabled={enabled} callback={callback} w="50px"/>
+      </div>
    </div>;
 }
 
