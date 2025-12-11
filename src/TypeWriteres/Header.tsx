@@ -11,8 +11,6 @@ import { createMarker, register, deRegister, animationComplete } from "../store"
 
 export default function Header({ children, speed = 100 }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
-   const measured = useRef<HTMLDivElement>(null);
-   const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
 
    const dispatch = useDispatch();
@@ -80,14 +78,19 @@ export default function Header({ children, speed = 100 }: TyperProps) {
       if (marker.current) dispatch(animationComplete(marker.current));
    };
 
-
    useEffect(() => {
-      if (to_set.current && measured.current) {
-         const { width, height } = measured.current.getBoundingClientRect();
-         to_set.current.style.minHeight = `${height}px`;
-         to_set.current.style.minWidth = `${width}px`;
+      if (textRef.current) {
+         const { width, height } = textRef.current.getBoundingClientRect();
+         textRef.current.style.height = `${height}px`;
+         textRef.current.style.width = `${width}px`;
+
+         if (animationEnabled) textRef.current.textContent = '';
+         textRef.current.style.opacity = '100';
       };
 
+      if (cursorRef.current) {
+         cursorRef.current.style.opacity = '100';
+      };
 
       marker.current = createMarker('header');
       dispatch(register(marker.current));
@@ -101,20 +104,18 @@ export default function Header({ children, speed = 100 }: TyperProps) {
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
-   let textContent: string;
+   let cursorStyle: React.CSSProperties;
+   let textStyle: React.CSSProperties;
    if (!animationEnabled || lastAnimation === 'open') {
-      textContent = children;
+      cursorStyle = { opacity: 100, };
+      textStyle = { opacity: 100, };
    } else {
-      textContent = '';
+      cursorStyle = { opacity: 0, };
+      textStyle = { opacity: 0, };
    };
 
-   return (
-      <div>
-         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "20px", }} ref={measured}>{children}</div>
-         <div ref={to_set} style={{ display: "inline-block" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "20px", display: "inline" }} ref={textRef}>{ textContent }</div>
-            <span ref={cursorRef} className="header-cursor" />
-         </div>
-      </div>
-   )
+   return <div>
+      <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>
+      <span ref={cursorRef} className="header-cursor" style={cursorStyle}/>
+   </div>;
 }
