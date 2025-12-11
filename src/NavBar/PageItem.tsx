@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../store";
-import { useRef, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { changePage } from "../store";
 
 import { type Page } from "./utils";
@@ -19,26 +19,23 @@ export default function PageItem({ children, cancelClose, contentRef }: { childr
          contentRef.current.scrollTop = 0;
          await new Promise(r => setTimeout(r, 500));
       };
+
       cancelClose();
       if (ref.current === null) return;
       ref.current.classList.add(styles.clicked);
       dispatch(changePage(thisPage));
    };
 
-   return (
-      <div 
+   useEffect(() => {
+      if (ref.current === null) return;
+      ref.current.classList.remove(styles.clicked);
+   }, [currentPage]);
 
-         className={ 
-            "flex-1 text-center font-[1.2rem] cursor-pointer items-center flex justify-center" + 
-            (isThisPage 
-               ? " text-green-500 underline underline-offset-[5px] cursor-text" 
-               : " hover:text-red-500" 
-            )
-         } 
-         ref={ref} 
-         onClick={isThisPage ? undefined : onClick}
-      >
-      {children.toUpperCase()}
+   const conditional = isThisPage ? "text-green-500 underline underline-offset-[5px] cursor-text" : "cursor-pointer hover:text-red-500";
+
+   return (
+      <div ref={ref} className={ "flex-1 text-center font-[1.2rem] items-center flex justify-center" } >
+         <div role="button" onClick={isThisPage ? undefined : onClick} className={conditional}>{children.toUpperCase()}</div>
       </div>
    );
 }
