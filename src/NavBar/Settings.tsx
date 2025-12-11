@@ -55,6 +55,7 @@ export default function Settings({ scheduleClose }: { scheduleClose: () => void 
                >Preferences</div>
                <div>
                   <div 
+                     role="button"
                      onClick={closeSettings} 
                      className="absolute right-0 top-0 cursor-pointer bg-white text-black w-[1.8em] h-[1.8em] flex justify-center items-center text-center"
                   >X</div>
@@ -62,7 +63,7 @@ export default function Settings({ scheduleClose }: { scheduleClose: () => void 
                   <Setting callback={flipDarkMoode} enabled={darkModeEnabled}>Dark Mode | </Setting>
                </div>
             </div>
-            <div onClick={closeSettings} className="absolute top-0 left-0 w-full h-full z-2"/>
+            <div role="button" onClick={closeSettings} className="absolute top-0 left-0 w-full h-full z-2"/>
          </>
          : null}
    </>;
