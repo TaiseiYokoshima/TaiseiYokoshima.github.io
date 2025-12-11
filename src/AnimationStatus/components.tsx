@@ -15,7 +15,7 @@ function MouseClickWarningAndCover() {
       return [event, signal];
    })();
 
-   const onClick = () => {
+   const callback = () => {
       console.warn("mouse disabled while animation is running");
       signal();
    };
@@ -63,7 +63,7 @@ function MouseClickWarningAndCover() {
    }, [event]);
 
    return <>
-      <div onClick={onClick} className="fixed left-0 top-0 min-h-screen min-w-screen z-1000 bg-transparent"/>
+      <div onWheel={callback} onClick={callback} className="fixed left-0 top-0 min-h-screen min-w-screen z-1000 bg-transparent"/>
       <div className="text-red-500 inline pr-[1vw] flex-[0_0_auto] whitespace-nowrap" ref={textRef}/>
    </>;
 }
