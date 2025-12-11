@@ -1,4 +1,4 @@
-import "./Cursor.css";
+import style from "./Cursor.module.css";
 import { useRef, useEffect } from "react";
 
 import type TyperProps from "./Props";
@@ -11,6 +11,7 @@ import { createMarker, register, deRegister, animationComplete } from "../store"
 
 export default function Header({ children, speed = 100 }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
+   const toMeasure = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
 
    const dispatch = useDispatch();
@@ -48,6 +49,7 @@ export default function Header({ children, speed = 100 }: TyperProps) {
 
          if (index === 0) {
             textRef.current.textContent = "";
+
             clear_interval(interval);
             resolve();
             return;
@@ -79,13 +81,13 @@ export default function Header({ children, speed = 100 }: TyperProps) {
    };
 
    useEffect(() => {
-      if (textRef.current) {
-         const { width, height } = textRef.current.getBoundingClientRect();
-         textRef.current.style.height = `${height}px`;
-         textRef.current.style.width = `${width}px`;
+      if (toMeasure.current) {
+         const { width, height } = toMeasure.current.getBoundingClientRect();
+         toMeasure.current.style.height = `${height}px`;
+         toMeasure.current.style.width = `${width}px`;
 
-         if (animationEnabled) textRef.current.textContent = '';
-         textRef.current.style.opacity = '100';
+         if (animationEnabled && textRef.current) textRef.current.textContent = '';
+         if (textRef.current) textRef.current.style.opacity = '100';
       };
 
       if (cursorRef.current) {
@@ -114,8 +116,8 @@ export default function Header({ children, speed = 100 }: TyperProps) {
       textStyle = { opacity: 0, };
    };
 
-   return <div>
-      <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>
-      <span ref={cursorRef} className="header-cursor" style={cursorStyle}/>
+   return <div ref={toMeasure}>
+         <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>
+         <span ref={cursorRef} className={style.header} style={cursorStyle}/>
    </div>;
 }

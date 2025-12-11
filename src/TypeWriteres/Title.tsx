@@ -1,15 +1,13 @@
-import "./Cursor.css";
-import { useRef, useEffect } from "react";
+import style from "./Cursor.module.css";
 
 import {  clear_interval } from "../Utils";
-
-import { useDispatch, useSelector } from "react-redux";
 import { type Marker, type Animation, createMarker, register, deRegister, animationComplete, type RootState } from "../store";
 
-export default function Title({ speed = 100 }: {speed?: number }) {
+import { useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function Title({ speed = 10 }: {speed?: number }) {
    const textRef = useRef<HTMLDivElement>(null);
-   const measured = useRef<HTMLDivElement>(null);
-   const to_set = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
 
    const dispatch = useDispatch();
@@ -17,7 +15,6 @@ export default function Title({ speed = 100 }: {speed?: number }) {
 
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
-   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
@@ -66,7 +63,7 @@ export default function Title({ speed = 100 }: {speed?: number }) {
          return;
       };
 
-      cursorRef.current?.classList.add("paused");
+      cursorRef.current?.classList.add(style.paused);
       switch(animation) {
          case "open":
             await open();
@@ -75,19 +72,12 @@ export default function Title({ speed = 100 }: {speed?: number }) {
             await close();
             break;
       };
-      cursorRef.current?.classList.remove("paused");
+      cursorRef.current?.classList.remove(style.paused);
       if (marker.current) dispatch(animationComplete(marker.current));
    };
 
    useEffect(() => {
-      if (to_set.current && measured.current) {
-         const { width, height } = measured.current.getBoundingClientRect();
-         to_set.current.style.minHeight = `${height}px`;
-         to_set.current.style.minWidth = `${width}px`;
-      };
-
       marker.current = createMarker('title');
-
       dispatch(register(marker.current));
       return () => { if (marker.current) dispatch(deRegister(marker.current)) };
    }, []);
@@ -98,22 +88,10 @@ export default function Title({ speed = 100 }: {speed?: number }) {
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
-
-   let textContent: string;
-   if (!animationEnabled || lastAnimation === 'open') {
-      textContent = currentPage;
-   } else {
-      textContent = '';
-   };
-
-
-   return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '5vh', marginTop: '5vh', }}>
-         <div style={{ position: "absolute", visibility: "hidden", fontFamily: "monospace", fontSize: "30px", textAlign: 'center', display: 'inline-block'}} ref={measured}>{currentPage}</div>
-         <div ref={to_set} style={{ display: "inline-block" }}>
-            <div style={{ fontFamily: "monospace", fontSize: "30px", display: "inline-block", textAlign: 'center' }} ref={textRef}>{textContent}</div>
-            <span ref={cursorRef} className="cursor"/>
-         </div>
+   return <div className="flex justify-center my-[5vh]!">
+      <div>
+         <div className="text-[30px] inline text-center" ref={textRef}/>
+         <span ref={cursorRef} className={style.cursor}/>
       </div>
-   )
+   </div>;
 }
