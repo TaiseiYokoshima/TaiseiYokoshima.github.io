@@ -52,7 +52,7 @@ function MouseClickWarningAndCover() {
       if (event === null) return;
       cancel();
       if (textRef.current) {
-         textRef.current.textContent = 'mouse events disabled during animation';
+         textRef.current.textContent = 'mouse inputs are disabled during animation';
 
          if (firstClick.current) {
             textRef.current.style.width = textRef.current.offsetWidth + 'px';
@@ -63,16 +63,8 @@ function MouseClickWarningAndCover() {
    }, [event]);
 
    return <>
-      <div onClick={onClick} style={{
-         position: "fixed", 
-         left: 0, 
-         top: 0, 
-         minHeight: "100vh", 
-         minWidth: "100vw", 
-         zIndex: 1000,
-         backgroundColor: "transparent",
-      }}/>
-      <div style={{ color: 'red', display: 'inline', paddingRight: '1vw', flex: '0 0 auto' }} ref={textRef}></div>
+      <div onClick={onClick} className="fixed left-0 top-0 min-h-screen min-w-screen z-1000 bg-transparent"/>
+      <div className="text-red-500 inline pr-[1vw] flex-[0_0_auto] whitespace-nowrap" ref={textRef}/>
    </>;
 }
 
@@ -103,17 +95,7 @@ function AnimationLoader() {
 
 function AnimationCapturer() {
    return <>
-      <div style={{ 
-         width: '100vw',
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'space-between',
-          bottom: 0,
-          left: 0,
-          background: 'black',
-          paddingLeft: '0.5vw',
-          paddingRight: '0.5vw'
-      }}>
+      <div className="w-screen! absolute flex justify-between bottom-0 left-0 bg-black px-[0.5vw]!">
          <AnimationLoader/>
          <MouseClickWarningAndCover/>
       </div>
