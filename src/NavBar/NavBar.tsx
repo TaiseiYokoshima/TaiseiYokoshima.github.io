@@ -10,12 +10,12 @@ import Settings from "./Settings";
 
 function MenuOpener({ opener }: { opener: () => void }) {
    return <div className="w-screen px-[1vw]! py-[1vh]!">
-      <div onClick={opener} className="cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
+      <div role="button" onClick={opener} className="cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
    </div>;
 }
 
 function MenuCloser({ closer }: { closer: () => void }) {
-   return <div onClick={closer} className={styles["side-components"]}>«</div>;
+   return <div role="button" onClick={closer} className={styles["side-components"]}>«</div>;
 }
 
 function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
@@ -25,9 +25,8 @@ function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
       dispatch(toggleSettings());
    };
 
-   return <div onClick={openSettings} className={styles["side-components"]}>⚙</div>;
+   return <div role="button" onClick={openSettings} className={styles["side-components"]}>⚙</div>;
 }
-
 
 function NavBarCore({ closeMenuNow, cancelClose, contentRef }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
    return <div className="min-w-screen flex pt-[1vh]!">
