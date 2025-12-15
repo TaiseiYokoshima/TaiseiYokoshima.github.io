@@ -1,25 +1,14 @@
 import { Header, Div } from "../../TypeWriteres";
 
-const test_string = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+const string = `I'm a Computer Science graduate with a deep passion for both software and hardware. I thrive on understanding complex technologies, diving deep into the tools I use, optimising my workflow, and continuously improving my skills.
+My curiosity has led me to explore and customise Linux environments and development setups, where I find joy in tailoring tools to enhance efficiency and productivity as a programmer.
 
-function Text() {
-   return <Div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</Div>;
-}
+I'm proficient in a wide range of languages, including Python, Rust, JavaScript, TypeScript, Java, C#, C, SQL, and technologies like Django, React, Flask, Actix-web, and Tokio. I'm also experienced with Docker, Git, Make, and other essential developer tools.
+
+Recently, I undertook a research project on congestion control in networking as part of my undergraduate dissertation. This involved exploring emerging technologies in both software and hardware layers, and using C++ libraries and Linux network emulation technologies to simulate and test the techniques studied. The project deepened my understanding of network protocols, performance bottlenecks, and real-world system constraints.`;
 
 export default function About() {
    return <>
-         <Header speed={1}>{test_string}</Header>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         <Text/>
-         {/* <Header registry={headers}>Header test 2</Header> */}
-         {/* <Div registry={contents}>this is a test 2</Div> */}
+      <Div speed={0.1}>{string}</Div>
    </>;
 }

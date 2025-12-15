@@ -1,6 +1,6 @@
 import { Header, Div } from "../../TypeWriteres";
 
-export default function Projects() {
+export default function Experience() {
    return <>
          <Header>comeo on</Header>
          <Div>this is a test</Div>
