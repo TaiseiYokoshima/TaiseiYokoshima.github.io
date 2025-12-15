@@ -33,10 +33,12 @@ export default function App() {
       <>
          <div className='terminal top-container'>
             <NavBar contentRef={contentRef}/>
-            <div style={{ overflowY: 'auto' }} ref={contentRef}>
+
+            <div  className='overflow-y-auto' ref={contentRef}>
                <Title speed={30}/>
                <PageContent/>
             </div>
+
             <AnimationStatus/>
             <Opener/>
          </div>
