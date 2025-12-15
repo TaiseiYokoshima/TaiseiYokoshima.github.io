@@ -8,7 +8,7 @@ import { type Marker, type Animation, type RootState } from "../store";
 import { register, deRegister, animationComplete, createMarker } from "../store";
 
 
-export default function Div({ children, speed = 0.1 }: TyperProps) {
+export default function Div({ children, speed = 10 }: TyperProps) {
    const ref = useRef<HTMLDivElement>(null);
 
    const marker = useRef<Marker>(null);
@@ -23,6 +23,8 @@ export default function Div({ children, speed = 0.1 }: TyperProps) {
       let index = 0;
       const interval = setInterval(() => {
          if (ref.current === null) return;
+
+         console.debug(`this is the ${index}`);
 
          if (index === children.length) {
             clear_interval(interval);
@@ -111,6 +113,7 @@ export default function Div({ children, speed = 0.1 }: TyperProps) {
    useEffect(() => {
       if (currentAnimation === null) return;
       if (animationStage !== 'contents') return;
+      console.debug("useEffect runnign animation");
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
@@ -124,7 +127,9 @@ export default function Div({ children, speed = 0.1 }: TyperProps) {
       style = { opacity: '0' };
    };
 
-   return <div className="inline-block text-[20px]" style={style} ref={ref}>
-      {children}
+   return <div>
+      <div className="inline-block text-[20px] whitespace-pre-wrap" style={style} ref={ref}>
+         {children}
+      </div>
    </div>;
 }

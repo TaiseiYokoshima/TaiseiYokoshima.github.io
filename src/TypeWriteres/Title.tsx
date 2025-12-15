@@ -15,6 +15,7 @@ export default function Title({ speed = 10 }: {speed?: number }) {
 
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
+   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
@@ -88,9 +89,9 @@ export default function Title({ speed = 10 }: {speed?: number }) {
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
-   return <div className="flex justify-center my-[5vh]!">
+   return <div className="flex justify-center mt-[20vh]!">
       <div>
-         <div className="text-[30px] inline text-center" ref={textRef}/>
+         <div className="text-[40px] inline text-center" ref={textRef}>{ (!animationEnabled || lastAnimation === 'open') ? currentPage as  string : undefined}</div>
          <span ref={cursorRef} className={style.cursor}/>
       </div>
    </div>;
