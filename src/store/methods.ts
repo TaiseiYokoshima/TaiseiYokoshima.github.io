@@ -8,7 +8,7 @@ export function equal(first: Marker, second: Marker): boolean {
 export function exists(state: AppState, marker: Marker): boolean {
    let markers: Marker[];
 
-   switch(marker.type) {
+   switch (marker.type) {
       case "title":
          if (state.title === null) return false;
          return equal(state.title, marker);
@@ -24,10 +24,10 @@ export function exists(state: AppState, marker: Marker): boolean {
    return index !== -1;
 }
 
-export function remove(state:AppState, marker: Marker): boolean {
+export function remove(state: AppState, marker: Marker): boolean {
    let markers: Marker[];
 
-   switch(marker.type) {
+   switch (marker.type) {
       case "title":
          if (!state.title) return false;
          state.title = null;
@@ -48,7 +48,7 @@ export function remove(state:AppState, marker: Marker): boolean {
 
 export function removeRunning(state: AppState, marker: Marker): 'title received' | 'marker not found' | 'removed' {
    let markers: Marker[];
-   switch(marker.type) {
+   switch (marker.type) {
       case "title":
          return 'title received';
       case "header":
@@ -72,7 +72,7 @@ export function find(state: AppState, marker: Marker): number {
    };
 
    let markers: Marker[];
-   switch(marker.type) {
+   switch (marker.type) {
       case "header":
          markers = state.headers;
          break;
@@ -84,6 +84,49 @@ export function find(state: AppState, marker: Marker): number {
    const index = markers.findIndex((passed) => equal(passed, marker));
    return index;
 }
+
+
+
+// class NextStageComputer {
+//    stages: ("title" | 'headers' | 'contents')[] = ['title', 'headers', 'contents'];
+//    index: number;
+//    start: number;
+//    completed = false;
+//
+//    constructor(stage: 'title'  | 'headers' | 'contents') {
+//       switch (stage) {
+//          case "title": {
+//             this.index = 0;
+//             this.start = 0;
+//             return;
+//          }
+//          case "headers": {
+//             this.index = 1;
+//             this.start = 1;
+//             return;
+//          };
+//          case "contents": {
+//             this.index = 2;
+//             this.start = 2;
+//             return;
+//          }
+//       }
+//    }
+//
+//    next() : 'title' | 'headers' | 'contents' | 'completed' {
+//       if (this.completed) return 'completed';
+//       this.index++;
+//       if (this.index === this.stages.length) this.index == 0;
+//       if (this.index === this.start) {
+//          this.completed = true;
+//          return 'completed';
+//       };
+//       return this.stages[this.index];
+//    }
+// }
+
+
+
 
 export function nextStage(state: AppState) {
    if (DEBUG) console.log(`nextStage called on ${state.animationStage}`);
@@ -97,35 +140,54 @@ export function nextStage(state: AppState) {
       return;
    };
 
-   switch(state.animationStage) {
-      case "title": {
-         if (state.runningHeaders.length !== 0 && DEBUG) console.error("moving to headers stage of animation but running contents array not empty");
-         state.animationStage = 'headers';
-         state.runningHeaders = state.headers.slice();
-         return;
-      };
-
-      case "headers": {
-         if (state.runningContents.length !== 0 && DEBUG) console.error("moving to contents stage of animation but running contents array not empty");
-         state.animationStage = 'contents';
-         state.runningContents = state.contents.slice();
-         return;
-      };
-
-      case "contents": {
-         state.animationStage = 'title';
-         state.lastAnimation = state.currentAnimation;
-
-         switch (state.currentAnimation) {
-            case "open": 
-               state.targetPage = null;
-               break;
-            case "close": 
-               state.currentPage = state.targetPage;
-               break;
+   let stage: 'title' | 'headers' | 'contents' = state.animationStage;
+   while (true) {
+      switch (stage) {
+         case "title": {
+            if (state.runningHeaders.length !== 0 && DEBUG) console.error("moving to headers stage of animation but running contents array not empty");
+            if (state.headers.length === 0) {
+               console.debug("no headers, moving to contents")
+               stage = 'headers';
+               continue;
+            };
+            state.animationStage = 'headers';
+            state.runningHeaders = state.headers.slice();
+            return;
          };
 
-         state.currentAnimation = null;
+         case "headers": {
+            if (state.runningContents.length !== 0 && DEBUG) console.error("moving to contents stage of animation but running contents array not empty");
+            if (state.contents.length === 0) {
+               console.debug("no contents, finished")
+               stage = 'contents';
+               continue;
+            };
+            state.animationStage = 'contents';
+            state.runningContents = state.contents.slice();
+            return;
+         };
+
+         case "contents": {
+            state.animationStage = 'title';
+            state.lastAnimation = state.currentAnimation;
+
+            switch (state.currentAnimation) {
+               case "open": {
+                  state.targetPage = null;
+                  state.currentAnimation = null;
+                  return;
+               };
+               case "close": {
+                  state.currentPage = state.targetPage;
+                  state.currentAnimation = null;
+                  return;
+               };
+            };
+
+         };
       };
+
    };
+
+
 }
