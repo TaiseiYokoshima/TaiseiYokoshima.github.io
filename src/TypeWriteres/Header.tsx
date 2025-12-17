@@ -109,7 +109,7 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
    let extraClasses = ' ';
    let role = undefined;
    if (href || email) {
-      extraClasses += 'inline text-[30px] no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
+      extraClasses += 'text-[30px] no-underline! hover:underline! hover:underline-offset-auto! cursor-pointer hover:text-green-500!';
       role = "button";
    };
 
@@ -131,7 +131,7 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
    } else {
       cursorStyle = { opacity: 0, };
       textStyle = { opacity: 0, };
-      content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
+      content = <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>;
    };
 
 
