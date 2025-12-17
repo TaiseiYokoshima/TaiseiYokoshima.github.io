@@ -113,7 +113,7 @@ export default function Div({ children, speed = 10, href, email }: TyperProps) {
    useEffect(() => {
       if (currentAnimation === null) return;
       if (animationStage !== 'contents') return;
-      console.debug("useEffect runnign animation");
+      console.debug("useEffect running animation");
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
@@ -134,17 +134,15 @@ export default function Div({ children, speed = 10, href, email }: TyperProps) {
       style = { opacity: '0' };
    };
 
-   let extra = ' ';
-   let onClick = undefined;
+   let extraClasses = ' ';
    let role = undefined;
-   
    if (href || email) {
-      extra += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
+      extraClasses += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
       role = "button";
    };
 
    return <div>
-      <div className={"inline-block text-[20px] whitespace-pre-wrap" + extra} style={style} ref={ref} role={role} onClick={onClick}>
+      <div className={"inline-block text-[20px] whitespace-pre-wrap" + extraClasses} style={style} ref={ref} role={role}>
          {content}
       </div>
    </div>;

@@ -9,7 +9,7 @@ import { type Marker, type Animation, type RootState } from "../store";
 import { createMarker, register, deRegister, animationComplete } from "../store";
 
 
-export default function Header({ children, speed = 100 }: TyperProps) {
+export default function Header({ children, speed = 100, href, email }: TyperProps) {
    const textRef = useRef<HTMLDivElement>(null);
    const toMeasure = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
@@ -106,18 +106,37 @@ export default function Header({ children, speed = 100 }: TyperProps) {
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
+   let extraClasses = ' ';
+   let role = undefined;
+   if (href || email) {
+      extraClasses += 'inline text-[30px] no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
+      role = "button";
+   };
+
    let cursorStyle: React.CSSProperties;
    let textStyle: React.CSSProperties;
+   let content: React.ReactNode; 
    if (!animationEnabled || lastAnimation === 'open') {
       cursorStyle = { opacity: 100, };
       textStyle = { opacity: 100, };
+
+      if (href) {
+         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className={"inline-block" + extraClasses}>{children}</a>);
+      } else if (email) {
+         content = (<a href={`mailto:${href}`} className={"inline-block" + extraClasses}>{children}</a>);
+      } else {
+         content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
+      };
+
    } else {
       cursorStyle = { opacity: 0, };
       textStyle = { opacity: 0, };
+      content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
    };
 
+
    return <div ref={toMeasure}>
-         <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>
-         <span ref={cursorRef} className={style.header} style={cursorStyle}/>
+      {content}
+      <span ref={cursorRef} className={style.header} style={cursorStyle}/>
    </div>;
 }
