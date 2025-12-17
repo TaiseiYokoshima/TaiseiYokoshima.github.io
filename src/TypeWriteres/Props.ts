@@ -5,5 +5,8 @@ export default interface TyperProps {
    speed?: number;
    controller?: Controller;
    registry?: Registry;
+   href?: string,
+   onClick?: () => void,
+   email?: string,
 }
 

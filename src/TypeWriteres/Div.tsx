@@ -8,7 +8,7 @@ import { type Marker, type Animation, type RootState } from "../store";
 import { register, deRegister, animationComplete, createMarker } from "../store";
 
 
-export default function Div({ children, speed = 10 }: TyperProps) {
+export default function Div({ children, speed = 10, href, email }: TyperProps) {
    const ref = useRef<HTMLDivElement>(null);
 
    const marker = useRef<Marker>(null);
@@ -120,16 +120,32 @@ export default function Div({ children, speed = 10 }: TyperProps) {
 
 
    let style: React.CSSProperties;
+   let content: string | React.ReactNode = children;
 
    if (!animationEnabled || lastAnimation === 'open') {
       style = { opacity: '100' };
+      if (href) {
+         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className="inline-block">{children}</a>);
+      } else if (email) {
+         content = (<a href={`mailto:${email}`} className="inline-block">{children}</a>);
+      };
+
    } else {
       style = { opacity: '0' };
    };
 
+   let extra = ' ';
+   let onClick = undefined;
+   let role = undefined;
+   
+   if (href || email) {
+      extra += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
+      role = "button";
+   };
+
    return <div>
-      <div className="inline-block text-[20px] whitespace-pre-wrap" style={style} ref={ref}>
-         {children}
+      <div className={"inline-block text-[20px] whitespace-pre-wrap" + extra} style={style} ref={ref} role={role} onClick={onClick}>
+         {content}
       </div>
    </div>;
 }
