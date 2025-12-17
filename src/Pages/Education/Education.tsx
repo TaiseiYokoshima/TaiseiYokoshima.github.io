@@ -3,7 +3,7 @@ import { Div, Header } from "../../TypeWriteres";
 function Sussex() {
    return <div  className="mt-[8rem]! w-full!">
       <div className="flex justify-between">
-         <Header>University of Sussex</Header>
+         <Header href="sussex.ac.uk">University of Sussex</Header>
          <Div>Brighton, UK</Div>
       </div>
       <Div>Sep 2022 - May 2024</Div>
@@ -17,9 +17,10 @@ function Sussex() {
 function UWC() {
    return <div className="mt-[8rem]! w-full!">
       <div className="flex justify-between w-full!">
-         <Header>UWC USA</Header>
+         <Header href="uwc-usa.org">UWC USA</Header>
          <Div>New Mexico, USA</Div> 
       </div>
+
       <Div>Aug 2019 - May 2021</Div>
       <Div>IB Diploma</Div>
       <Div>HL: Economics, Visual Arts, Physics</Div>

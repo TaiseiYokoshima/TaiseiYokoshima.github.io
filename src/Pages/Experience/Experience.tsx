@@ -21,12 +21,11 @@ const body = `
 function Passology() {
    return <div className="mt-[5rem]!">
       <Header>Software Engineering Intern</Header>
-      <Div>Jun 2024 - Sep 2024</Div>
-      <Div>Passlogy Co. LTD</Div>
+      <Div href="passlogy.com">Passlogy Co. LTD</Div>
       <Div>Tokyo, Japan</Div>
+      <Div>Jun 2024 - Sep 2024</Div>
       <Div>{body}</Div>
    </div>;
-
 }
 
 
