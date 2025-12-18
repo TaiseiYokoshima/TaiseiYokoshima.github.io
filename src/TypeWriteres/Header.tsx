@@ -109,10 +109,8 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
    }, [currentAnimation, animationStage])
 
    let extraClasses = ' ';
-   let role = undefined;
    if (href || email) {
       extraClasses += 'text-[30px] no-underline! hover:underline! hover:underline-offset-auto! cursor-pointer hover:text-green-500!';
-      role = "button";
    };
 
    let cursorStyle: React.CSSProperties;
