@@ -24,8 +24,6 @@ export default function Div({ children, speed = 10, href, email }: TyperProps) {
       const interval = setInterval(() => {
          if (ref.current === null) return;
 
-         console.debug(`this is the ${index}`);
-
          if (index === children.length) {
             clear_interval(interval);
             resolve();
@@ -113,7 +111,6 @@ export default function Div({ children, speed = 10, href, email }: TyperProps) {
    useEffect(() => {
       if (currentAnimation === null) return;
       if (animationStage !== 'contents') return;
-      console.debug("useEffect running animation");
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
