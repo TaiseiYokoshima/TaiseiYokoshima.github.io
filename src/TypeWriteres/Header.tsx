@@ -10,10 +10,11 @@ import { createMarker, register, deRegister, animationComplete } from "../store"
 
 
 export default function Header({ children, speed = 100, href, email }: TyperProps) {
-   const textRef = useRef<HTMLDivElement>(null);
    const toMeasure = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
 
+   const textRef = useRef<HTMLDivElement | null>(null);
+   
    const dispatch = useDispatch();
    const marker = useRef<Marker>(null);
 
@@ -43,6 +44,7 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
 
    const close = () => new Promise<void>((resolve, _) => {
       if (!textRef.current) return;
+
       let index = textRef.current.textContent.length - 1;
       const interval = setInterval(() => {
          if (!textRef.current) return;
@@ -116,19 +118,28 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
    let cursorStyle: React.CSSProperties;
    let textStyle: React.CSSProperties;
    let content: React.ReactNode; 
-   if (!animationEnabled || lastAnimation === 'open') {
+
+
+
+   // after open loaded and no animation is currently running
+   if (!animationEnabled || (lastAnimation === 'open' && currentAnimation === null )) {
       cursorStyle = { opacity: 100, };
       textStyle = { opacity: 100, };
 
       if (href) {
          content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className={"inline-block" + extraClasses}>{children}</a>);
       } else if (email) {
-         content = (<a href={`mailto:${href}`} className={"inline-block" + extraClasses}>{children}</a>);
+            content = (<a href={`mailto:${href}`} className={"inline-block" + extraClasses}>{children}</a>);
       } else {
          content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
       };
-
-   } else {
+   } 
+   else if (currentAnimation === 'close') {
+      cursorStyle = { opacity: 100, };
+      textStyle = { opacity: 100, };
+      content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
+   } 
+   else {
       cursorStyle = { opacity: 0, };
       textStyle = { opacity: 0, };
       content = <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>;
