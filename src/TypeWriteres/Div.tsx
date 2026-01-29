@@ -8,6 +8,12 @@ import { type Marker, type Animation, type RootState } from "../store";
 import { register, deRegister, animationComplete, createMarker } from "../store";
 
 
+import { FaExternalLinkAlt } from "react-icons/fa";
+
+function I() {
+   return <FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem'}}/>;
+}
+
 export default function Div({ children, speed = 10, href, email }: TyperProps) {
    const ref = useRef<HTMLDivElement>(null);
 
@@ -122,7 +128,7 @@ export default function Div({ children, speed = 10, href, email }: TyperProps) {
    if (!animationEnabled || lastAnimation === 'open') {
       style = { opacity: '100' };
       if (href) {
-         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className="inline-block">{children}</a>);
+         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className="inline-block">{children}<I/></a>);
       } else if (email) {
          content = (<a href={`mailto:${email}`} className="inline-block">{children}</a>);
       };
