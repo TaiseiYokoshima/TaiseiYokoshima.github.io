@@ -65,9 +65,9 @@ export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivEl
    };
 
    const scheduleClose: () => void = () => {
-      // cancelClose();
-      // const id = setTimeout(closeMenu, 5000);
-      // timeoutRef.current = id;
+      cancelClose();
+      const id = setTimeout(closeMenu, 5000);
+      timeoutRef.current = id;
    };
 
 

@@ -9,6 +9,13 @@ import { type Marker, type Animation, type RootState } from "../store";
 import { createMarker, register, deRegister, animationComplete } from "../store";
 
 
+import { FaExternalLinkAlt } from "react-icons/fa";
+
+
+function I() {
+   return <FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem'}}/>;
+}
+
 export default function Header({ children, speed = 100, href, email }: TyperProps) {
    const toMeasure = useRef<HTMLDivElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
@@ -125,7 +132,7 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
       textStyle = { opacity: 100, };
 
       if (href) {
-         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className={"inline-block" + extraClasses}>{children}</a>);
+         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className={"inline-block" + extraClasses}>{children}<I/></a>);
       } else if (email) {
             content = (<a href={`mailto:${href}`} className={"inline-block" + extraClasses}>{children}</a>);
       } else {

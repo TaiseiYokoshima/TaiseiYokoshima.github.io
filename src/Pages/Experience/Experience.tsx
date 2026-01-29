@@ -1,12 +1,5 @@
 import { Header, Div } from "../../TypeWriteres";
 
-const subsection = `
-Software Engineer Intern
-Jun 2024 – Sep 2024
-Passlogy Co. LTD
-Tokyo, Japan
-`;
-
 const body = `
 • Researched and evaluated an open-source team collaboration tool built with Ruby on Rails. Presenting findings to explore its adoption as a company-wide replacement for the existing tool. Through this project I learned to collaborate efficiently with other programmers. We did peer programming and frequent communication to cordinate concurrent progression on mulitple tasks or components that are related.
 
