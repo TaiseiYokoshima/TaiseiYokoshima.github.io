@@ -1,7 +1,4 @@
 import Controller from "./Controller"
-// import { type RefObject } from "react";
-
-
 const debug = true;
 let id = 1;
 
@@ -18,6 +15,11 @@ export default class Registry {
    }
 
    register(controller: Controller) {
+      if (this.type as string !== controller.type as string) {
+         console.error("the controller is not the same type so cannot register");
+         return;
+      };
+
       if (debug) console.log(`registry ${this.id}:${this.type} - registering ${controller.type}:${controller.id}`);
       this.controllers.push(controller);
    }

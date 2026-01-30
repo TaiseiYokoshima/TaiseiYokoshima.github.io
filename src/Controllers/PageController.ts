@@ -15,11 +15,12 @@ export default class PageController {
    }
 
    async close() {
-      let x = this.title.close();
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await x;
+      await this.title.close();
+      if (debug) console.log("title closed");
       await this.headers.close();
+      if (debug) console.log("headers closed");
       await this.contents.close();
+      if (debug) console.log("contents closed");
    }
 
    async open() {

@@ -1,4 +1,4 @@
-import { Header, Div } from "../../TypeWriteres";
+import { Header, Div, Span } from "../../TypeWriteres";
 
 const body = `
 • Researched and evaluated an open-source team collaboration tool built with Ruby on Rails. Presenting findings to explore its adoption as a company-wide replacement for the existing tool. Through this project I learned to collaborate efficiently with other programmers. We did peer programming and frequent communication to cordinate concurrent progression on mulitple tasks or components that are related.
@@ -14,10 +14,10 @@ const body = `
 function Passology() {
    return <div className="mt-[5rem]!">
       <Header>Software Engineering Intern</Header>
-      <Div href="passlogy.com">Passlogy Co. LTD</Div>
-      <Div>Tokyo, Japan</Div>
-      <Div>Jun 2024 - Sep 2024</Div>
-      <Div>{body}</Div>
+      <Span href="passlogy.com">Passlogy Co. LTD</Span>
+      <Span>Tokyo, Japan</Span>
+      <Span>Jun 2024 - Sep 2024</Span>
+      <Span>{body}</Span>
    </div>;
 }
 

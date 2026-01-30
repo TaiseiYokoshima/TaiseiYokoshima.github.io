@@ -12,8 +12,8 @@ import { createMarker, register, deRegister, animationComplete } from "../store"
 import { FaExternalLinkAlt } from "react-icons/fa";
 
 
-function I() {
-   return <FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem'}}/>;
+function I({ ref }: { ref: React.RefObject<HTMLDivElement | null>}) {
+   return <div ref={ref} style={{ display: 'inline-block', opacity: 0, margin: '0.5rem', verticalAlign: "middle" }}><FaExternalLinkAlt size={13}/></div>;
 }
 
 export default function Header({ children, speed = 100, href, email }: TyperProps) {
@@ -29,15 +29,18 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
    const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
    const animationStage = useSelector((state: RootState) => state.app.animationStage);
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
+   const iconRef = useRef<HTMLDivElement | null>(null);
 
 
    const open = () => new Promise<void>((resolve, _) => {
       let index = 0;
       const interval = setInterval(() => {
-         if (textRef.current === null) return;
+         if (!textRef.current) return;
 
          if (index === children.length) {
             clear_interval(interval);
+            if (iconRef.current) iconRef.current.style.opacity = '1' 
+            else console.log("icon ref was null");
             return resolve();
          };
 
@@ -132,19 +135,17 @@ export default function Header({ children, speed = 100, href, email }: TyperProp
       textStyle = { opacity: 100, };
 
       if (href) {
-         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className={"inline-block" + extraClasses}>{children}<I/></a>);
+         content = (<a href={`https://${href}`} target="_blank" rel="noopener noreferrer" className={"inline-block" + extraClasses}>{children}<I ref={iconRef}/></a>);
       } else if (email) {
-            content = (<a href={`mailto:${href}`} className={"inline-block" + extraClasses}>{children}</a>);
+            content = (<a href={`mailto:${href}`} className={"inline-block" + extraClasses}>{children}<I ref={iconRef}/></a>);
       } else {
          content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
       };
-   } 
-   else if (currentAnimation === 'close') {
+   } else if (currentAnimation === 'close') {
       cursorStyle = { opacity: 100, };
       textStyle = { opacity: 100, };
       content = <div className={"inline text-[30px]" + extraClasses} ref={textRef} style={textStyle}>{ children }</div>;
-   } 
-   else {
+   } else {
       cursorStyle = { opacity: 0, };
       textStyle = { opacity: 0, };
       content = <div className="inline text-[30px]" ref={textRef} style={textStyle}>{ children }</div>;

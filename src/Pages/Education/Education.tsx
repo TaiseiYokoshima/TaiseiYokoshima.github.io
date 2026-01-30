@@ -1,15 +1,15 @@
-import { Div, Header } from "../../TypeWriteres";
+import { SpanHeader, Span } from "../../TypeWriteres";
 
 function Sussex() {
    return <div  className="mt-[8rem]! w-full!">
       <div className="flex justify-between">
-         <Header href="sussex.ac.uk">University of Sussex</Header>
-         <Div>Brighton, UK</Div>
+         <SpanHeader href="sussex.ac.uk">University of Sussex</SpanHeader>
+         <Span>Brighton, UK</Span>
       </div>
-      <Div>Sep 2022 - May 2024</Div>
+      <Span>Sep 2022 - May 2024</Span>
       <div className="flex justify-between">
-         <Div>BSc Computer Science</Div>
-         <Div>68% | 2:1 </Div>
+         <Span>BSc Computer Science</Span>
+         <Span>68% | 2:1 </Span>
       </div>
    </div>;
 }
@@ -17,14 +17,14 @@ function Sussex() {
 function UWC() {
    return <div className="mt-[8rem]! w-full!">
       <div className="flex justify-between w-full!">
-         <Header href="uwc-usa.org">UWC USA</Header>
-         <Div>New Mexico, USA</Div> 
+         <SpanHeader href="uwc-usa.org">UWC USA</SpanHeader>
+         <Span>New Mexico, USA</Span> 
       </div>
 
-      <Div>Aug 2019 - May 2021</Div>
-      <Div>IB Diploma</Div>
-      <Div>HL: Economics, Visual Arts, Physics</Div>
-      <Div>SL: English, Italian, Math</Div>
+      <Span>Aug 2019 - May 2021</Span>
+      <Span>IB Diploma</Span>
+      <Span>HL: Economics, Visual Arts, Physics</Span>
+      <Span>SL: English, Italian, Math</Span>
    </div>;
 }
 

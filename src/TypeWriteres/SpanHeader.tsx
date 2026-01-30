@@ -1,4 +1,6 @@
+import style from "./Cursor.module.css";
 import { useRef, useEffect } from "react";
+import React from "react";
 
 import type TyperProps from "./Props";
 import { clear_interval } from "../Utils";
@@ -6,26 +8,29 @@ import { clear_interval } from "../Utils";
 import { useDispatch, useSelector } from "react-redux";
 import { type Marker, type Animation, type RootState } from "../store";
 import { register, deRegister, animationComplete, createMarker } from "../store";
-
-
 import { FaExternalLinkAlt } from "react-icons/fa";
 
-function I({ ref }: { ref: React.RefObject<HTMLDivElement | null>}) {
-   return <div ref={ref} style={{ display: 'inline-block', opacity: 0 }}><FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }}/></div>;
-}
+import { Controller } from "../Controllers";
 
-export default function Span({ children, speed = 10, href, email }: TyperProps) {
+
+
+export default function SpanHeader({ children, speed = 10, href, email, registry }: TyperProps) {
+   const I = React.forwardRef<HTMLDivElement>((_, ref) => {
+      return (
+         <div ref={ref} style={{ display: 'inline-block' }}>
+            <FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }}/>
+         </div>
+      );
+   });
+
    const ref = useRef<HTMLDivElement>(null);
-
-   const marker = useRef<Marker>(null);
-   const dispatch = useDispatch();
-   const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
-   const animationStage = useSelector((state: RootState) => state.app.animationStage);
+   const controller = useRef(new Controller('header'));
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
    const iconRef = useRef<HTMLDivElement>(null);
-
    const spanRef = useRef<HTMLSpanElement>(null);
+   const cursorRef = useRef<HTMLSpanElement>(null);
+
    let char_count = 0;
    let span = <span ref={spanRef} style={{ opacity: 0 }}>
       {
@@ -39,7 +44,7 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
 
                let wordSpan = <span key={word_i}>{
                   [...word].map(ch => {
-                     let char_span = <span key={char_i} style={{ opacity: 0 }} ref={ref}>{ch}</span>;
+                     let char_span = <span key={char_i} style={{ display: 'none' }} ref={ref}>{ch}</span>;
                      char_i++;
                      char_count++;
                      return char_span;
@@ -52,58 +57,56 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
       }
    </span>;
 
-
    const close = () => new Promise<void>((resolve, _) => {
-      let start_word = 0;
-      let start_char = 0;
+      console.log("close called for span header");
 
+      if (!spanRef.current) return console.error("span was null for span header");
 
-      let end_word: number;
-      if (!spanRef.current) return console.error("span was null");
-      end_word = spanRef.current.childElementCount - 1;
-      let end_char = spanRef.current.children[end_word].childElementCount - 1;
+      let word_i = spanRef.current.childElementCount - 1;
+      let char_i = spanRef.current.children[word_i].childElementCount - 1;
 
-      if (iconRef.current) iconRef.current.style.opacity = '0';
+      if (word_i === -1) {
+         console.error("span has no words for span header");
+         resolve();
+         return;
+      };
+
+      if (iconRef.current) {
+         iconRef.current.style.display = 'none';
+      } else {
+         console.log("icon ref was null during close");
+      };
 
       const interval = setInterval(() => {
-         if (start_word > end_word) {
-            console.log("open finishing, calling resolve");
+         if (!spanRef.current) {
+            console.error("span was null for span header during close");
             clear_interval(interval);
             resolve();
-            return
+            return;
          };
 
-         if (spanRef.current) {
-            {
-               let s_word = spanRef.current.children[start_word];
-               let s_char = s_word.children[start_char] as HTMLElement;
-               s_char.style.opacity = '0';
-               start_char++;
+         if (char_i === -1) {
+            word_i--;
+            if (word_i === -1) {
+               clear_interval(interval);
 
-               if (start_char === s_word.childElementCount) {
-                  start_char = 0;
-                  start_word++;
+               if (iconRef.current) {
+                  iconRef.current.style.display = 'inline-block';
+               } else {
+                  console.error("icon ref was null for span header");
                };
-            };
 
-            {
-               let e_word = spanRef.current.children[end_word];
-               let e_char = e_word.children[end_char] as HTMLElement;
-               e_char.style.opacity = '0';
-               end_char--;
-
-               if (end_char === -1) {
-                  end_word--;
-                  let word = spanRef.current.children[end_word];
-                  end_char = word.childElementCount - 1;
-               };
+               console.log("completed span header close");
+               resolve();
+               return;
             };
-         } else {
-            console.error("span was null");
-            clear_interval(interval);
-            resolve();
-            return
+            char_i = spanRef.current.children[word_i].childElementCount - 1;
          };
+
+         let word = spanRef.current.children[word_i];
+         let char = word.children[char_i] as HTMLElement;
+         char.style.display = 'none';
+         char_i--;
       }, speed);
    });
 
@@ -114,6 +117,7 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
       let word_i = 0;
       let char_i = 0;
 
+      if (iconRef.current) iconRef.current.style.display = 'none';
       if (spanRef.current) spanRef.current.style.opacity = '1';
 
       const interval = setInterval(() => {
@@ -125,9 +129,10 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
 
             if (spanRef.current.childElementCount === word_i) {
                clear_interval(interval);
-               if (iconRef.current) iconRef.current.style.opacity = '1';
+               if (iconRef.current) iconRef.current.style.display = 'inline-block';
                else console.log("icon ref was null for span");
                resolve();
+               console.log("finished open animation");
                return
             };
 
@@ -135,7 +140,7 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
          };
 
          let char = word.children[char_i] as HTMLElement;
-         char.style.opacity = '1';
+         char.style.display = 'inline';
          char_i++;
       }, speed);
    });
@@ -163,7 +168,7 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
          let word_i = 0;
          let char_i = 0;
 
-         spanRef.current.style.opacity = '0';
+         spanRef.current.style.display = 'inline';
 
          while (word_i < spanRef.current.childElementCount) {
             let word = spanRef.current.children[word_i];
@@ -182,18 +187,27 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
          if (iconRef.current) iconRef.current.style.opacity = '1';
       };
 
-      marker.current = createMarker('content');
+      marker.current = createMarker('header');
       dispatch(register(marker.current));
       return () => { if (marker.current) dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {
       if (currentAnimation === null) return;
-      if (animationStage !== 'contents') return;
+      if (animationStage !== 'headers') return;
       animator(currentAnimation);
    }, [currentAnimation, animationStage])
 
 
+
+   useEffect(() => {
+      if (!animationEnabled) {
+         return;
+      };
+
+      registry?.register(controller.current);
+      return () => registry?.deRegister(controller.current);
+   }, [animationEnabled])
 
    let content: React.ReactNode = span;
    let extraClasses = ' ';
@@ -210,5 +224,6 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
       <div className={"inline-block text-[20px] whitespace-pre-wrap" + extraClasses} ref={ref}>
          {content}
       </div>
+      <span ref={cursorRef} className={style.header}/>
    </div>;
 }

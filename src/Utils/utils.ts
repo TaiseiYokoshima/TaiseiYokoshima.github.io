@@ -1,5 +1,5 @@
 function clear_interval(interval: number) {
-   console.log(`clearing internval: ${interval}`);
+   // console.log(`clearing internval: ${interval}`);
    clearInterval(interval);
 };
 

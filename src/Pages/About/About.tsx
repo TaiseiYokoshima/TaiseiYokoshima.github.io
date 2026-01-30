@@ -13,6 +13,6 @@ Recently, I undertook a research project on congestion control in networking as 
 
 export default function About() {
    return <div className="mt-[8rem]!">
-      <Span speed={0.1}>{string}</Span>
+      <Span href="github.com" speed={0.1}>{string}</Span>
    </div>;
 }
