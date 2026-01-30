@@ -57,7 +57,7 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-   animationEnabled: false,
+   animationEnabled: true,
    darkModeEnabled: true,
    settingsOpened: false,
 
