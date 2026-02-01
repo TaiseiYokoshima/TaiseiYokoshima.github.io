@@ -8,6 +8,10 @@ let id = 1;
 export default class Controller {
    public queue: Array<[Resolver<void>, boolean]> = [];
 
+   public signal: Promise<void>;
+   public signaler: Resolver<void>;
+
+
    private animationCount = 0;
 
    public registered = false;
@@ -19,6 +23,10 @@ export default class Controller {
       this.id = id;
       if (debug) console.log(`controller ${id} (${this.type}) created`);
       id++;
+
+      const { promise, resolver } = createDeferredPromise<void>();
+      this.signal = promise;
+      this.signaler = resolver;
    }
 
    register() {
@@ -29,11 +37,30 @@ export default class Controller {
       this.registered = false;
    }
 
-   private async send(value: boolean): Promise<void> {
-      const { promise, resolver } = createDeferredPromise<void>();
-      this.queue.push([resolver, value]);
-      this.animationCount++;
-      return promise;
+   async send(value: boolean): Promise<void> {
+      if (!this.registered) {
+         const { promise, resolver } = createDeferredPromise<void>();
+         resolver();
+         return promise;
+      };
+
+      let promise_to_return;
+
+      {
+         const { promise, resolver } = createDeferredPromise<void>();
+         this.queue.push([resolver, value]);
+         this.animationCount++;
+         promise_to_return = promise;
+      };
+
+      {
+         this.signaler();
+         const { promise, resolver } = createDeferredPromise<void>();
+         this.signal = promise;
+         this.signaler = resolver;
+      };
+
+      return promise_to_return;
    }
 
    async open(): Promise<void> {
@@ -45,8 +72,12 @@ export default class Controller {
    }
 
 
-   consume(): [Resolver<void>, boolean] | undefined {
-      return this.queue.shift();
+   async consume(): Promise<[Resolver<void>, boolean]> {
+      while (this.queue.length === 0) {
+         await this.signal;
+      };
+
+      return this.queue.shift()!;
    }
 
    getInfo() {

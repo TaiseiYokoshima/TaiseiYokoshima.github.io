@@ -4,10 +4,10 @@ let id = 1;
 
 export default class Registry {
    private controllers: Controller[] = new Array();
-   private type: "contents" | "headers";
+   private type: "div" | "header";
    private id: number;
 
-   constructor(type: "contents" | "headers") {
+   constructor(type: "div" | "header") {
       this.type = type;
       this.id = id;
       id++;
@@ -34,18 +34,34 @@ export default class Registry {
       };
    }
 
+
+   async send(value: boolean) {
+      if (debug) {
+         console.log(`${this.type} registry ${value ? "open" : "close"} was called, count: ${this.controllers.length}`);
+         this.list();
+      };
+
+      const promises: Promise<void>[] = [];
+      this.controllers.forEach((contorller, _) => promises.push(contorller.send(value)));
+      
+      if (promises.length === 0 && debug) console.log(`${this.type} registry is empty`);
+
+
+      await Promise.allSettled(promises);
+      const results = await Promise.allSettled(promises);
+      if (debug) console.log(results);
+   }
+
    async open() {
       if (debug) {
          console.log(`${this.type} registry open was called, count: ${this.controllers.length}`);
          this.list();
       };
 
-
       const promises: Promise<void>[] = [];
       this.controllers.forEach((contorller, _) => promises.push(contorller.open()));
       
-      if (promises.length === 1) if (debug) console.log(`${this.type} registry is empty`);
-
+      if (promises.length === 0 && debug) console.log(`${this.type} registry is empty`);
 
       await Promise.allSettled(promises);
       const results = await Promise.allSettled(promises);
