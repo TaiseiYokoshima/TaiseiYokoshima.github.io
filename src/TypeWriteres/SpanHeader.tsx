@@ -16,7 +16,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    const I = React.forwardRef<HTMLDivElement>((_, ref) => {
       return (
          <div ref={ref} style={{ display: 'inline-block' }}>
-            <FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }} />
+            <FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }}/>
          </div>
       );
    });
@@ -27,9 +27,10 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    const iconRef = useRef<HTMLDivElement>(null);
    const spanRef = useRef<HTMLSpanElement>(null);
    const cursorRef = useRef<HTMLSpanElement>(null);
+   const containerRef = useRef<HTMLDivElement>(null);
 
    let char_count = 0;
-   let span = <span ref={spanRef} style={{ display: 'inline-block' }}>{
+   let span = <span ref={spanRef} style={{ display: 'inline', whiteSpace: 'pre-line'}}>{
          (() => {
             let char_i = 0;
 
@@ -144,35 +145,24 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
       }, speed);
    });
 
+
    useEffect(() => {
+      if (!containerRef.current) 
+         return;
+      const { height, width }  = containerRef.current.getBoundingClientRect();
+      containerRef.current.style.height = `${height}px`;
+      containerRef.current.style.width = `${width}px`;
+
       if (spanRef.current) {
-      };
-
-
-      if (!animationEnabled && spanRef.current) {
-         let word_i = 0;
-         let char_i = 0;
-
-         spanRef.current.style.display = 'inline';
-
-         while (word_i < spanRef.current.childElementCount) {
-            let word = spanRef.current.children[word_i];
-            if (char_i === word.childElementCount) {
-               char_i = 0;
-               word_i++;
-               continue;
+         for (const word of spanRef.current.children) {
+            for (const char of word.children) {
+               const span = char as HTMLElement;
+               span.style.display = 'none';
             };
-
-            let char = word.children[char_i] as HTMLElement;
-            char.style.opacity = '1';
-            char_i++;
          };
-
-         spanRef.current.style.opacity = '1';
-         if (iconRef.current) iconRef.current.style.opacity = '1';
       };
+   }, [])
 
-   }, []);
 
    useEffect(() => {
       let killed = false;
@@ -210,6 +200,6 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    };
 
    return <div>
-      <div className={"inline-block text-[20px] whitespace-pre-wrap" + extraClasses}>{span}<span ref={cursorRef} className={style.header}/></div>
+      <div className={"inline-block text-[20px]" + extraClasses} ref={containerRef}>{content}<span ref={cursorRef} className={style.header}/></div>
    </div>;
 }

@@ -5,13 +5,14 @@ import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { NavBar } from './NavBar';
-import { SpanHeader, Title } from './TypeWriteres';
 import PageContent from './Pages';
 import type { RootState } from './store';
 import { open } from './store';
 
-import AnimationStatus from './AnimationStatus';
 import SpanTitle from './TypeWriteres/SpanTitle';
+import { SpanHeader, Title, Span } from './TypeWriteres';
+
+import AnimationStatus from './AnimationStatus';
 import { Controller, Registry } from './Controllers';
 
 function Opener() {
@@ -42,7 +43,7 @@ export default function App() {
    // const contentRef = useRef<HTMLDivElement>(null);
 
    const controller = useRef(new Controller('title'));
-   const registry = useRef(new Registry('header'));
+   const registry = useRef(new Registry('div'));
 
 
    const open = async () => {
@@ -58,7 +59,7 @@ export default function App() {
 
    return <div className='terminal top-container'>
       <SpanTitle speed={100} controller={controller.current}/>
-      <SpanHeader speed={500} registry={registry.current}>{string}</SpanHeader>
+      <Span speed={50} registry={registry.current}>{string}</Span>
 
       <button onClick={open}>open</button>
       <button onClick={close}>close</button>

@@ -1,33 +1,30 @@
 import { useRef, useEffect } from "react";
 
-import type TyperProps from "./Props";
 import { clear_interval } from "../Utils";
 
-import { useDispatch, useSelector } from "react-redux";
-import { type Marker, type Animation, type RootState } from "../store";
-import { register, deRegister, animationComplete, createMarker } from "../store";
-
+import { useSelector } from "react-redux";
+import { type RootState } from "../store";
 
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { Controller, type Registry } from "../Controllers";
 
-function I({ ref }: { ref: React.RefObject<HTMLDivElement | null>}) {
-   return <div ref={ref} style={{ display: 'inline-block', opacity: 0 }}><FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }}/></div>;
+function I({ ref }: { ref: React.RefObject<HTMLDivElement | null> }) {
+   return <div ref={ref} style={{ display: 'inline-block', opacity: 0 }}><FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }} /></div>;
 }
 
-export default function Span({ children, speed = 10, href, email }: TyperProps) {
-   const ref = useRef<HTMLDivElement>(null);
-
-   const marker = useRef<Marker>(null);
-   const dispatch = useDispatch();
-   const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
-   const animationStage = useSelector((state: RootState) => state.app.animationStage);
+export default function Span(
+   { children, speed = 10, href, email, registry }: { children: string, speed?: number, href?: string, email?: string, registry: Registry }
+) {
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
+   const ref = useRef<HTMLDivElement>(null);
    const iconRef = useRef<HTMLDivElement>(null);
-
    const spanRef = useRef<HTMLSpanElement>(null);
+
+   const controller = useRef(new Controller('div'));
+
    let char_count = 0;
-   let span = <span ref={spanRef} style={{ opacity: 0 }}>
+   let span = <span ref={spanRef}>
       {
          (() => {
             let char_i = 0;
@@ -39,7 +36,7 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
 
                let wordSpan = <span key={word_i}>{
                   [...word].map(ch => {
-                     let char_span = <span key={char_i} style={{ opacity: 0 }} ref={ref}>{ch}</span>;
+                     let char_span = <span key={char_i}  ref={ref}>{ch}</span>;
                      char_i++;
                      char_count++;
                      return char_span;
@@ -140,58 +137,45 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
       }, speed);
    });
 
-   const animator = async (animation: Animation): Promise<void> => {
-      if (!animationEnabled) {
-         if (marker.current) dispatch(animationComplete(marker.current));
-         return;
-      };
-
-      switch (animation) {
-         case "open":
-            await open();
-            break;
-         case "close":
-            await close();
-            break;
-      };
-      if (marker.current) dispatch(animationComplete(marker.current));
-   };
-
-
    useEffect(() => {
-      if (!animationEnabled && spanRef.current) {
-         let word_i = 0;
-         let char_i = 0;
-
-         spanRef.current.style.opacity = '0';
-
-         while (word_i < spanRef.current.childElementCount) {
-            let word = spanRef.current.children[word_i];
-            if (char_i === word.childElementCount) {
-               char_i = 0;
-               word_i++;
-               continue;
+      if (spanRef.current) {
+         for (const word of spanRef.current.children) {
+            for (const char of word.children) {
+               const span = char as HTMLElement;
+               span.style.opacity = '0';
             };
-
-            let char = word.children[char_i] as HTMLElement;
-            char.style.opacity = '1';
-            char_i++;
          };
-
-         spanRef.current.style.opacity = '1';
-         if (iconRef.current) iconRef.current.style.opacity = '1';
       };
-
-      marker.current = createMarker('content');
-      dispatch(register(marker.current));
-      return () => { if (marker.current) dispatch(deRegister(marker.current)) };
    }, []);
 
    useEffect(() => {
-      if (currentAnimation === null) return;
-      if (animationStage !== 'contents') return;
-      animator(currentAnimation);
-   }, [currentAnimation, animationStage])
+      controller.current.register();
+      registry.register(controller.current);
+
+
+      let killed = false;
+      const task = async () => {
+         while (!killed) {
+            let [resolver, value] = await controller.current.consume();
+
+            if (value) {
+               await open();
+            } else {
+               await close();
+            };
+            resolver();
+         };
+      };
+
+      task();
+      
+      return () => {
+         controller.current.unregister();
+         registry.deRegister(controller.current);
+         killed = true;
+      };
+   }, [])
+
 
 
 
@@ -199,10 +183,10 @@ export default function Span({ children, speed = 10, href, email }: TyperProps) 
    let extraClasses = ' ';
 
    if (href) {
-      content = <a role="button" href={`https://${href}`} target="_blank" rel="noopener noreferrer" className="inline-block">{span}<I ref={iconRef}/></a>;
+      content = <a role="button" href={`https://${href}`} target="_blank" rel="noopener noreferrer" className="inline-block">{span}<I ref={iconRef} /></a>;
       extraClasses += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
    } else if (email) {
-      content = (<a role="button" href={`mailto:${email}`} className="inline-block">{span}<I ref={iconRef}/></a>);
+      content = (<a role="button" href={`mailto:${email}`} className="inline-block">{span}<I ref={iconRef} /></a>);
       extraClasses += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
    };
 
