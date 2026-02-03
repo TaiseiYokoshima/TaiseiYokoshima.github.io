@@ -108,6 +108,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
 
 
    const open = () => new Promise<void>((resolve, _) => {
+      console.log("open called on span header");
       let word_i = 0;
       let char_i = 0;
 

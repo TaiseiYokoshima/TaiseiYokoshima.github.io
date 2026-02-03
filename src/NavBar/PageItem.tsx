@@ -5,14 +5,18 @@ import { changePage } from "../store";
 
 import { type Page } from "./utils";
 import styles from "./NavBar.module.css";
+import type { PageController } from "../Controllers";
 
-export default function PageItem({ children, cancelClose, contentRef }: { children: string, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
+export default function PageItem({ children, cancelClose, contentRef, controller }: { children: string, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
    const currentPage = useSelector((state: RootState) => state.app.currentPage); 
+   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const dispatch = useDispatch();
 
    const ref = useRef<HTMLDivElement>(null);
    const thisPage = children.toLowerCase() as Page;
    const isThisPage = currentPage === thisPage;
+
+
 
    const onClick = async () => {
       if (contentRef.current && contentRef.current.scrollTop !== 0){
@@ -23,6 +27,11 @@ export default function PageItem({ children, cancelClose, contentRef }: { childr
       cancelClose();
       if (ref.current === null) return;
       ref.current.classList.add(styles.clicked);
+
+      if (animationEnabled) {
+         await controller.close();
+      };
+
       dispatch(changePage(thisPage));
    };
 

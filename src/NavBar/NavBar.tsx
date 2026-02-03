@@ -2,11 +2,12 @@ import styles from "./NavBar.module.css";
 import "../App.css";
 import PageItem from "./PageItem";
 
-import { useDispatch, useSelector } from "react-redux";
-import { type RootState, toggleSettings } from "../store";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useDispatch } from "react-redux";
+import { toggleSettings } from "../store";
+import { useRef, useState, type RefObject } from "react";
 
 import Settings from "./Settings";
+import type { PageController } from "../Controllers";
 
 function MenuOpener({ opener }: { opener: () => void }) {
    return <div className="absolute w-screen px-[1vw]! py-[1vh]!">
@@ -28,22 +29,21 @@ function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
    return <div role="button" onClick={openSettings} className={styles["side-components"]}>⚙</div>;
 }
 
-function NavBarCore({ closeMenuNow, cancelClose, contentRef }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null> }) {
+function NavBarCore({ closeMenuNow, cancelClose, contentRef, controller }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
    return <div className="min-w-screen flex pt-[1vh]!">
       <MenuCloser closer={closeMenuNow}/>
       <div className="flex flex-1 px-[20vw]!">
-         <PageItem cancelClose={cancelClose} contentRef={contentRef}>About</PageItem>
-         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Projects</PageItem>
-         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Experience</PageItem>
-         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Education</PageItem>
-         <PageItem cancelClose={cancelClose} contentRef={contentRef}>Contact</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>About</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Projects</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Experience</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Education</PageItem>
+         <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Contact</PageItem>
       </div>
       <SettingsOpener cancelClose={cancelClose}/>
    </div>;
 }
 
-export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivElement | null> }) {
-   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
+export default function Navbar({ contentRef, controller }: { contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
    const timeoutRef = useRef<number | null>(null);
    const [menuOpened, openMenu, closeMenu] = (() => {
       const [menuOpened, setter] = useState(false);
@@ -51,12 +51,6 @@ export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivEl
       const closeMenu = () => setter(false);
       return [menuOpened, openMenu, closeMenu];
    })();
-
-   useEffect(() => {
-      if (lastAnimation === 'open') {
-         scheduleClose();
-      };
-   }, [lastAnimation]);
 
 
    const cancelClose = () => {
@@ -81,7 +75,7 @@ export default function Navbar({ contentRef }: { contentRef: RefObject<HTMLDivEl
       scheduleClose();
    };
 
-   const BarOrOpener = (menuOpened) ? <NavBarCore cancelClose={cancelClose} closeMenuNow={closeMenuNow} contentRef={contentRef}/> : <MenuOpener opener={openMenuNow}/>;
+   const BarOrOpener = (menuOpened) ? <NavBarCore cancelClose={cancelClose} closeMenuNow={closeMenuNow} contentRef={contentRef} controller={controller}/> : <MenuOpener opener={openMenuNow}/>;
    return <>
       { BarOrOpener }
       <Settings scheduleClose={scheduleClose}/>
