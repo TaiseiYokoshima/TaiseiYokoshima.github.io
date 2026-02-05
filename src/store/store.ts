@@ -4,19 +4,25 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 type Page = 'about' | 'projects' | 'experience' | 'education' | 'contact';
 
 export interface AppState {
+   currentPage: Page,
+
+   opened: boolean,
+   animationRunning: boolean,
    animationEnabled: boolean,
+
    darkModeEnabled: boolean,
    settingsOpened: boolean,
-   currentPage: Page,
-   opened: boolean,
 }
 
 const initialState: AppState = {
+   currentPage: 'about',
+
+   opened: false,
+   animationRunning: false,
    animationEnabled: true,
+
    darkModeEnabled: true,
    settingsOpened: false,
-   currentPage: 'about',
-   opened: false,
 };
 
 const appStateSlice = createSlice({
@@ -43,6 +49,10 @@ const appStateSlice = createSlice({
          console.log("page changed to " + state.currentPage);
       },
 
+      toggleAnimationStatus: (state) => {
+         state.animationRunning = !state.animationRunning;
+      },
+
       open: (state) => {
          state.opened = true;
       },
@@ -53,5 +63,5 @@ const appStateSlice = createSlice({
    },
 });
 
-export const { toggleSettings, toggleDarkMode, toggleAnimation, open, close, changePage } = appStateSlice.actions;
+export const { toggleSettings, toggleDarkMode, toggleAnimation, toggleAnimationStatus, open, close, changePage } = appStateSlice.actions;
 export default appStateSlice.reducer;

@@ -103,20 +103,7 @@ function AnimationCapturer() {
 }
 
 export default function AnimationStatus() {
-   const currentAnimation = useSelector((state: RootState) => state.app.currentAnimation);
-   const lastAnimation = useSelector((state: RootState) => state.app.lastAnimation);
-   const targetPage = useSelector((state: RootState) => state.app.targetPage);
-
-   var running: boolean;
-   
-   if (currentAnimation !== null || targetPage !== null) {
-      running = true;
-   } else if (targetPage === null && lastAnimation === 'close') {
-      running = true;
-   } else {
-      running = false;
-   };
-   
+   const running = useSelector((state: RootState) => state.app.animationRunning);
    return (running) ? <AnimationCapturer/> : null; 
 }
 

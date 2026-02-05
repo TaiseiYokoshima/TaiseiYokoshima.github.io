@@ -23,7 +23,9 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    });
 
    const controller = useRef(new Controller('header'));
+
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
+   const opened = useSelector((state: RootState) => state.app.opened);
 
    const iconRef = useRef<HTMLDivElement>(null);
    const spanRef = useRef<HTMLSpanElement>(null);
@@ -42,7 +44,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
 
                let wordSpan = <span key={word_i}>{
                   [...word].map(ch => {
-                     let char_span = <span key={char_i} style={{ display: 'inline' }}>{ch}</span>;
+                     let char_span = <span key={char_i}>{ch}</span>;
                      char_i++;
                      char_count++;
                      return char_span;
@@ -149,11 +151,16 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
 
 
    useEffect(() => {
-      if (!containerRef.current) 
+      if (containerRef.current) { 
+         const { height, width }  = containerRef.current.getBoundingClientRect();
+         containerRef.current.style.height = `${height}px`;
+         containerRef.current.style.width = `${width}px`;
+      };
+
+
+      if (!animationEnabled || opened) {
          return;
-      const { height, width }  = containerRef.current.getBoundingClientRect();
-      containerRef.current.style.height = `${height}px`;
-      containerRef.current.style.width = `${width}px`;
+      };
 
       if (spanRef.current) {
          for (const word of spanRef.current.children) {

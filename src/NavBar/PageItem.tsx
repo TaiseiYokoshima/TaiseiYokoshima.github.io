@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { type RootState } from "../store";
+import { type RootState, toggleAnimationStatus } from "../store";
+
 import { useEffect, useRef, type RefObject } from "react";
 import { changePage } from "../store";
 
@@ -10,6 +11,7 @@ import type { PageController } from "../Controllers";
 export default function PageItem({ children, cancelClose, contentRef, controller }: { children: string, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
    const currentPage = useSelector((state: RootState) => state.app.currentPage); 
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
+
    const dispatch = useDispatch();
 
    const ref = useRef<HTMLDivElement>(null);
@@ -27,7 +29,9 @@ export default function PageItem({ children, cancelClose, contentRef, controller
       ref.current.classList.add(styles.clicked);
 
       if (animationEnabled) {
+         dispatch(toggleAnimationStatus());
          await controller.close();
+         dispatch(toggleAnimationStatus());
       };
 
       dispatch(changePage(thisPage));

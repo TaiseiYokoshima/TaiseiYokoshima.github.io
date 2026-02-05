@@ -14,7 +14,10 @@ function I({ ref }: { ref: React.RefObject<HTMLDivElement | null> }) {
 }
 
 export default function Span( { children, speed = 10, href, email, registry }: TyperProps) {
+
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
+   const opened = useSelector((state: RootState) => state.app.opened);
+   const currentPage = useSelector((state: RootState) => state.app.currentPage);
 
    const ref = useRef<HTMLDivElement>(null);
    const iconRef = useRef<HTMLDivElement>(null);
@@ -22,11 +25,12 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
    const controller = useRef(new Controller('div'));
 
-   let char_count = 0;
+
+   let charI = 0;
+   let wordCount =  0;
    let span = <span ref={spanRef}>
       {
          (() => {
-            let char_i = 0;
 
             return children.split(" ").map((word, word_i) => {
                if (word_i !== 0) {
@@ -35,70 +39,83 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
                let wordSpan = <span key={word_i}>{
                   [...word].map(ch => {
-                     let char_span = <span key={char_i}  ref={ref}>{ch}</span>;
-                     char_i++;
-                     char_count++;
+                     let char_span = <span key={charI}  ref={ref}>{ch}</span>;
+                     charI++;
                      return char_span;
                   })
                }</span>;
 
+               wordCount++;
                return wordSpan;
             })
          })()
       }
    </span>;
 
+   if (currentPage === 'contact') {
+      console.warn("word count: " + wordCount + ", char count: " + (charI + 1) + ", for: " + children);
+   };
+
+
+
 
    const close = () => new Promise<void>((resolve, _) => {
+      if (!spanRef.current) { 
+         console.error("span was null");
+         resolve();
+         return;
+      };
+
       let start_word = 0;
       let start_char = 0;
+      let gCStart = 0;
 
-
-      let end_word: number;
-      if (!spanRef.current) return console.error("span was null");
-      end_word = spanRef.current.childElementCount - 1;
+      let end_word = spanRef.current.childElementCount - 1;
       let end_char = spanRef.current.children[end_word].childElementCount - 1;
+      let gCEnd = charI;
 
       if (iconRef.current) iconRef.current.style.opacity = '0';
 
       const interval = setInterval(() => {
-         if (start_word > end_word) {
+         if (gCStart > gCEnd) {
             console.log("open finishing, calling resolve");
             clear_interval(interval);
             resolve();
             return
          };
 
-         if (spanRef.current) {
-            {
-               let s_word = spanRef.current.children[start_word];
-               let s_char = s_word.children[start_char] as HTMLElement;
-               s_char.style.opacity = '0';
-               start_char++;
-
-               if (start_char === s_word.childElementCount) {
-                  start_char = 0;
-                  start_word++;
-               };
-            };
-
-            {
-               let e_word = spanRef.current.children[end_word];
-               let e_char = e_word.children[end_char] as HTMLElement;
-               e_char.style.opacity = '0';
-               end_char--;
-
-               if (end_char === -1) {
-                  end_word--;
-                  let word = spanRef.current.children[end_word];
-                  end_char = word.childElementCount - 1;
-               };
-            };
-         } else {
+         if (!spanRef.current) {
             console.error("span was null");
             clear_interval(interval);
             resolve();
             return
+         };
+
+         {
+            let s_word = spanRef.current.children[start_word];
+            let s_char = s_word.children[start_char] as HTMLElement;
+            s_char.style.opacity = '0';
+            gCStart++;
+            start_char++;
+
+            if (start_char === s_word.childElementCount) {
+               start_char = 0;
+               start_word++;
+            };
+         };
+
+         {
+            let e_word = spanRef.current.children[end_word];
+            let e_char = e_word.children[end_char] as HTMLElement;
+            e_char.style.opacity = '0';
+            gCEnd--;
+            end_char--;
+
+            if (end_char === -1) {
+               end_word--;
+               let word = spanRef.current.children[end_word];
+               end_char = word.childElementCount - 1;
+            };
          };
       }, speed);
    });
@@ -137,13 +154,19 @@ export default function Span( { children, speed = 10, href, email, registry }: T
    });
 
    useEffect(() => {
+      if (!animationEnabled || opened) {
+         return;
+      };
+
       if (spanRef.current) {
+         spanRef.current.style.opacity = '0';
          for (const word of spanRef.current.children) {
             for (const char of word.children) {
                const span = char as HTMLElement;
                span.style.opacity = '0';
             };
          };
+         spanRef.current.style.opacity = '1';
       };
    }, []);
 

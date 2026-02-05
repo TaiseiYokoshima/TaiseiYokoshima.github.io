@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./store.ts";
 
-import { toggleSettings, toggleAnimation, toggleDarkMode, open, close, changePage, } from "./store.ts";
+import { toggleSettings, toggleAnimation, toggleDarkMode, toggleAnimationStatus, open, close, changePage, } from "./store.ts";
 
 export const store = configureStore({
    reducer: {
@@ -11,4 +11,4 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export { toggleSettings, toggleAnimation, toggleDarkMode, open, close, changePage };
+export { toggleSettings, toggleAnimation, toggleDarkMode, toggleAnimationStatus, open, close, changePage };
