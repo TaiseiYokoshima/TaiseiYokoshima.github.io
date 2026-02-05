@@ -6,15 +6,14 @@ import { useSelector } from "react-redux";
 import { type RootState } from "../store";
 
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { Controller, type Registry } from "../Controllers";
+import { Controller } from "../Controllers";
+import type TyperProps from "./Props";
 
 function I({ ref }: { ref: React.RefObject<HTMLDivElement | null> }) {
    return <div ref={ref} style={{ display: 'inline-block', opacity: 0 }}><FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }} /></div>;
 }
 
-export default function Span(
-   { children, speed = 10, href, email, registry }: { children: string, speed?: number, href?: string, email?: string, registry: Registry }
-) {
+export default function Span( { children, speed = 10, href, email, registry }: TyperProps) {
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
 
    const ref = useRef<HTMLDivElement>(null);
@@ -171,12 +170,10 @@ export default function Span(
       
       return () => {
          controller.current.unregister();
-         registry.deRegister(controller.current);
+         registry.unregister(controller.current);
          killed = true;
       };
    }, [])
-
-
 
 
    let content: React.ReactNode = span;

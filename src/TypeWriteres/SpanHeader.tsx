@@ -8,11 +8,12 @@ import { useSelector } from "react-redux";
 import { type RootState } from "../store";
 import { FaExternalLinkAlt } from "react-icons/fa";
 
-import { Controller, Registry } from "../Controllers";
+import { Controller } from "../Controllers";
+import type TyperProps from "./Props";
 
 
 
-export default function SpanHeader({ children, speed = 10, href, email, registry }: { children: string, speed?: number, href?: string, email?: string, registry: Registry }) {
+export default function SpanHeader({ children, speed = 10, href, email, registry }: TyperProps) {
    const I = React.forwardRef<HTMLDivElement>((_, ref) => {
       return (
          <div ref={ref} style={{ display: 'inline-block' }}>
@@ -183,7 +184,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
       task();
       registry.register(controller.current);
       return () => {
-         registry.deRegister(controller.current);
+         registry.unregister(controller.current);
          controller.current.unregister();
          killed = true;
       };

@@ -5,21 +5,25 @@ import { type RootState } from "../store";
 
 import { useRef, useEffect } from "react";
 import {  useSelector } from "react-redux";
-import type { Controller } from "../Controllers";
+import type TyperProps from "./Props";
 
-export default function SpanTitle({ speed = 10, controller }: { speed?: number, controller: Controller }) {
+export default function SpanTitle({ speed = 10, registry, children }: TyperProps) {
    const cursorRef = useRef<HTMLSpanElement>(null);
-   const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const spanRef = useRef<HTMLSpanElement>(null);
 
-   const page_string = currentPage as string;
+   const opened = useSelector((state: RootState) => state.app.opened);
+   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
+
+   const controller = registry.title;
+
+   const pageString = children;
    let char_count = 0;
    let span = <span ref={spanRef}>
       {
          (() => {
             let char_i = 0;
-            return [...page_string].map(ch => {
-               let char_span = <span key={char_i} style={{ display: 'none'}}>{ch}</span>;
+            return [...pageString].map(ch => {
+               let char_span = <span key={char_i}>{ch}</span>;
                char_i++;
                char_count++;
                return char_span;
@@ -100,6 +104,24 @@ export default function SpanTitle({ speed = 10, controller }: { speed?: number, 
       }, speed);
    });
 
+
+   useEffect(() => {
+      if (!animationEnabled || opened) {
+         return;
+      };
+
+      if (!spanRef.current)  {
+         return;
+      };
+
+      spanRef.current.style.opacity = '0';
+      for (const char of spanRef.current.children) {
+         const element = char as HTMLElement;
+         element.style.display = 'none';
+      };
+
+      spanRef.current.style.opacity = '1';
+   }, [])
 
    useEffect(() => {
       controller.register();

@@ -16,8 +16,6 @@ export default function PageItem({ children, cancelClose, contentRef, controller
    const thisPage = children.toLowerCase() as Page;
    const isThisPage = currentPage === thisPage;
 
-
-
    const onClick = async () => {
       if (contentRef.current && contentRef.current.scrollTop !== 0){
          contentRef.current.scrollTop = 0;

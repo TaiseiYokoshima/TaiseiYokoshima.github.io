@@ -1,9 +1,7 @@
 // const DEBUG = false;
 
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
 type Page = 'about' | 'projects' | 'experience' | 'education' | 'contact';
-
 
 export interface AppState {
    animationEnabled: boolean,
@@ -41,6 +39,7 @@ const appStateSlice = createSlice({
 
       changePage: (state, action: PayloadAction<Page>) => {
          state.currentPage = action.payload;
+         state.opened = false;
          console.log("page changed to " + state.currentPage);
       },
 

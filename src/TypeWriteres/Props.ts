@@ -1,12 +1,12 @@
-import { Controller, Registry } from "../Controllers";
+import { PageController } from "../Controllers";
 
 export default interface TyperProps {
    children: string;
+   registry: PageController,
+
    speed?: number;
-   controller?: Controller;
-   registry?: Registry;
+   email?: string,
    href?: string,
    onClick?: () => void,
-   email?: string,
 }
 

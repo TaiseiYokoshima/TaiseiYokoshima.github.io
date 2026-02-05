@@ -1,30 +1,31 @@
-// import { Div, Header } from "../../TypeWriteres";
-//
-// function Email() {
-//    return <div className="mt-[5rem]!">
-//       <Header>Email</Header>
-//       <Div email="taiseiyokoshima.professional.@gmail.com">taiseiyokoshima.professional@gmail.com</Div>
-//    </div>;
-// }
-//
-// function LinkedIn() {
-//    return <div className="mt-[5rem]!">
-//      <Header>LinkedIn</Header>
-//      <Div href={'linkedin.com/in/taisei-yokoshima'}>linkedin.com/in/taisei-yokoshima</Div>
-//    </div>;
-// }
-//
-// function GitHub() {
-//    return <div className="mt-[5rem]!">
-//      <Header>GitHub</Header>
-//      <Div href={'github.com/TaiseiYokoshima'}>github.com/TaiseiYokoshima</Div>
-//    </div>;
-// }
-//
-// export default function Contact() {
-//    return <div className="ml-[20rem]!">
-//       <Email/>
-//       <LinkedIn/>
-//       <GitHub/>
-//    </div>;
-// }
+import type Props from "../props.ts";
+import { Span, SpanHeader } from "../../TypeWriteres";
+
+function Email({ registry }: Props) {
+   return <div className="mt-[5rem]!">
+      <SpanHeader registry={registry}>Email</SpanHeader>
+      <Span registry={registry} email="taiseiyokoshima.professional.@gmail.com">taiseiyokoshima.professional@gmail.com</Span>
+   </div>;
+}
+
+function LinkedIn({ registry }: Props) {
+   return <div className="mt-[5rem]!">
+     <SpanHeader registry={registry}>LinkedIn</SpanHeader>
+     <Span href={'linkedin.com/in/taisei-yokoshima'} registry={registry}>linkedin.com/in/taisei-yokoshima</Span>
+   </div>;
+}
+
+function GitHub({ registry }: Props) {
+   return <div className="mt-[5rem]!">
+     <SpanHeader registry={registry}>GitHub</SpanHeader>
+     <Span href={'github.com/TaiseiYokoshima'} registry={registry}>github.com/TaiseiYokoshima</Span>
+   </div>;
+}
+
+export default function Contact({ registry }: Props) {
+   return <div className="ml-[20rem]!">
+      <Email registry={registry}/>
+      <LinkedIn registry={registry}/>
+      <GitHub registry={registry}/>
+   </div>;
+}

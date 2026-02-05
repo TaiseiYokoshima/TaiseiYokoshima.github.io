@@ -1,5 +1,5 @@
 import Controller from "./Controller"
-const debug = true;
+const debug = false;
 let id = 1;
 
 export default class Registry {
@@ -24,7 +24,7 @@ export default class Registry {
       this.controllers.push(controller);
    }
 
-   deRegister(controller: Controller) {
+   unregister(controller: Controller) {
       const index = this.controllers.findIndex(c => c === controller);
       if (index !== -1) {
          if (debug) console.log(`registry ${this.id}:${this.type} - deregistering ${controller.type}:${controller.id}`);
