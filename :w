@@ -26,7 +26,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    const containerRef = useRef<HTMLDivElement>(null);
 
    let char_count = 0;
-   let span = <span ref={spanRef} style={{ whiteSpace: 'pre-line'}}>{
+   let span = <span ref={spanRef} style={{ display: 'inline', whiteSpace: 'pre-line'}}>{
          (() => {
             let char_i = 0;
 
@@ -55,18 +55,18 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    if (href && email) {
       console.error("both email and href were provided");
    } else if (href) {
-      const hrefStr = `https://${href}`;
+      const hrefStr = `https:://${href}`;
       const rel = "noopener noreferrer";
 
-      content = (<div style={{ display: 'inline'}} className={classes}>
-         <a role="button" href={hrefStr} target="_blank" rel={rel} style={{display: "inline"}}>{span}</a>
+      content = (<div style={{ display: 'inline-block'}} className={classes}>
+         <a role="button" href={hrefStr} target="_blank" rel={rel} style={{ display: "inline"}}>{span}</a>
          <Icon ref={iconRef}/>
       </div>);
 
    } else if (email) {
       const hrefStr = `mailto:${email}`;
       content = (<div style={{display: 'inline'}} className={classes}>
-         <a role="button" href={hrefStr} style={{display: "inline"}}>{span}</a>
+         <a role="button" href={hrefStr} className="inline">{span}</a>
          <Icon ref={iconRef} />
       </div>);
    };
@@ -89,7 +89,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
       if (iconRef.current) {
          iconRef.current.style.display = 'none';
       } else {
-         if (href || email) console.log("icon ref was null during close");
+         console.log("icon ref was null during close");
       };
 
       const interval = setInterval(() => {
@@ -106,7 +106,9 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
                clear_interval(interval);
 
                if (iconRef.current) {
-                  iconRef.current.style.display = 'none';
+                  iconRef.current.style.display = 'inline-block';
+               } else {
+                  console.error("icon ref was null for span header");
                };
 
                resolve();
@@ -129,6 +131,9 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
       let word_i = 0;
       let char_i = 0;
 
+      if (iconRef.current) iconRef.current.style.display = 'none';
+      if (spanRef.current) spanRef.current.style.opacity = '1';
+
       const interval = setInterval(() => {
          if (!spanRef.current) {
             clear_interval(interval);
@@ -145,7 +150,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
 
             if (spanRef.current.childElementCount === word_i) {
                clear_interval(interval);
-               if (iconRef.current) iconRef.current.style.display = 'inline';
+               if (iconRef.current) iconRef.current.style.display = 'inline-block';
                else console.log("icon ref was null for span");
                console.log("finished open animation");
                resolve();
@@ -161,16 +166,20 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
       }, speed);
    });
 
-   const closeImmediate = () => {
+
+
+   useEffect(() => {
       if (!animationEnabled || opened) {
          return;
       };
 
-      if (containerRef.current) {
-         containerRef.current.style.opacity = '0';
+      if (!iconRef.current && (href || email)) {
+         console.error("href or email were enabled but the icon ref was null: span header");
       };
 
-      if (iconRef.current) iconRef.current.style.display = 'none';
+      if (iconRef.current && (href || email)) {
+         iconRef.current.style.display = 'none';
+      };
 
       if (spanRef.current) {
          for (const word of spanRef.current.children) {
@@ -181,18 +190,13 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
          };
       };
 
-      if (containerRef.current) {
-         containerRef.current.style.opacity = '1';
-      };
-   };
+   }, [])
 
    useEffect(() => {
       if (containerRef.current) { 
          const { height, width }  = containerRef.current.getBoundingClientRect();
          containerRef.current.style.height = `${height}px`;
          containerRef.current.style.width = `${width}px`;
-      } else {
-         console.error("container ref as well for span header when trying to stablize is height and width");
       };
 
       let killed = false;
@@ -218,11 +222,9 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
       };
    }, [])
 
-   useEffect(() => {
-      closeImmediate();
-   }, [opened])
 
    return <div>
-      <div className="inline-block text-[20px]" ref={ containerRef }>{content}<span ref={cursorRef} className={ style.header }/></div>
+      {/* <div className={ "inline-block text-[20px]" + extraClasses } ref={ containerRef }> */}
+      <div className="inline-block text-[20px]" ref={ containerRef }>{span}<span ref={cursorRef} className={ style.header }/></div>
    </div>;
 }

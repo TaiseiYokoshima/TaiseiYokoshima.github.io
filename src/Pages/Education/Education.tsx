@@ -4,7 +4,7 @@ import type Props from "../props";
 function Sussex({ registry }: Props) {
    return <div  className="mt-[8rem]! w-full!">
       <div className="flex justify-between">
-         <SpanHeader registry={registry} href="sussex.ac.uk">University of Sussex</SpanHeader>
+         <SpanHeader speed={100} registry={registry} href="sussex.ac.uk">University of Sussex</SpanHeader>
          <Span registry={registry}>Brighton, UK</Span>
       </div>
       <Span registry={registry}>Sep 2022 - May 2024</Span>

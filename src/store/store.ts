@@ -15,7 +15,7 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-   currentPage: 'about',
+   currentPage: 'education',
 
    opened: false,
    animationRunning: false,

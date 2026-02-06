@@ -13,7 +13,8 @@ import PageContent from './Pages';
 
 
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAnimationStatus } from './store';
+import { open, close, toggleAnimationStatus } from './store';
+
 import AnimationStatus from './AnimationStatus';
 
 export default function App() {
@@ -31,9 +32,17 @@ export default function App() {
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
    const opened = useSelector((state: RootState) => state.app.opened);
 
-   const open = async () => {
+   const openAnimation = async () => {
       dispatch(toggleAnimationStatus());
       await registry.current.open();
+      dispatch(open());
+      dispatch(toggleAnimationStatus());
+   };
+
+   const closeAnimation = async () => {
+      dispatch(toggleAnimationStatus());
+      await registry.current.close();
+      dispatch(close());
       dispatch(toggleAnimationStatus());
    };
 
@@ -42,7 +51,7 @@ export default function App() {
          return;
 
       if (!opened) {
-         open();
+         openAnimation();
       };
 
    }, [currentPage])
@@ -54,8 +63,8 @@ export default function App() {
          <PageContent registry={registry.current}/>
       </div>
 
-      <button onClick={open}>open</button>
-      <button onClick={close}>close</button>
+      <button onClick={openAnimation}>open</button>
+      <button onClick={closeAnimation}>close</button>
       <AnimationStatus/>
    </div>;
 }

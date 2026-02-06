@@ -5,13 +5,11 @@ import { clear_interval } from "../Utils";
 import { useSelector } from "react-redux";
 import { type RootState } from "../store";
 
-import { FaExternalLinkAlt } from "react-icons/fa";
 import { Controller } from "../Controllers";
 import type TyperProps from "./Props";
 
-function I({ ref }: { ref: React.RefObject<HTMLDivElement | null> }) {
-   return <div ref={ref} style={{ display: 'inline-block', opacity: 0 }}><FaExternalLinkAlt size={13} style={{ display: 'inline-block', margin: '0.5rem' }} /></div>;
-}
+
+import Icon from "./Icon";
 
 export default function Span( { children, speed = 10, href, email, registry }: TyperProps) {
 
@@ -19,19 +17,17 @@ export default function Span( { children, speed = 10, href, email, registry }: T
    const opened = useSelector((state: RootState) => state.app.opened);
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
 
-   const ref = useRef<HTMLDivElement>(null);
+   const containerRef = useRef<HTMLDivElement>(null);
    const iconRef = useRef<HTMLDivElement>(null);
    const spanRef = useRef<HTMLSpanElement>(null);
 
    const controller = useRef(new Controller('div'));
 
-
    let charI = 0;
    let wordCount =  0;
-   let span = <span ref={spanRef}>
+   const span = <span ref={spanRef} style={{ whiteSpace: 'pre-line'}}>
       {
          (() => {
-
             return children.split(" ").map((word, word_i) => {
                if (word_i !== 0) {
                   word = " " + word;
@@ -39,7 +35,7 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
                let wordSpan = <span key={word_i}>{
                   [...word].map(ch => {
-                     let char_span = <span key={charI}  ref={ref}>{ch}</span>;
+                     let char_span = <span key={charI}  ref={containerRef}>{ch}</span>;
                      charI++;
                      return char_span;
                   })
@@ -47,22 +43,37 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
                wordCount++;
                return wordSpan;
-            })
+            });
          })()
       }
    </span>;
 
-   if (currentPage === 'contact') {
-      console.warn("word count: " + wordCount + ", char count: " + (charI + 1) + ", for: " + children);
+
+   let content: React.ReactNode = span;
+   const classes = 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
+   if (href && email) {
+      console.error("both email and href were provided");
+   } else if (href) {
+      const hrefStr = `https://${href}`;
+      const rel = "noopener noreferrer";
+      content = (<div style={{ display: 'inline'}} className={classes}>
+         <a role="button" href={hrefStr} target="_blank" rel={rel} className="inline">{span}</a>
+         <Icon ref={iconRef}/>
+      </div>);
+
+   } else if (email) {
+      const hrefStr = `mailto:${email}`;
+      content = (<div style={{display: 'inline'}} className={classes}>
+         <a role="button" href={hrefStr} className="inline">{span}</a>
+         <Icon ref={iconRef} />
+      </div>);
    };
-
-
-
 
    const close = () => new Promise<void>((resolve, _) => {
       if (!spanRef.current) { 
          console.error("span was null");
          resolve();
+         if (iconRef.current) iconRef.current.style.opacity = '0';
          return;
       };
 
@@ -120,14 +131,11 @@ export default function Span( { children, speed = 10, href, email, registry }: T
       }, speed);
    });
 
-
    const open = () => new Promise<void>((resolve, _) => {
-      if (!ref.current) return;
+      if (!containerRef.current) return;
 
       let word_i = 0;
       let char_i = 0;
-
-      if (spanRef.current) spanRef.current.style.opacity = '1';
 
       const interval = setInterval(() => {
          if (!spanRef.current) return;
@@ -153,22 +161,36 @@ export default function Span( { children, speed = 10, href, email, registry }: T
       }, speed);
    });
 
-   useEffect(() => {
+   const closeImmediate = () => {
       if (!animationEnabled || opened) {
          return;
       };
 
+      if (!iconRef.current && (href || email)) {
+         console.error("href or email were enabled but the icon ref was null: span");
+      };
+
+      if (containerRef.current) {
+         containerRef.current.style.opacity = '0';
+      };
+
+      if (iconRef.current) {
+         iconRef.current.style.opacity = '0';
+      };
+
       if (spanRef.current) {
-         spanRef.current.style.opacity = '0';
          for (const word of spanRef.current.children) {
             for (const char of word.children) {
                const span = char as HTMLElement;
                span.style.opacity = '0';
             };
          };
-         spanRef.current.style.opacity = '1';
       };
-   }, []);
+
+      if (containerRef.current) {
+         containerRef.current.style.opacity = '1';
+      };
+   };
 
    useEffect(() => {
       controller.current.register();
@@ -199,19 +221,13 @@ export default function Span( { children, speed = 10, href, email, registry }: T
    }, [])
 
 
-   let content: React.ReactNode = span;
-   let extraClasses = ' ';
+   useEffect(() => {
+      closeImmediate();
+   }, [opened]);
 
-   if (href) {
-      content = <a role="button" href={`https://${href}`} target="_blank" rel="noopener noreferrer" className="inline-block">{span}<I ref={iconRef} /></a>;
-      extraClasses += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
-   } else if (email) {
-      content = (<a role="button" href={`mailto:${email}`} className="inline-block">{span}<I ref={iconRef} /></a>);
-      extraClasses += 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
-   };
 
    return <div>
-      <div className={"inline-block text-[20px] whitespace-pre-wrap" + extraClasses} ref={ref}>
+      <div className="inline-block text-[20px]"  ref={containerRef}>
          {content}
       </div>
    </div>;

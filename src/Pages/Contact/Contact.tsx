@@ -4,7 +4,7 @@ import { Span, SpanHeader } from "../../TypeWriteres";
 function Email({ registry }: Props) {
    return <div className="mt-[5rem]!">
       <SpanHeader registry={registry}>Email</SpanHeader>
-      <Span registry={registry} email="taiseiyokoshima.professional.@gmail.com">taiseiyokoshima.professional@gmail.com</Span>
+      <Span speed={100} registry={registry} email="taiseiyokoshima.professional.@gmail.com">taiseiyokoshima.professional@gmail.com</Span>
       {/* <Span registry={registry}>taiseiyokoshima.professional@gmail.com</Span> */}
    </div>;
 }
