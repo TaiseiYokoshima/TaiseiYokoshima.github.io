@@ -68,10 +68,3 @@ export default function App() {
       <AnimationStatus/>
    </div>;
 }
-
-
-
-
-
-
-

@@ -14,7 +14,6 @@ import type TyperProps from "./Props";
 import Icon from "./Icon";
 
 export default function SpanHeader({ children, speed = 10, href, email, registry }: TyperProps) {
-
    const controller = useRef(new Controller('header'));
 
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
