@@ -13,7 +13,7 @@ import PageContent from './Pages';
 
 
 import { useSelector, useDispatch } from 'react-redux';
-import { open, close, toggleAnimationStatus } from './store';
+import { open, close, toggleAnimationStatus, changePage, isPage, type Page } from './store';
 
 import AnimationStatus from './AnimationStatus';
 
@@ -28,8 +28,8 @@ export default function App() {
 
    const dispatch = useDispatch();
 
-   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
+   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const opened = useSelector((state: RootState) => state.app.opened);
 
    const openAnimation = async () => {
@@ -46,8 +46,70 @@ export default function App() {
       dispatch(toggleAnimationStatus());
    };
 
+
+
+
    useEffect(() => {
-      if (!animationEnabled) 
+      const endpoints = window.location.pathname.split('/').filter((value) => value !== "");
+
+      if (endpoints.length !== 1) {
+         return;
+      };
+
+      const pageStr = endpoints[0];
+
+      if (!isPage(pageStr)) {
+         return
+      };
+
+      const page = pageStr as Page;
+      if (page !== currentPage) {
+         dispatch(changePage(page));
+         return;
+      };
+   }, []);
+
+
+   useEffect(() => {
+      const cb = async () => {
+         const endpoints = window.location.pathname.split('/').filter((value) => value !== "");
+
+         if (endpoints.length !== 1) {
+            console.error("in the popstate handler the endpoints length was not 1");
+            return;
+         };
+
+         const page = endpoints[0] as Page;
+
+         if (animationEnabled) {
+            dispatch(toggleAnimationStatus());
+            await registry.current.close();
+            dispatch(toggleAnimationStatus());
+         };
+
+         dispatch(changePage(page));
+      };
+
+      window.addEventListener("popstate", cb);
+      return () => {
+         console.warn("main navigator unbinding popstate");
+         window.removeEventListener("popstate", cb);
+      };
+   }, []);
+
+
+   useEffect(() => {
+      const endpoints = window.location.pathname.split('/').filter((value) => value !== "");
+      if (endpoints.length === 1 && endpoints[0] as Page === currentPage) {
+         return;
+      };
+
+      window.history.pushState(null, "", `/${currentPage}`);
+   }, [currentPage])
+
+
+   useEffect(() => {
+      if (!animationEnabled)
          return;
 
       if (!opened) {
@@ -57,14 +119,14 @@ export default function App() {
    }, [currentPage])
 
    return <div className='terminal top-container'>
-      <NavBar contentRef={contentRef} controller={registry.current}/>
+      <NavBar contentRef={contentRef} controller={registry.current} />
       <div className='overflow-y-auto h-full!' ref={contentRef}>
          <SpanTitle speed={100} registry={registry.current}>{currentPage as string}</SpanTitle>
-         <PageContent registry={registry.current}/>
+         <PageContent registry={registry.current} />
       </div>
 
       <button onClick={openAnimation}>open</button>
       <button onClick={closeAnimation}>close</button>
-      <AnimationStatus/>
+      <AnimationStatus />
    </div>;
 }
