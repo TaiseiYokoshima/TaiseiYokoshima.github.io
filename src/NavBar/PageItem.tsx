@@ -34,6 +34,7 @@ export default function PageItem({ children, cancelClose, contentRef, controller
          dispatch(toggleAnimationStatus());
       };
 
+      window.history.pushState(null, "", `/${thisPage}`)
       dispatch(changePage(thisPage));
    };
 

@@ -43,7 +43,30 @@ function Router({children}: { children: React.ReactNode }) {
          dispatch(changePage(page));
          return;
       };
-   }, [])
+   }, []);
+
+
+
+
+   const cb = () => {
+      const endpoints = window.location.pathname.split('/').filter((value) => value !== "");
+
+      if (endpoints.length !== 1) {
+         console.error("in the popstate handler the endpoints length was not 1");
+         return;
+      };
+
+      const page = endpoints[0] as Page;
+
+      console.warn(`going to ${page} page in the call back`);
+   };
+
+   useEffect(() => {
+      window.addEventListener("popstate", cb);
+      return () => window.removeEventListener("popstate", cb);
+   }, []);
+
+
 
    useEffect(() => {
       window.history.pushState(null, "", `/${currentPage}`);
