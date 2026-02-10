@@ -5,25 +5,31 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
 import { toggleSettings, toggleAnimation, toggleDarkMode } from "../store";
 import { useEffect } from "react";
+import React from "react";
 
 
 function Switch({ enabled, callback, h='20px', w='30px', style={}, }: { enabled: boolean, callback: () => void, h?: string, w?: string, style?: React.CSSProperties }) {
-   const button = (<div className="bg-white-500 bg-white flex-1" />);
-   const bg = (<div className="bg-white-500 flex-1" />);
-   const color = " " + (enabled ?  "bg-green-500" : "bg-gray-500");
+   const button = (<div style={{backgroundColor: "#ffffff", flex: '1'}} />);
+   const bg = (<div style={{backgroundColor: "transparent", flex: '1'}} />);
 
-   style.height = h;
-   style.width = w;
+   const switchStyle: React.CSSProperties = {
+      ...style,
+      height: h,
+      width: w,
+      display: 'flex',
+      padding: '0.4%',
+      backgroundColor: (enabled) ? '#22c55e' : '#6b7280', 
+   };
 
-   return <div onClick={callback} className={"flex p-[0.4%]!" + color} style={style} >
+   return <div onClick={callback} style={switchStyle} >
       { enabled ? <>{button}{bg}</> : <>{bg}{button}</> }
    </div>;
 }
 
 function Setting({ callback, children, enabled }: { callback: () => void, children: string, enabled: boolean }) {
-   return <div className="flex w-full justify-center items-center">
-      <div className="flex-[0_0_45%] text-right text-[20px]">{`${children}`}</div>
-      <div className="flex-[0_0_45%]">
+   return <div style={{ width: '100%', display: 'flex', justifyContent: "center", alignItems: 'center'}}>
+      <div style={{flex: "0 0 45%", textAlign: 'right', fontSize: '20px'}}>{`${children}`}</div>
+      <div style={{flex: "0 0 45%"}}>
          <Switch enabled={enabled} callback={callback} w="50px"/>
       </div>
    </div>;
@@ -50,20 +56,36 @@ export default function Settings({ scheduleClose }: { scheduleClose: () => void 
    return <>
       {settingsOpen ?
          <>
-            <div className="shadow-[inset_0_0_0_0.2rem_white] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vh] z-10 terminal">
-               <div className="text-[45px] text-center mb-[2vh]" 
-               >Preferences</div>
-               <div>
-                  <div 
-                     role="button"
-                     onClick={closeSettings} 
-                     className="absolute right-0 top-0 cursor-pointer bg-white text-black w-[1.8em] h-[1.8em] flex justify-center items-center text-center"
-                  >X</div>
+            <div className="terminal" style={{
+               position: 'absolute',
+               top: "50%",
+               left: "50%",
+               transform: 'translate(-50%, -50%)',
+               width: '50vw',
+               height: '50vh',
+               zIndex: '10',
+               boxShadow: 'inset 0 0 0 0.2rem white'
+            }}>
+               <div style={{fontSize: '45px', textAlign: 'center', marginBottom: '2vh'}}>Preferences</div><div>
+                  <div role="button" onClick={closeSettings} style={{
+                        position: 'absolute',
+                        right: '0',
+                        top: '0',
+                        cursor: 'pointer',
+                        backgroundColor: 'white',
+                        color: 'black',
+                        width: '1.8em',
+                        height: '1.8em',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                     }}>X</div>
                   <Setting callback={flipAnimation} enabled={animationEnabled}>Animation | </Setting>
                   <Setting callback={flipDarkMoode} enabled={darkModeEnabled}>Dark Mode | </Setting>
                </div>
             </div>
-            <div role="button" onClick={closeSettings} className="absolute top-0 left-0 w-full h-full z-2"/>
+            <div role="button" onClick={closeSettings} style={{position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', zIndex: '2'}}/> 
          </>
          : null}
    </>;

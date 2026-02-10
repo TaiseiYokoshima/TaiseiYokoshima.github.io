@@ -4,7 +4,7 @@ import { clear_interval } from "../Utils";
 import { type RootState } from "../store";
 
 import { useRef, useEffect } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import type TyperProps from "./Props";
 
 export default function SpanTitle({ speed = 10, registry, children }: TyperProps) {
@@ -110,7 +110,7 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
          return;
       };
 
-      if (!spanRef.current)  {
+      if (!spanRef.current) {
          return;
       };
 
@@ -148,10 +148,10 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
 
 
 
-   return <div className="flex justify-center mt-[20vh]!">
+   return <div style={{display: 'flex', justifyContent: "center", marginTop: "20vh"}}>
       <div>
-         { span }
-         <span ref={cursorRef} className={style.cursor}/>
+         {span}
+         <span ref={cursorRef} className={style.cursor} />
       </div>
    </div>;
 }

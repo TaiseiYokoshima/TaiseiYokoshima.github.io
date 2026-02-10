@@ -13,7 +13,7 @@ const body = `
 
 
 function Passology({ registry }: Props) {
-   return <div className="mt-[5rem]!">
+   return <div style={{marginTop: "5rem"}}>
       <SpanHeader registry={registry}>Software Engineering Intern</SpanHeader>
       <Span registry={registry} href="passlogy.com">Passlogy Co. LTD</Span>
       <Span registry={registry}>Tokyo, Japan</Span>

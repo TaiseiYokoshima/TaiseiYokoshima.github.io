@@ -9,14 +9,23 @@ import { useRef, useState, type RefObject } from "react";
 import Settings from "./Settings";
 import type { PageController } from "../Controllers";
 
+
+
 function MenuOpener({ opener }: { opener: () => void }) {
-   return <div className="absolute w-screen px-[1vw]! py-[1vh]!">
-      <div role="button" onClick={opener} className="cursor-pointer hover:text-blue-500 inline text-[20px]">Menu »</div>
+   return <div style={{
+      position: 'absolute',
+      width: '100vw',
+      paddingLeft: '1vw',
+      paddingRight: '1vw',
+      paddingTop: '1vw',
+      paddingBottom: '1vw',
+   }}>
+      <div role="button" onClick={opener} className={styles.menuText}>Menu »</div>
    </div>;
 }
 
 function MenuCloser({ closer }: { closer: () => void }) {
-   return <div role="button" onClick={closer} className={styles["side-components"]}>«</div>;
+   return <div role="button" onClick={closer} className={styles.sideComponents}>«</div>;
 }
 
 function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
@@ -26,13 +35,13 @@ function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
       dispatch(toggleSettings());
    };
 
-   return <div role="button" onClick={openSettings} className={styles["side-components"]}>⚙</div>;
+   return <div role="button" onClick={openSettings} className={styles.sideComponents}>⚙</div>;
 }
 
 function NavBarCore({ closeMenuNow, cancelClose, contentRef, controller }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
-   return <div className="min-w-screen flex pt-[1vh]!">
+   return <div style={{minWidth: '100vw', display: 'flex', paddingTop: '1vh'}}>
       <MenuCloser closer={closeMenuNow}/>
-      <div className="flex flex-1 px-[20vw]!">
+      <div style={{display: 'flex', flex: '1', paddingLeft: '20vw', paddingRight: '20vw'}}>
          <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>About</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Projects</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Experience</PageItem>

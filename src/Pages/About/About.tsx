@@ -11,7 +11,7 @@ Recently, I undertook a research project on congestion control in networking as 
 `;
 
 export default function About({ registry }: Props) {
-   return <div className="mt-[8rem]!">
+   return <div style={{ marginTop: "8rem"}}>
       <Span href="github.com" speed={0.1} registry={registry}>{string}</Span>
    </div>;
 }

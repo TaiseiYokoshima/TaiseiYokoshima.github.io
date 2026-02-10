@@ -9,26 +9,12 @@
   --line-color: rgba(0,0,0,0.15);
 }
 
-
-
-/*these are necessary for custom utility class completions*/ 
-@import "tailwindcss/preflight";
-@layer components {
-   .terminal {
-      background-color: #070707;
-      background: linear-gradient(#111 50%, #070707 50%);
-      background-size: 100% 4px;
-      background-repeat: repeat-y;
-   }
-}
-@utility terminal {
+.terminal {
    background-color: #070707;
    background: linear-gradient(#111 50%, #070707 50%);
    background-size: 100% 4px;
    background-repeat: repeat-y;
 }
-/*ends here*/
-
 
 .top-container {
    height: 100vh;

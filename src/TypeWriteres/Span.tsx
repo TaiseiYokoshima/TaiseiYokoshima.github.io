@@ -8,14 +8,13 @@ import { type RootState } from "../store";
 import { Controller } from "../Controllers";
 import type TyperProps from "./Props";
 
-
 import Icon from "./Icon";
 
-export default function Span( { children, speed = 10, href, email, registry }: TyperProps) {
+import styles from "./Cursor.module.css";
 
+export default function Span( { children, speed = 10, href, email, registry }: TyperProps) {
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const opened = useSelector((state: RootState) => state.app.opened);
-   const currentPage = useSelector((state: RootState) => state.app.currentPage);
 
    const containerRef = useRef<HTMLDivElement>(null);
    const iconRef = useRef<HTMLDivElement>(null);
@@ -50,22 +49,21 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
 
    let content: React.ReactNode = span;
-   const classes = 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
    if (href && email) {
       console.error("both email and href were provided");
    } else if (href) {
       const hrefStr = `https://${href}`;
       const rel = "noopener noreferrer";
-      content = (<div style={{ display: 'inline'}} className={classes}>
-         <a role="button" href={hrefStr} target="_blank" rel={rel} className="inline">{span}</a>
+      content = (<div style={{ display: 'inline'}} className={styles.link}>
+         <a role="button" href={hrefStr} target="_blank" rel={rel} className={styles.link}>{span}</a>
          <Icon ref={iconRef}/>
       </div>);
 
    } else if (email) {
       const hrefStr = `mailto:${email}`;
-      content = (<div style={{display: 'inline'}} className={classes}>
-         <a role="button" href={hrefStr} className="inline">{span}</a>
-         <Icon ref={iconRef} />
+      content = (<div style={{ display: 'inline'}} className={styles.link}>
+         <a role="button" href={hrefStr} style={{display: "inline"}} className={styles.link}>{span}</a>
+         <Icon ref={iconRef}/>
       </div>);
    };
 
@@ -227,7 +225,7 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
 
    return <div>
-      <div className="inline-block text-[20px]"  ref={containerRef}>
+      <div style={{ display: 'inline-block', fontSize: '20px' }} ref={containerRef}>
          {content}
       </div>
    </div>;

@@ -23,3 +23,16 @@
    margin-left: 0.3em;
    background-color: #0f0;
 }
+
+.link {
+   text-decoration: none;
+   cursor: pointer;
+   display: inline;
+   color: inherit;
+}
+
+.link:hover {
+   text-decoration: underline;
+   text-underline-offset: auto;
+   color: #22c55e;
+}

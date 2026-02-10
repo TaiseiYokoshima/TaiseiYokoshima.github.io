@@ -37,9 +37,9 @@ export default function PageContent({ registry }: Props) {
    };
 
    return <>
-      <div className="mx-[15vw]!">
+      <div style={{ marginLeft: '15vw', marginRight: '15vw'}}>
             { pageContent }
-            <div className="mt-[8rem]!"/>
+            <div style={{marginTop: '8rem'}}/>
       </div>
    </>;
 }

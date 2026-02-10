@@ -63,8 +63,22 @@ function MouseClickWarningAndCover() {
    }, [event]);
 
    return <>
-      <div onWheel={callback} onClick={callback} className="fixed left-0 top-0 min-h-screen min-w-screen z-1000 bg-transparent"/>
-      <div className="text-red-500 inline pr-[1vw] flex-[0_0_auto] whitespace-nowrap" ref={textRef}/>
+      <div onWheel={callback} onClick={callback} style={{
+         position: "fixed",
+         left: 0,
+         top: 0,
+         minHeight: '100vh',
+         minWidth: '100vw',
+         zIndex: '1000',
+         backgroundColor: 'transparent',
+      }}/>
+      <div style={{
+         color: '#ef4444',
+         display: 'inline',
+         paddingRight: '1vw',
+         flex: '0 0 auto',
+         whiteSpace: 'nowrap',
+      }} ref={textRef}/>
    </>;
 }
 
@@ -89,13 +103,22 @@ function AnimationLoader() {
       };
    }, []);
 
-
-   return <div style={{ display: 'inline'}} ref={loaderRef}>animation running ...</div>;
+   return <div style={{display: 'inline'}} ref={loaderRef}>animation running ...</div>;
 }
 
 function AnimationCapturer() {
    return <>
-      <div className="w-screen! absolute flex justify-between bottom-0 left-0 bg-black px-[0.5vw]!">
+      <div style={{
+         width: '100vw',
+         position: 'absolute',
+         display: 'flex',
+         justifyContent: 'space-between',
+         bottom: '0',
+         left: '0',
+         background: 'black',
+         paddingLeft: '0.5vw',
+         paddingRight: '0.5vw',
+      }}>
          <AnimationLoader/>
          <MouseClickWarningAndCover/>
       </div>

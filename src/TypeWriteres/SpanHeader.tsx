@@ -1,4 +1,4 @@
-import style from "./Cursor.module.css";
+import styles from "./Cursor.module.css";
 import { useRef, useEffect } from "react";
 import React from "react";
 
@@ -50,22 +50,20 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
 
 
    let content: React.ReactNode = span;
-   const classes = 'no-underline hover:underline hover:underline-offset-auto cursor-pointer hover:text-green-500!';
    if (href && email) {
       console.error("both email and href were provided");
    } else if (href) {
       const hrefStr = `https://${href}`;
       const rel = "noopener noreferrer";
-
-      content = (<div style={{ display: 'inline'}} className={classes}>
-         <a role="button" href={hrefStr} target="_blank" rel={rel} style={{display: "inline"}}>{span}</a>
+      content = (<div className={styles.link}>
+         <a role="button" href={hrefStr} target="_blank" rel={rel} style={{display: "inline"}} className={styles.link}>{span}</a>
          <Icon ref={iconRef}/>
       </div>);
 
    } else if (email) {
       const hrefStr = `mailto:${email}`;
-      content = (<div style={{display: 'inline'}} className={classes}>
-         <a role="button" href={hrefStr} style={{display: "inline"}}>{span}</a>
+      content = (<div className={styles.link}>
+         <a role="button" href={hrefStr} style={{display: "inline"}} className={styles.link}>{span}</a>
          <Icon ref={iconRef} />
       </div>);
    };
@@ -222,6 +220,9 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    }, [opened])
 
    return <div>
-      <div className="inline-block text-[20px]" ref={ containerRef }>{content}<span ref={cursorRef} className={ style.header }/></div>
+      <div style={{display: "inline-block", fontSize: '20px'}} ref={containerRef}>
+         {content}
+         <span ref={cursorRef} className={styles.header}/>
+      </div>
    </div>;
 }
