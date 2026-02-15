@@ -56,6 +56,7 @@ function MouseClickWarningAndCover() {
 
          if (firstClick.current) {
             textRef.current.style.width = textRef.current.offsetWidth + 'px';
+            firstClick.current = false;
          };
       };
 
@@ -76,6 +77,7 @@ function MouseClickWarningAndCover() {
          color: '#ef4444',
          display: 'inline',
          paddingRight: '1vw',
+         textAlign: 'left',
          flex: '0 0 auto',
          whiteSpace: 'nowrap',
       }} ref={textRef}/>
