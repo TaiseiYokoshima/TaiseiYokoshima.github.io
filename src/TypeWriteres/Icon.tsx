@@ -4,7 +4,7 @@ import React from "react";
 const Icon = React.forwardRef<HTMLDivElement>((_, ref) => {
    return (
       <div ref={ref} style={{ display: 'inline' }}>
-         <FaExternalLinkAlt size={13} style={{ display: 'inline', margin: '0.5rem' }}/>
+         <FaExternalLinkAlt size={13} style={{ display: 'inline', marginLeft: '0.5rem' }}/>
       </div>
    );
 });
