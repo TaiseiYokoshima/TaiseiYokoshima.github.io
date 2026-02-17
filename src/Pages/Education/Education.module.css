@@ -1,0 +1,29 @@
+.education {
+   display: grid;
+   grid-template-columns: 1fr auto;
+   column-gap: 40px;
+   row-gap: 6px;
+   align-items: start;
+}
+
+.left {
+   text-align: left;
+}
+
+.right {
+   text-align: right;
+}
+
+.container {
+   margin-left: max(2vw, 10px);
+   margin-right: max(2vw, 10px);
+}
+
+
+@media (max-width: 900px) {
+  .education {
+    grid-template-columns: 1fr;
+    /* column-gap: 40px; */
+  }
+}
+

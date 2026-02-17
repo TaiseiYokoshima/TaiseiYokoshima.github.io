@@ -20,7 +20,7 @@ function MenuOpener({ opener }: { opener: () => void }) {
       paddingTop: '1vw',
       paddingBottom: '1vw',
    }}>
-      <div role="button" onClick={opener} className={styles.menuText}>Menu »</div>
+      <div role="button" onClick={opener} className={styles.menuText}>»</div>
    </div>;
 }
 

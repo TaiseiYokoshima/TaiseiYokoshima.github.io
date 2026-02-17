@@ -12,7 +12,7 @@ import Icon from "./Icon";
 
 import styles from "./Cursor.module.css";
 
-export default function Span( { children, speed = 10, href, email, registry }: TyperProps) {
+export default function Span({ children, speed = 10, href, email, registry, style, className }: TyperProps) {
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const opened = useSelector((state: RootState) => state.app.opened);
 
@@ -23,8 +23,8 @@ export default function Span( { children, speed = 10, href, email, registry }: T
    const controller = useRef(new Controller('div'));
 
    let charI = 0;
-   let wordCount =  0;
-   const span = <span ref={spanRef} style={{ whiteSpace: 'pre-line'}}>
+   let wordCount = 0;
+   const span = <span ref={spanRef} style={{ whiteSpace: 'pre-line' }}>
       {
          (() => {
             return children.split(" ").map((word, word_i) => {
@@ -34,7 +34,7 @@ export default function Span( { children, speed = 10, href, email, registry }: T
 
                let wordSpan = <span key={word_i}>{
                   [...word].map(ch => {
-                     let char_span = <span key={charI}  ref={containerRef}>{ch}</span>;
+                     let char_span = <span key={charI} ref={containerRef}>{ch}</span>;
                      charI++;
                      return char_span;
                   })
@@ -54,21 +54,21 @@ export default function Span( { children, speed = 10, href, email, registry }: T
    } else if (href) {
       const hrefStr = `https://${href}`;
       const rel = "noopener noreferrer";
-      content = (<div style={{ display: 'inline'}} className={styles.link}>
+      content = (<div style={{ display: 'inline' }} className={styles.link}>
          <a role="button" href={hrefStr} target="_blank" rel={rel} className={styles.link}>{span}</a>
-         <Icon ref={iconRef}/>
+         <Icon ref={iconRef} />
       </div>);
 
    } else if (email) {
       const hrefStr = `mailto:${email}`;
-      content = (<div style={{ display: 'inline'}} className={styles.link}>
-         <a role="button" href={hrefStr} style={{display: "inline"}} className={styles.link}>{span}</a>
-         <Icon ref={iconRef}/>
+      content = (<div style={{ display: 'inline' }} className={styles.link}>
+         <a role="button" href={hrefStr} style={{ display: "inline" }} className={styles.link}>{span}</a>
+         <Icon ref={iconRef} />
       </div>);
    };
 
    const close = () => new Promise<void>((resolve, _) => {
-      if (!spanRef.current) { 
+      if (!spanRef.current) {
          console.error("span was null");
          resolve();
          if (iconRef.current) iconRef.current.style.opacity = '0';
@@ -210,7 +210,7 @@ export default function Span( { children, speed = 10, href, email, registry }: T
       };
 
       task();
-      
+
       return () => {
          controller.current.unregister();
          registry.unregister(controller.current);
@@ -224,7 +224,7 @@ export default function Span( { children, speed = 10, href, email, registry }: T
    }, [opened]);
 
 
-   return <div>
+   return <div className={className} style={style}>
       <div style={{ display: 'inline-block', fontSize: '20px' }} ref={containerRef}>
          {content}
       </div>
