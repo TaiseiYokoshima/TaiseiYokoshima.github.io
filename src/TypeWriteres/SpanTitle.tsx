@@ -148,7 +148,7 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
 
 
 
-   return <div style={{display: 'flex', justifyContent: "center", marginTop: "20vh"}}>
+   return <div style={{display: 'flex', justifyContent: "center", marginTop: "20vh", fontSize: "var(--l)"}} >
       <div>
          {span}
          <span ref={cursorRef} className={style.cursor} />
