@@ -225,7 +225,7 @@ export default function Span({ children, speed = 10, href, email, registry, styl
 
 
    return <div className={className} style={style}>
-      <div style={{ display: 'inline-block', fontSize: '20px' }} ref={containerRef}>
+      <div style={{ display: 'inline-block', fontSize: 'var(--s)' }} ref={containerRef}>
          {content}
       </div>
    </div>;

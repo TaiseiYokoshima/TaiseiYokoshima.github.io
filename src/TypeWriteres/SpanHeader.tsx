@@ -13,7 +13,7 @@ import type TyperProps from "./Props";
 
 import Icon from "./Icon";
 
-export default function SpanHeader({ children, speed = 10, href, email, registry }: TyperProps) {
+export default function SpanHeader({ children, speed = 10, href, email, registry, style, className }: TyperProps) {
    const controller = useRef(new Controller('header'));
 
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
@@ -192,6 +192,21 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
          console.error("container ref as well for span header when trying to stablize is height and width");
       };
 
+
+      const resizeCallback = () => {
+         if (containerRef.current) { 
+            containerRef.current.style.display = 'inline';
+            const { height, width }  = containerRef.current.getBoundingClientRect();
+            containerRef.current.style.display = 'inline-block';
+            containerRef.current.style.height = `${height}px`;
+            containerRef.current.style.width = `${width}px`;
+         } else {
+            console.error("container ref as well for span header when trying to stablize is height and width");
+         };
+      };
+
+      window.addEventListener("resize", resizeCallback);
+
       let killed = false;
       let task = async () => {
          while (!killed) {
@@ -212,6 +227,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
          registry.unregister(controller.current);
          controller.current.unregister();
          killed = true;
+         window.removeEventListener("resize", resizeCallback);
       };
    }, [])
 
@@ -220,7 +236,7 @@ export default function SpanHeader({ children, speed = 10, href, email, registry
    }, [opened])
 
    return <div>
-      <div style={{display: "inline-block", fontSize: '20px'}} ref={containerRef}>
+      <div className={className} style={{display: "inline-block", fontSize: 'var(--m)', ...style}} ref={containerRef}>
          {content}
          <span ref={cursorRef} className={styles.header}/>
       </div>

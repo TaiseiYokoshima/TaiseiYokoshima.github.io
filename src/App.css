@@ -14,11 +14,9 @@
 
   --xs: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);      /* Small text */
   --s:  clamp(1rem, 0.8vw + 0.8rem, 1.25rem);        /* Body */
-  --m:  clamp(1.25rem, 1.2vw + 0.9rem, 1.75rem);     /* Subheading */
-  --l:  clamp(1.75rem, 2vw + 1rem, 2.5rem);          /* Section title */
+  --m:  clamp(1.25rem, 1.2vw + 0.9rem, 1.5rem);     /* Subheading */
+  --l:  clamp(2rem, 2vw + 1rem, 2.5rem);          /* Section title */
   --xl: clamp(2.5rem, 4vw + 1rem, 4rem);             /* Hero / Display */
-
-
 }
 
 

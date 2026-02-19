@@ -1,4 +1,4 @@
-import style from "./Cursor.module.css";
+import styles from "./Cursor.module.css";
 
 import { clear_interval } from "../Utils";
 import { type RootState } from "../store";
@@ -7,7 +7,7 @@ import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import type TyperProps from "./Props";
 
-export default function SpanTitle({ speed = 10, registry, children }: TyperProps) {
+export default function SpanTitle({ speed = 10, registry, children, style, className }: TyperProps) {
    const cursorRef = useRef<HTMLSpanElement>(null);
    const spanRef = useRef<HTMLSpanElement>(null);
 
@@ -43,13 +43,13 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
       let index = 0;
       const end = spanRef.current.childElementCount - 1;
 
-      if (cursorRef.current) cursorRef.current.classList.add(style.paused);
+      if (cursorRef.current) cursorRef.current.classList.add(styles.paused);
 
       const interval = setInterval(() => {
          if (!spanRef.current) {
             clear_interval(interval);
             console.error("open animation for title interval killed because span ref was null");
-            if (cursorRef.current) cursorRef.current.classList.remove(style.paused);
+            if (cursorRef.current) cursorRef.current.classList.remove(styles.paused);
             resolve();
             return;
          };
@@ -57,7 +57,7 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
          if (index > end) {
             clear_interval(interval);
             console.log("open animation finished killing interval: span title");
-            if (cursorRef.current) cursorRef.current.classList.remove(style.paused);
+            if (cursorRef.current) cursorRef.current.classList.remove(styles.paused);
             resolve();
             return;
          };
@@ -76,7 +76,7 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
          return;
       };
 
-      if (cursorRef.current) cursorRef.current.classList.add(style.paused);
+      if (cursorRef.current) cursorRef.current.classList.add(styles.paused);
 
       let i = spanRef.current.childElementCount - 1;
 
@@ -85,14 +85,14 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
             clear_interval(interval);
             console.error("open animation for title interval killed because span ref was null");
             resolve();
-            if (cursorRef.current) cursorRef.current.classList.remove(style.paused);
+            if (cursorRef.current) cursorRef.current.classList.remove(styles.paused);
             return;
          };
 
          if (i < 0) {
             clear_interval(interval);
             console.log("close animation finished killing interval: span title");
-            if (cursorRef.current) cursorRef.current.classList.remove(style.paused);
+            if (cursorRef.current) cursorRef.current.classList.remove(styles.paused);
             resolve();
             return;
          };
@@ -148,10 +148,10 @@ export default function SpanTitle({ speed = 10, registry, children }: TyperProps
 
 
 
-   return <div style={{display: 'flex', justifyContent: "center", marginTop: "20vh", fontSize: "var(--l)"}} >
+   return <div className={className} style={{display: 'flex', justifyContent: "center", marginTop: "20vh", fontSize: "var(--l)", ...style}} >
       <div>
          {span}
-         <span ref={cursorRef} className={style.cursor} />
+         <span ref={cursorRef} className={styles.cursor} />
       </div>
    </div>;
 }
