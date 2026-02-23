@@ -10,8 +10,6 @@ import Contact from "./Contact";
 import Education from "./Education";
 
 
-import styles from "./Pages.module.css";
-
 export default function PageContent({ registry }: Props) {
    const currentPage = useSelector((state: RootState) => state.app.currentPage);
 
@@ -35,7 +33,7 @@ export default function PageContent({ registry }: Props) {
    };
 
    return <>
-      <div className={styles.container}>
+      <div>
             { pageContent }
             <div style={{marginTop: '8rem'}}/>
       </div>

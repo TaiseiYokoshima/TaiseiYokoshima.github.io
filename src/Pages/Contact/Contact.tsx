@@ -1,10 +1,12 @@
 import type Props from "../props.ts";
 import { Span, SpanHeader } from "../../TypeWriteres";
 
+import styles from "./Contact.module.css";
+
 function Email({ registry }: Props) {
    return <div style={{ marginTop: '5rem'}}>
       <SpanHeader registry={registry}>Email</SpanHeader>
-      <Span registry={registry} email="taiseiyokoshima.professional.@gmail.com">taiseiyokoshima.professional@gmail.com</Span>
+      <Span style={{ overflowWrap: 'anywhere'}} registry={registry} email="taiseiyokoshima.professional.@gmail.com">taiseiyokoshima.professional@gmail.com</Span>
    </div>;
 }
 
@@ -23,9 +25,11 @@ function GitHub({ registry }: Props) {
 }
 
 export default function Contact({ registry }: Props) {
-   return <div style={{ marginLeft: '20rem'}}>
-      <Email registry={registry}/>
-      <LinkedIn registry={registry}/>
-      <GitHub registry={registry}/>
+   return <div className={styles.container}>
+      <div>
+         <Email registry={registry}/>
+         <LinkedIn registry={registry}/>
+         <GitHub registry={registry}/>
+      </div>
    </div>;
 }

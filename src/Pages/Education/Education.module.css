@@ -1,7 +1,7 @@
 .education {
    display: grid;
    grid-template-columns: 1fr auto;
-   column-gap: 40px;
+   column-gap: 20vw;
    row-gap: 6px;
    align-items: start;
 }
@@ -15,9 +15,12 @@
 }
 
 .container {
-   margin-left: max(2vw, 10px);
-   margin-right: max(2vw, 10px);
+   display: flex;
+	justify-content: center;
+   margin-left: max(10vw, 20px);
+   margin-right: max(10vw, 20px);
 }
+
 
 
 @media (max-width: 900px) {

@@ -30,7 +30,9 @@ function UWC({ registry }: Props) {
 
 export default function Education({ registry }: Props) {
    return <div className={styles.container}>
-      <Sussex registry={registry}/>
-      <UWC registry={registry}/>
+      <div>
+         <Sussex registry={registry}/>
+         <UWC registry={registry}/>
+      </div>
    </div>;
 }

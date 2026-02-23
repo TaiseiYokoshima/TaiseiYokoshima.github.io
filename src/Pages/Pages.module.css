@@ -1,5 +1,7 @@
 .container {
-   margin-left: clamp(15px, 10vw, 10rem);
-   margin-right: clamp(15px, 10vw, 10rem);
+   display: flex;
+   justify-content: center;
+   margin-left: max(15px, 10vw);
+   margin-right: max(15px, 10vw);
 }
 

@@ -1,6 +1,8 @@
 import { Span } from "../../TypeWriteres";
 import type Props from "../props";
 
+import styles from "./About.module.css";
+
 const string = `\
 I'm a Computer Science graduate with a deep passion for both software and hardware. I thrive on understanding complex technologies, diving deep into the tools I use, optimising my workflow, and continuously improving my skills.
 My curiosity has led me to explore and customise Linux environments and development setups, where I find joy in tailoring tools to enhance efficiency and productivity as a programmer.
@@ -11,7 +13,7 @@ Recently, I undertook a research project on congestion control in networking as 
 `;
 
 export default function About({ registry }: Props) {
-   return <div style={{ marginTop: "8rem"}}>
+   return <div className={styles.container} style={{ marginTop: "8rem"}}>
       <Span speed={0.1} registry={registry}>{string}</Span>
    </div>;
 }

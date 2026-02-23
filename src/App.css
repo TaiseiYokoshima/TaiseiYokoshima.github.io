@@ -8,13 +8,11 @@
   --gap: 14px;
   --line-color: rgba(0,0,0,0.15);
 
-
-  --min-base: 0.75rem;
+  --min-base: 0.85rem;
   --min-ratio: 1.25;
 
   --max-base: 1rem;
   --max-ratio: 1.25;
-
 
   --xs-min: var(--min-base);
   --s-min:  calc(var(--xs-min) * var(--min-ratio));
@@ -40,11 +38,11 @@
   --l-zm:  1rem;
   --xl-zm: 1.25rem;
 
-  --xs: clamp(var(--xs-min), calc(var(--xs-vp) + var(--xs-zm)), var(--xs-max));       /* Small text     */
-  --s:  clamp(var(--s-min),  calc(var(--s-vp)  + var(--s-zm)),  var(--s-max));        /* Body           */
-  --m:  clamp(var(--m-min),  calc(var(--m-vp)  + var(--m-zm)),  var(--m-max));        /* Subheading     */
-  --l:  clamp(var(--l-min),  calc(var(--l-vp)  + var(--l-zm)),  var(--l-max));        /* Section title  */
-  --xl: clamp(var(--xl-min), calc(var(--xl-vp) + var(--xl-zm)), var(--xl-max));       /* Hero / Display */
+  --xs: clamp(var(--xs-min), calc(var(--xs-vp) + var(--xs-zm)), var(--xs-max));
+  --s:  clamp(var(--s-min),  calc(var(--s-vp)  + var(--s-zm)),  var(--s-max));
+  --m:  clamp(var(--m-min),  calc(var(--m-vp)  + var(--m-zm)),  var(--m-max));
+  --l:  clamp(var(--l-min),  calc(var(--l-vp)  + var(--l-zm)),  var(--l-max));
+  --xl: clamp(var(--xl-min), calc(var(--xl-vp) + var(--xl-zm)), var(--xl-max));
 }
 
 

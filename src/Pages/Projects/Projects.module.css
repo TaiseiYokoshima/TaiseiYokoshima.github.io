@@ -1,0 +1,6 @@
+.container {
+   display: flex;
+	justify-content: center;
+   margin-left: max(10vw, 20px);
+   margin-right: max(10vw, 20px);
+}

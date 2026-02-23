@@ -1,6 +1,8 @@
 import type Props from "../props";
 import { SpanHeader, Span } from "../../TypeWriteres";
 
+import styles from "./Experience.module.css";
+
 const body = `
 • Researched and evaluated an open-source team collaboration tool built with Ruby on Rails. Presenting findings to explore its adoption as a company-wide replacement for the existing tool. Through this project I learned to collaborate efficiently with other programmers. We did peer programming and frequent communication to cordinate concurrent progression on mulitple tasks or components that are related.
 
@@ -24,8 +26,8 @@ function Passology({ registry }: Props) {
 
 
 export default function Experience({ registry }: Props) {
-   return <>
+   return <div className={styles.container}>
       <Passology registry={registry}/>
-   </>;
+   </div>;
 }
 

@@ -1,6 +1,8 @@
 import type Props from "../props";
 import { SpanHeader, Span } from "../../TypeWriteres";
 
+import styles from "../Pages.module.css";
+
 const compiler = `Targets RISC-V written in Java. The grammar and parsing is implemented with with Antler`;
 const tftp = 'Tftp client and server written in Java';
 const kube = 'Kubernetes metric logger using cAdvisor';
@@ -36,10 +38,12 @@ function Parser({ registry }: Props) {
 }
 
 export default function Projects({ registry }: Props) {
-   return <>
-      <Compiler registry={registry}/>
-      <Tftp registry={registry}/>
-      <Kube registry={registry}/>
-      <Parser registry={registry}/>
-   </>;
+   return <div className={styles.container}>
+      <div>
+         <Compiler registry={registry}/>
+         <Tftp registry={registry}/>
+         <Kube registry={registry}/>
+         <Parser registry={registry}/>
+      </div>
+   </div>;
 }
