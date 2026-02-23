@@ -148,7 +148,7 @@ export default function SpanTitle({ speed = 10, registry, children, style, class
 
 
 
-   return <div className={className} style={{display: 'flex', justifyContent: "center", marginTop: "20vh", fontSize: "var(--l)", ...style}} >
+   return <div className={className} style={{display: 'flex', justifyContent: "center", marginTop: "20vh", fontSize: "var(--xl)", ...style}} >
       <div>
          {span}
          <span ref={cursorRef} className={styles.cursor} />

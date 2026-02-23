@@ -4,19 +4,47 @@
 }
 
 :root {
-
-
-
   --line-thickness: 2px;
   --gap: 14px;
   --line-color: rgba(0,0,0,0.15);
 
 
-  --xs: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);      /* Small text */
-  --s:  clamp(1rem, 0.8vw + 0.8rem, 1.25rem);        /* Body */
-  --m:  clamp(1.25rem, 1.2vw + 0.9rem, 1.5rem);     /* Subheading */
-  --l:  clamp(2rem, 2vw + 1rem, 2.5rem);          /* Section title */
-  --xl: clamp(2.5rem, 4vw + 1rem, 4rem);             /* Hero / Display */
+  --min-base: 0.75rem;
+  --min-ratio: 1.25;
+
+  --max-base: 1rem;
+  --max-ratio: 1.25;
+
+
+  --xs-min: var(--min-base);
+  --s-min:  calc(var(--xs-min) * var(--min-ratio));
+  --m-min:  calc(var(--s-min)  * var(--min-ratio));
+  --l-min:  calc(var(--m-min)  * var(--min-ratio));
+  --xl-min: calc(var(--l-min)  * var(--min-ratio));
+
+  --xs-max: var(--max-base);
+  --s-max:  calc(var(--xs-max) * var(--max-ratio));
+  --m-max:  calc(var(--s-max)  * var(--max-ratio));
+  --l-max:  calc(var(--m-max)  * var(--max-ratio));
+  --xl-max: calc(var(--l-max)  * var(--max-ratio));
+
+  --xs-vp: 0.5vw;
+  --s-vp:  1vw;
+  --m-vp:  1.5vw;
+  --l-vp:  2vw;
+  --xl-vp: 2.5vw;
+
+  --xs-zm: 0.25rem;
+  --s-zm:  0.5rem;
+  --m-zm:  0.75rem;
+  --l-zm:  1rem;
+  --xl-zm: 1.25rem;
+
+  --xs: clamp(var(--xs-min), calc(var(--xs-vp) + var(--xs-zm)), var(--xs-max));       /* Small text     */
+  --s:  clamp(var(--s-min),  calc(var(--s-vp)  + var(--s-zm)),  var(--s-max));        /* Body           */
+  --m:  clamp(var(--m-min),  calc(var(--m-vp)  + var(--m-zm)),  var(--m-max));        /* Subheading     */
+  --l:  clamp(var(--l-min),  calc(var(--l-vp)  + var(--l-zm)),  var(--l-max));        /* Section title  */
+  --xl: clamp(var(--xl-min), calc(var(--xl-vp) + var(--xl-zm)), var(--xl-max));       /* Hero / Display */
 }
 
 
