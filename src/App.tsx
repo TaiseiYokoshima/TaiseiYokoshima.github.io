@@ -13,7 +13,7 @@ import PageContent from './Pages';
 
 
 import { useSelector, useDispatch } from 'react-redux';
-import { open, close, toggleAnimationStatus } from './store';
+import { open, close, animationRunning, animationFinished } from './store';
 
 import AnimationStatus from './AnimationStatus';
 
@@ -33,17 +33,17 @@ export default function App() {
    const opened = useSelector((state: RootState) => state.app.opened);
 
    const openAnimation = async () => {
-      dispatch(toggleAnimationStatus());
+      dispatch(animationRunning());
       await registry.current.open();
       dispatch(open());
-      dispatch(toggleAnimationStatus());
+      dispatch(animationFinished());
    };
 
    const closeAnimation = async () => {
-      dispatch(toggleAnimationStatus());
+      dispatch(animationRunning());
       await registry.current.close();
       dispatch(close());
-      dispatch(toggleAnimationStatus());
+      dispatch(animationFinished());
    };
 
    useEffect(() => {

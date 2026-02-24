@@ -9,7 +9,7 @@ export function isPage(str: string): boolean {
    return pages.includes(str as Page);
 }
 
-export type Page = 'about' | 'projects' | 'experience' | 'education' | 'contact';
+export type Page = 'about' | 'projects' | 'experience' | 'education' | 'contact' | 'invalid';
 
 export interface AppState {
    currentPage: Page,
@@ -32,7 +32,6 @@ export const initialState: AppState = {
    darkModeEnabled: true,
    settingsOpened: false,
 };
-
 
 export function loadState() {
    console.debug("load state ran");
@@ -81,13 +80,18 @@ const appStateSlice = createSlice({
       changePage: (state, action: PayloadAction<Page>) => {
          state.currentPage = action.payload;
          state.opened = false;
-         // console.warn("page changed to " + state.currentPage);
-         // window.history.pushState("", `/${action.payload}`);
+         console.warn("page changed to " + state.currentPage);
       },
 
-      toggleAnimationStatus: (state) => {
-         state.animationRunning = !state.animationRunning;
+      animationRunning: (state) => {
+         state.animationRunning = true;
       },
+
+      animationFinished: (state) => {
+         state.animationRunning = false;
+      },
+
+
 
       open: (state) => {
          state.opened = true;
@@ -99,5 +103,5 @@ const appStateSlice = createSlice({
    },
 });
 
-export const { toggleSettings, toggleDarkMode, toggleAnimation, toggleAnimationStatus, open, close, changePage } = appStateSlice.actions;
+export const { toggleSettings, toggleDarkMode, toggleAnimation, animationRunning, animationFinished, open, close, changePage } = appStateSlice.actions;
 export default appStateSlice.reducer;

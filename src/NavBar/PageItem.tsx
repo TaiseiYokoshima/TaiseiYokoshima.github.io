@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { type RootState, toggleAnimationStatus } from "../store";
+import { type RootState, animationRunning, animationFinished } from "../store";
 
 import { useEffect, useRef, type RefObject } from "react";
 import { changePage } from "../store";
@@ -30,13 +30,16 @@ export default function PageItem({ children, cancelClose, contentRef, controller
       ref.current.classList.add(styles.clicked);
 
       if (animationEnabled) {
-         dispatch(toggleAnimationStatus());
+         dispatch(animationRunning());
          await controller.close();
-         dispatch(toggleAnimationStatus());
+         dispatch(animationFinished());
       };
 
-      window.history.pushState(null, "", `/${thisPage}`)
       dispatch(changePage(thisPage));
+      // window.history.pushState(null, "", `/${thisPage}`)
+      window.history.replaceState({}, "", `/${thisPage}`);
+
+
    };
 
    useEffect(() => {
@@ -44,12 +47,9 @@ export default function PageItem({ children, cancelClose, contentRef, controller
       ref.current.classList.remove(styles.clicked);
    }, [currentPage]);
 
-   // const conditional = isThisPage ? "text-green-500 underline underline-offset-[5px] cursor-text" : "cursor-pointer hover:text-red-500";
    const conditional = isThisPage ? styles.thisPage: styles.clickable;
 
-   return (
-      <div ref={ref} className={styles.item} >
-         <div role="button" onClick={isThisPage ? undefined : onClick} className={conditional}>{children.toUpperCase()}</div>
-      </div>
-   );
+   return <div ref={ref} className={styles.item}>
+      <div role="button" onClick={isThisPage ? undefined : onClick} className={conditional}>{children.toUpperCase()}</div>
+   </div>;
 }
