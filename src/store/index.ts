@@ -40,17 +40,12 @@ function getPage(path: string): Page | null {
 function normalizePage(object: any): any {
    const urlPage = getPage(window.location.pathname);
    if (urlPage === null) {
-      console.warn("url page was null");
       return object;
    };
 
    if (urlPage === object.currentPage) {
-      console.warn("url page matched");
       return object;
    };
-
-
-   console.warn("url page mismatched, correcting...");
 
    object.currentPage = urlPage;
    object.opened = false;

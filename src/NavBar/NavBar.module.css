@@ -104,6 +104,13 @@
    position: fixed;
    top: 0;
    left: 0;
-   background-color: grey;
    z-index: 100;
+   flex-direction: column;
+   justify-content: space-evenly;
+   align-items: center;
+}
+
+.test {
+   background-color: black;
+   margin-top: 1rem;
 }
