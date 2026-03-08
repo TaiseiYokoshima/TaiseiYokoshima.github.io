@@ -12,20 +12,15 @@ import type { PageController } from "../Controllers";
 
 
 function MenuOpener({ opener }: { opener: () => void }) {
-   return <div style={{
-      position: 'absolute',
-      width: '100vw',
-      paddingLeft: '1vw',
-      paddingRight: '1vw',
-      paddingTop: '1vw',
-      paddingBottom: '1vw',
-   }}>
+   return <div className={styles.opener}>
       <div role="button" onClick={opener} className={styles.menuText}>»</div>
    </div>;
 }
 
 function MenuCloser({ closer }: { closer: () => void }) {
-   return <div role="button" onClick={closer} className={styles.sideComponents}>«</div>;
+   return <div role="button" onClick={closer} className={styles.sideComponents}>
+      <div className={styles.closer}>«</div>
+   </div>;
 }
 
 function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
@@ -39,9 +34,9 @@ function SettingsOpener({ cancelClose }: { cancelClose: () => void }) {
 }
 
 function NavBarCore({ closeMenuNow, cancelClose, contentRef, controller }: { closeMenuNow: () => void, cancelClose: () => void, contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
-   return <div style={{minWidth: '100vw', display: 'flex', paddingTop: '1vh'}}>
+   return <div className={styles.top}>
       <MenuCloser closer={closeMenuNow}/>
-      <div style={{display: 'flex', flex: '1', paddingLeft: '20vw', paddingRight: '20vw'}}>
+      <div className={styles.center}>
          <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>About</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Projects</PageItem>
          <PageItem cancelClose={cancelClose} contentRef={contentRef} controller={controller}>Experience</PageItem>
@@ -81,7 +76,7 @@ export default function Navbar({ contentRef, controller }: { contentRef: RefObje
 
    const openMenuNow = () => {
       openMenu();
-      scheduleClose();
+      // scheduleClose();
    };
 
    const BarOrOpener = (menuOpened) ? <NavBarCore cancelClose={cancelClose} closeMenuNow={closeMenuNow} contentRef={contentRef} controller={controller}/> : <MenuOpener opener={openMenuNow}/>;

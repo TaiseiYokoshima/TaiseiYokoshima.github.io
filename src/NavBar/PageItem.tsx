@@ -36,10 +36,7 @@ export default function PageItem({ children, cancelClose, contentRef, controller
       };
 
       dispatch(changePage(thisPage));
-      // window.history.pushState(null, "", `/${thisPage}`)
       window.history.replaceState({}, "", `/${thisPage}`);
-
-
    };
 
    useEffect(() => {

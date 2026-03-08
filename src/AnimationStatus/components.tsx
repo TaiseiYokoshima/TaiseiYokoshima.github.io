@@ -52,7 +52,7 @@ function MouseClickWarningAndCover() {
       if (event === null) return;
       cancel();
       if (textRef.current) {
-         textRef.current.textContent = 'mouse inputs are disabled during animation';
+         textRef.current.textContent = 'mouse is disabled during animation';
 
          if (firstClick.current) {
             textRef.current.style.width = textRef.current.offsetWidth + 'px';
@@ -105,7 +105,7 @@ function AnimationLoader() {
       };
    }, []);
 
-   return <div style={{display: 'inline'}} ref={loaderRef}>animation running ...</div>;
+   return <div style={{ display: 'inline' }} ref={loaderRef}>animation running ...</div>;
 }
 
 function AnimationCapturer() {
@@ -115,11 +115,13 @@ function AnimationCapturer() {
          position: 'absolute',
          display: 'flex',
          justifyContent: 'space-between',
+         flexWrap: 'wrap',
          bottom: '0',
          left: '0',
          background: 'black',
          paddingLeft: '0.5vw',
          paddingRight: '0.5vw',
+         fontSize: 'var(--xs)',
       }}>
          <AnimationLoader/>
          <MouseClickWarningAndCover/>

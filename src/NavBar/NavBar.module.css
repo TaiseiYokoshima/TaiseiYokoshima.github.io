@@ -1,7 +1,7 @@
 .sideComponents {
    cursor: pointer;
-   padding-left: 1vw;
-   padding-right: 1vw;
+   padding-left: 1rem;
+   padding-right: 1rem;
    font-size: 25px;
 }
 
@@ -19,9 +19,9 @@
 
 
 .menuText {
-  cursor: pointer;
-  display: inline;
-  font-size: 20px;
+   cursor: pointer;
+   display: inline-block;
+   font-size: var(--l);
 }
 
 .menuText:hover {
@@ -50,4 +50,60 @@
   align-items: center;
   text-align: center;
   font-size: 1.2rem;
+}
+ 
+
+.center {
+   display: flex;
+   flex: 1;
+}
+
+.top {
+   min-width: 100vw;
+   display: flex;
+   padding-top: 0.5rem;
+}
+
+.opener {
+   position: absolute;
+   width: 100vw;
+   display: inline-block;
+
+   margin-top: calc(0.3rem + 0.1vw);
+   margin-left: calc(1rem + 0.3vw);
+}
+
+.closer {
+}
+
+@media (max-width: 700px) {
+   .top {
+      align-items: center;
+   }
+
+   .center {
+      flex-direction: column;
+   }
+
+   .menuText {
+      transform: rotate(90deg);
+   }
+
+   .closer {
+      transform: rotate(90deg);
+   }
+}
+
+
+
+
+
+.page {
+   width: 100vw;
+   height: 100vh;
+   position: fixed;
+   top: 0;
+   left: 0;
+   background-color: grey;
+   z-index: 100;
 }
