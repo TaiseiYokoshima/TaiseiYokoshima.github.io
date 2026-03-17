@@ -1,14 +1,3 @@
-.sideComponents {
-   cursor: pointer;
-   padding-left: 1rem;
-   padding-right: 1rem;
-   font-size: 25px;
-}
-
-.sideComponents:hover {
-   color: blue;
-}
-
 .clicked {
    background-color: #808080;
    background-size: 100% 6px;
@@ -114,3 +103,23 @@
    background-color: black;
    margin-top: 1rem;
 }
+
+.closer {
+   font-size: var(--l);
+   color: white;
+   text-align: center;
+   cursor: pointer;
+}
+
+.closer:hover {
+   color: red;
+}
+
+
+.settingsOpener {
+   text-align: center;
+   cursor: pointer;
+   font-size: var(--l);
+}
+
+
