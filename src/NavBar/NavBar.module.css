@@ -1,46 +1,11 @@
-.clicked {
-   background-color: #808080;
-   background-size: 100% 6px;
-   background-repeat: repeat-y;
-   color: black;
-   cursor: text;
-}
-
-
-.menuText {
+.openerText {
    cursor: pointer;
    display: inline-block;
    font-size: var(--l);
 }
 
-.menuText:hover {
+.openerText:hover {
   color: #3b82f6;
-}
-
-.thisPage {
-  color: #22c55e;
-  text-decoration: underline;
-  text-underline-offset: 5px;
-  cursor: text;
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-.clickable:hover {
-  color: #ef4444;
-}
-
-.center {
-   display: flex;
-   flex: 1;
-}
-
-.top {
-   min-width: 100vw;
-   display: flex;
-   padding-top: 0.5rem;
 }
 
 .opener {
@@ -51,31 +16,6 @@
    margin-top: calc(0.3rem + 0.1vw);
    margin-left: calc(1rem + 0.3vw);
 }
-
-.closer {
-}
-
-@media (max-width: 700px) {
-   .top {
-      align-items: center;
-   }
-
-   .center {
-      flex-direction: column;
-   }
-
-   .menuText {
-      transform: rotate(90deg);
-   }
-
-   .closer {
-      transform: rotate(90deg);
-   }
-}
-
-
-
-
 
 .page {
    width: 100vw;
@@ -90,10 +30,10 @@
 }
 
 .item {
-   background-color: black;
    padding: 1rem;
    font-size: var(--l);
    cursor: pointer;
+   user-select: none;
 }
 
 .item.active {
@@ -103,10 +43,8 @@
 }
 
 .item.selected {
-   background-color: grey;
-   color: white;
+   color: green;
 }
-
 
 .closer {
    font-size: var(--l);
@@ -119,11 +57,8 @@
    color: red;
 }
 
-
 .settingsOpener {
    text-align: center;
    cursor: pointer;
    font-size: var(--l);
 }
-
-

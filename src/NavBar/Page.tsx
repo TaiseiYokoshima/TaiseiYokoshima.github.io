@@ -6,36 +6,27 @@ import { useEffect, useState } from "react";
 import Settings from "./Settings.tsx";
 
 
-import { useSelector } from "react-redux";
-import { type RootState, animationRunning, animationFinished } from "../store";
 
-import { useRef } from "react";
+import { useRef, type RefObject } from "react";
+
+
+import { PageController } from "../Controllers";
+
+
+import { useDispatch, useSelector } from "react-redux";
+import { type RootState, type Page, animationRunning, animationFinished, changePage } from "../store";
+
+import Item from "./Item.tsx";
 
 
 function MenuOpener({ opener }: { opener: () => void }) {
    return <div className={styles.opener}>
-      <div role="button" onClick={opener} className={styles.menuText}>»</div>
+      <div role="button" onClick={opener} className={styles.openerText}>»</div>
    </div>;
 }
 
-function Item({ children, selected }: { children: string, selected: string }) {
-   const currentPage = useSelector((state: RootState) => state.app.currentPage);
-
-   const active = currentPage === children;
-   const isSelected = children === selected;
-
-   return <div className={`${styles.item} ${active ? styles.active : ''} ${isSelected ? styles.selected : ''}`}>
-      <div style={{ display: 'inline', visibility: (isSelected ? 'visible' : 'hidden')}}>{'>'}</div>
-      <div style={{ display: 'inline'}}>{children}</div>
-      <div style={{ display: 'inline', visibility: (active ? 'visible' : 'hidden') }}> *</div>
-   </div>
-}
-
-
-
-
-export default function NavPage() {
-   const [ opened, set ] = useState(false);
+export default function NavPage({ contentRef, controller }: { contentRef: RefObject<HTMLDivElement | null>, controller: PageController }) {
+   const [opened, set] = useState(false);
    const open = () => set(true);
    const close = () => set(false);
 
@@ -45,6 +36,11 @@ export default function NavPage() {
 
    const [index, setIndex] = useState(0);
    const array = useRef(['about', 'projects', 'experience', 'education', 'contact']);
+
+
+   const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
+   const currentPage = useSelector((state: RootState) => state.app.currentPage);
+   const dispatch = useDispatch();
 
    const down = () => {
       let newI = index + 1;
@@ -62,14 +58,31 @@ export default function NavPage() {
       setIndex(newI);
    };
 
+   const changePageFunc = async (page: Page) => {
+      close();
+
+      if (contentRef.current && contentRef.current.scrollTop !== 0) {
+         contentRef.current.scrollTop = 0;
+      };
+
+      await new Promise(r => setTimeout(r, 300));
+
+      if (animationEnabled) {
+         dispatch(animationRunning());
+         await controller.close();
+         dispatch(animationFinished());
+      };
+
+      dispatch(changePage(page));
+      window.history.replaceState({}, "", `/${page}`);
+   };
 
    useEffect(() => {
       const callback = (event: KeyboardEvent) => {
          if (!opened) {
-            return console.warn("navbar not open");
+            return;
          };
 
-         console.warn("key pressed");
          if (event.key === "ArrowUp") {
             return up();
          };
@@ -77,26 +90,33 @@ export default function NavPage() {
          if (event.key === "ArrowDown") {
             return down();
          };
-      };
 
+         if (event.key === "Enter") {
+            const selected = array.current[index];
+            if (currentPage !== selected) {
+               return changePageFunc(selected as Page);
+            };
+
+         };
+      };
 
       window.addEventListener("keydown", callback);
       return () => window.removeEventListener("keydown", callback);
    }, [opened, index])
 
    return <>
-      <div className={`${styles.page} terminal`} style={{ display: ( opened ? 'flex' : 'none') }}>
+      <div className={`${styles.page} terminal`} style={{ display: (opened ? 'flex' : 'none') }}>
          <div>
             <div onClick={close} className={styles.closer}>✕</div>
-            <Item selected={array.current[index]}>about</Item>
-            <Item selected={array.current[index]}>projects</Item>
-            <Item selected={array.current[index]}>experience</Item>
-            <Item selected={array.current[index]}>education</Item>
-            <Item selected={array.current[index]}>contact</Item>
+            <Item selected={array.current[index]} changePage={changePageFunc}>about</Item>
+            <Item selected={array.current[index]} changePage={changePageFunc}>projects</Item>
+            <Item selected={array.current[index]} changePage={changePageFunc}>experience</Item>
+            <Item selected={array.current[index]} changePage={changePageFunc}>education</Item>
+            <Item selected={array.current[index]} changePage={changePageFunc}>contact</Item>
             <div onClick={openSettings} className={styles.settingsOpener}>⚙</div>
          </div>
       </div>
-      <MenuOpener opener={open}/>
-      <Settings opened={settingsOpened} closeSettings={closeSettings}/>
+      <MenuOpener opener={open} />
+      <Settings opened={settingsOpened} closeSettings={closeSettings} />
    </>;
 }

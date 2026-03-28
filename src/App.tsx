@@ -4,7 +4,7 @@ import "./index.css";
 import { useEffect, useRef } from 'react';
 
 
-import { NavBar, NavPage } from './NavBar';
+import NavPage from './NavBar';
 import type { RootState } from './store';
 
 import { SpanTitle } from './TypeWriteres';
@@ -63,7 +63,7 @@ export default function App() {
    return <div className='terminal top-container'>
       {/* <NavBar contentRef={contentRef} controller={registry.current}/> */}
 
-      <NavPage />
+      <NavPage contentRef={contentRef} controller={registry.current}/>
 
 
       <div style={{overflowY: 'auto', height: "100%"}} ref={contentRef}>
