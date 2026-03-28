@@ -32,16 +32,6 @@
   color: #ef4444;
 }
 
-.item {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-size: 1.2rem;
-}
- 
-
 .center {
    display: flex;
    flex: 1;
@@ -99,10 +89,24 @@
    align-items: center;
 }
 
-.test {
+.item {
    background-color: black;
-   margin-top: 1rem;
+   padding: 1rem;
+   font-size: var(--l);
+   cursor: pointer;
 }
+
+.item.active {
+   cursor: none;
+   pointer-events: none;
+   color: grey;
+}
+
+.item.selected {
+   background-color: grey;
+   color: white;
+}
+
 
 .closer {
    font-size: var(--l);

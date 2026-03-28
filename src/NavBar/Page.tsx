@@ -1,9 +1,15 @@
 import styles from "./NavBar.module.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 import Settings from "./Settings.tsx";
+
+
+import { useSelector } from "react-redux";
+import { type RootState, animationRunning, animationFinished } from "../store";
+
+import { useRef } from "react";
 
 
 function MenuOpener({ opener }: { opener: () => void }) {
@@ -12,33 +18,81 @@ function MenuOpener({ opener }: { opener: () => void }) {
    </div>;
 }
 
+function Item({ children, selected }: { children: string, selected: string }) {
+   const currentPage = useSelector((state: RootState) => state.app.currentPage);
+
+   const active = currentPage === children;
+   const isSelected = children === selected;
+
+   return <div className={`${styles.item} ${active ? styles.active : ''} ${isSelected ? styles.selected : ''}`}>
+      <div style={{ display: 'inline', visibility: (isSelected ? 'visible' : 'hidden')}}>{'>'}</div>
+      <div style={{ display: 'inline'}}>{children}</div>
+      <div style={{ display: 'inline', visibility: (active ? 'visible' : 'hidden') }}> *</div>
+   </div>
+}
+
+
+
 
 export default function NavPage() {
    const [ opened, set ] = useState(false);
-   const open = () => {
-      // console.warn("menu opened");
-      set(true);
-   };
+   const open = () => set(true);
    const close = () => set(false);
 
-
    const [settingsOpened, setSettings] = useState(false);
-   const openSettings = () => {
-      console.warn("settings opened");
-      setSettings(true);
-   };
+   const openSettings = () => setSettings(true);
    const closeSettings = () => setSettings(false);
 
+   const [index, setIndex] = useState(0);
+   const array = useRef(['about', 'projects', 'experience', 'education', 'contact']);
+
+   const down = () => {
+      let newI = index + 1;
+      if (newI === array.current.length) {
+         newI = 0;
+      };
+      setIndex(newI);
+   };
+
+   const up = () => {
+      let newI = index - 1;
+      if (newI < 0) {
+         newI = array.current.length - 1;
+      };
+      setIndex(newI);
+   };
+
+
+   useEffect(() => {
+      const callback = (event: KeyboardEvent) => {
+         if (!opened) {
+            return console.warn("navbar not open");
+         };
+
+         console.warn("key pressed");
+         if (event.key === "ArrowUp") {
+            return up();
+         };
+
+         if (event.key === "ArrowDown") {
+            return down();
+         };
+      };
+
+
+      window.addEventListener("keydown", callback);
+      return () => window.removeEventListener("keydown", callback);
+   }, [opened, index])
 
    return <>
       <div className={`${styles.page} terminal`} style={{ display: ( opened ? 'flex' : 'none') }}>
          <div>
             <div onClick={close} className={styles.closer}>✕</div>
-            <div className={styles.test} style={{ fontSize: 'var(--l)'}}>About</div>
-            <div className={styles.test} style={{ fontSize: 'var(--l)'}}>Projects</div>
-            <div className={styles.test} style={{ fontSize: 'var(--l)'}}>Experience</div>
-            <div className={styles.test} style={{ fontSize: 'var(--l)'}}>Education</div>
-            <div className={styles.test} style={{ fontSize: 'var(--l)'}}>Contact</div>
+            <Item selected={array.current[index]}>about</Item>
+            <Item selected={array.current[index]}>projects</Item>
+            <Item selected={array.current[index]}>experience</Item>
+            <Item selected={array.current[index]}>education</Item>
+            <Item selected={array.current[index]}>contact</Item>
             <div onClick={openSettings} className={styles.settingsOpener}>⚙</div>
          </div>
       </div>

@@ -56,6 +56,10 @@ export default function App() {
 
    }, [currentPage])
 
+   useEffect(() => {
+      window.history.replaceState({}, "", `/${currentPage}`);
+   }, [])
+
    return <div className='terminal top-container'>
       {/* <NavBar contentRef={contentRef} controller={registry.current}/> */}
 

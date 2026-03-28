@@ -39,10 +39,6 @@ function Setting({ callback, children, enabled }: { callback: () => void, childr
 
 
 export default function Settings({ opened, closeSettings }: { opened: boolean, closeSettings: () => void }) {
-
-   console.warn("settings open state: ", opened);
-
-
    const animationEnabled = useSelector((state: RootState) => state.app.animationEnabled);
    const darkModeEnabled = useSelector((state: RootState) => state.app.darkModeEnabled);
    const dispatch = useDispatch();
@@ -52,11 +48,16 @@ export default function Settings({ opened, closeSettings }: { opened: boolean, c
    return <>
       <div className={`terminal ${styles.container}`} style={{ display: (opened ? 'block' : 'none') }}>
          <div className={styles.closer} role="button" onClick={closeSettings}>X</div>
-         <div style={{ fontSize: '45px', textAlign: 'center', marginBottom: '2vh'}}>Preferences</div><div>
+
+         <div className={styles.title}>Preferences</div>
+
+         <div>
             <Setting callback={flipAnimation} enabled={animationEnabled}>Animation | </Setting>
             <Setting callback={flipDarkMoode} enabled={darkModeEnabled}>Dark Mode | </Setting>
          </div>
+
       </div>
+
       <div role="button" className={styles.catcher} onClick={closeSettings} style={{ display: (opened ? 'block' : 'none')  }}/> 
    </>;
 }
